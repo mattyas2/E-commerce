@@ -7,7 +7,7 @@ import Carousel from "nuka-carousel";
 import { useEffect, useState } from "react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { app } from "../assets/config/firebase";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthProvider";
 
 // const auth = getAuth(app);
@@ -35,10 +35,10 @@ export const Navbar = () => {
 
       <nav className="flex justify-around border-y-2 h-[100px] w-[100%]">
         <div className="logo mt-3">
-          <a href="/">
+          <Link to="/">
             {" "}
             <img src="../src/icono.png" className="w-[200px]" />
-          </a>
+          </Link>
         </div>
 
         <div className="buscar mt-10 text-xs">
@@ -72,11 +72,11 @@ export const Navbar = () => {
             </button></div>
           ) : (
             <div className="flex flex-col justify-center">
-              <a className="text-black text-decoration-none" href="/Login">
+              <Link className="text-black text-decoration-none" to="/Login">
                 {" "}
                 <IoPersonCircle FaBeer size={26} className="w-16" /> iniciar
                 sesion{" "}
-              </a>
+              </Link>
             </div>
           )}
           <div className="mt-6">
