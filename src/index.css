@@ -1,0 +1,35 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+*{
+    font-family: sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+header{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    font-size: 20px;
+    text-decoration: none;
+    padding: 15px;
+}
+.logo{
+    font-size: 50px;
+    font-weight: bold;
+    text-decoration: none;
+}
+.inicia{
+    padding: 5px;
+    text-decoration: none;
+}
+.register{
+    padding: 5px;
+    text-decoration: none;
+}
+.boton{
+    cursor: auto;
+}
