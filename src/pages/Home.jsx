@@ -132,31 +132,16 @@ export const Home = () => {
             withoutControls
             pauseOnHover
           >
-            <div className="flex  gap-2">
-              <img
-                src="https://www.nerdwallet.com/assets/blog/wp-content/uploads/2020/01/GettyImages-183278704.jpg-What-to-Buy-and-Skip-in-February-2400x1440.jpg"
-                style={{ width: 300, height: 300 }}
-              />
+         
+              <div>
+              <img src="https://github.com/mattyas2/E-commerce/blob/main/src/assets/BBanner_B2C_ES-_Banner_Home_1921x574.jpg?raw=true" alt="" />
+              </div>
+          <div>
+          <img src="https://github.com/mattyas2/E-commerce/blob/main/src/assets/Vviajes-ES-_Banner_Home_-_1921x534_.jpg?raw=true" alt="" />
+          </div>
 
-              <img
-                src="https://hdtvtest.co.uk/static_data/content/GettyImages-142547173-woman-tvs-5983293622fa3a001036d2c4-d7b7a93c-e5eb-4a61-a7f1-741ae9979017.jpg"
-                style={{ width: 300, height: 300 }}
-              />
-
-              <img
-                src="https://th.bing.com/th/id/R.8636eb96e800eda948853e56d2bd9237?rik=VxecRGlTxCkdFw&riu=http%3a%2f%2fwww.primecursos.com.br%2farquivos%2fuploads%2f2013%2f04%2frecepcionista.jpg&ehk=n5%2bt7n2v5cN6Gmxz5Dm1jsV%2fNksvbgEWeOAjf2eNwtY%3d&risl=&pid=ImgRaw&r=0"
-                style={{ width: 300, height: 300 }}
-              />
-
-              <img
-                src="https://th.bing.com/th/id/R.8636eb96e800eda948853e56d2bd9237?rik=VxecRGlTxCkdFw&riu=http%3a%2f%2fwww.primecursos.com.br%2farquivos%2fuploads%2f2013%2f04%2frecepcionista.jpg&ehk=n5%2bt7n2v5cN6Gmxz5Dm1jsV%2fNksvbgEWeOAjf2eNwtY%3d&risl=&pid=ImgRaw&r=0"
-                style={{ width: 300, height: 300 }}
-              />
-              <img
-                src="https://hdtvtest.co.uk/static_data/content/GettyImages-142547173-woman-tvs-5983293622fa3a001036d2c4-d7b7a93c-e5eb-4a61-a7f1-741ae9979017.jpg"
-                style={{ width: 300, height: 300 }}
-              />
-            </div>
+          
+         
           </Carousel>
         </div>
 

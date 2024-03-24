@@ -33,11 +33,11 @@ export const Navbar = () => {
         </div>
       </Carousel>
 
-      <nav className="flex justify-around border-y-2 h-[100px] w-[100%]">
-        <div className="logo mt-3">
+      <nav className="flex justify-around border-y-2 h-[110px] w-[100%]">
+        <div className="logo ">
           <Link to="/">
             {" "}
-            <img src="https://drive.google.com/file/d/1T35xPaAWOY4Bq26wtLA8I4CY-UiwW4Yu/view?usp=sharing" className="w-[200px]" />
+            <img src="https://github.com/mattyas2/E-commerce/blob/main/src/assets/logotipo.jpeg?raw=true" className="w-[110px]" />
           </Link>
         </div>
 
@@ -79,7 +79,7 @@ export const Navbar = () => {
               </Link>
             </div>
           )}
-          <div className="mt-6">
+          <div className="mt-7">
             <a className="text-decoration-none text-black">
               <GiShoppingCart FaBeer size={26} className="w-12" />
               ver carrito
