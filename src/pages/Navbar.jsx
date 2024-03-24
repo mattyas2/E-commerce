@@ -37,7 +37,7 @@ export const Navbar = () => {
         <div className="logo mt-3">
           <Link to="/">
             {" "}
-            <img src="../src/icono.png" className="w-[200px]" />
+            <img src="https://drive.google.com/file/d/1T35xPaAWOY4Bq26wtLA8I4CY-UiwW4Yu/view?usp=sharing" className="w-[200px]" />
           </Link>
         </div>
 
