@@ -139,7 +139,7 @@ export const Home = () => {
 
   return (
     <>
-      <div>
+      <div className="bg-teal-50">
         <Navbar />
 
         <div className="carrusel">
@@ -156,7 +156,7 @@ export const Home = () => {
               <div>
               <img src="https://github.com/mattyas2/E-commerce/blob/main/src/assets/BBanner_B2C_ES-_Banner_Home_1921x574.jpg?raw=true" alt="" />
               </div>
-          <div>
+          <div >
           <img src="https://github.com/mattyas2/E-commerce/blob/main/src/assets/Vviajes-ES-_Banner_Home_-_1921x534_.jpg?raw=true" alt="" />
           </div>
 
@@ -173,28 +173,28 @@ export const Home = () => {
 
         <div className="flex justify-between mx-4 mt-5">
           <div className="LINKDEVENTAS flex gap-4 ">
-            <div className="border p-2 w-[200px] flex justify-center hover:bg-sky-400  ">
+            <div className="border p-2 w-[200px] flex justify-center hover:bg-sky-400 bg-purple-50 ">
               <Link className=" text-decoration-none text-black" to="/Accesorios">
                Moda Y Accesorios
               </Link>
             </div>
-            <div className="border p-2 w-[90px] flex justify-center  hover:bg-sky-400 ">
+            <div className="border p-2 w-[90px] flex justify-center  hover:bg-sky-400  bg-purple-50 ">
               <Link className=" text-decoration-none text-black" to="/Hogar">
                 Hogar
               </Link>
             </div>
-            <div className="border p-2 w-[90px] flex justify-center  hover:bg-sky-400 ">
+            <div className="border p-2 w-[90px] flex justify-center  hover:bg-sky-400  bg-purple-50 ">
               <Link className=" text-decoration-none text-black" to="/Deporte">
                 Deporte
               </Link>
             </div>
-            <div className="border p-2 w-[100px] flex justify-center  hover:bg-sky-400 ">
+            <div className="border p-2 w-[100px] flex justify-center  hover:bg-sky-400  bg-purple-50 ">
               <Link className=" text-decoration-none text-black" to="/Electronica">
                 Electronica
               </Link>
             </div>
 
-            <div className="border p-2 w-[90px] flex justify-center  hover:bg-sky-400 ">
+            <div className="border p-2 w-[90px] flex justify-center  hover:bg-sky-400  bg-purple-50 ">
               <Link className=" text-decoration-none text-black" to="/Ropa">
                 Tazas
               </Link>
@@ -326,8 +326,9 @@ export const Home = () => {
             </div>
           </Modal>
         </div>
+<div >
+<Carousel
 
-        <Carousel
           slidesToShow={4}
           cellAlign="start"
           cellSpacing={0}
@@ -340,7 +341,7 @@ export const Home = () => {
         >
           {productos.map((producto) => (
             <div
-              className=" flex flex-col justify-center items-center mx-[10px] mt-5 mb-4 w-[90%] h-[360px] rounded-xl shadow-2xl "
+              className=" flex flex-col justify-center items-center mx-[10px] mt-5 mb-4 w-[90%] h-[360px] rounded-xl shadow-2xl  bg-purple-50 "
               key={producto.id}
             >
               <div className="flex justify-center items-center">
@@ -376,6 +377,8 @@ export const Home = () => {
           ))}
         </Carousel>
 
+</div>
+        
         <div className="text-center flex gap-3">
           <div>
             <img
@@ -383,7 +386,7 @@ export const Home = () => {
               src="https://www.mrwonderful.com/media/wysiwyg/2024/Marzo/Viaje/ES-destacados-viajes-600x600.jpg"
               alt=""
             />
-            <h4 className="text-decoration-underline">
+            <h4 className="text-decoration-underline ">
               <Link href="">ACCESORIOS DE VIAJE</Link>
             </h4>
           </div>
@@ -435,7 +438,7 @@ export const Home = () => {
 
           <div className="h-[500px] mt-10 ">
             <Carousel
-              slidesToShow={3}
+              slidesToShow={4}
               wrapAround
               autoplay={true}
               withoutControls
@@ -445,10 +448,10 @@ export const Home = () => {
                 coleccion.map((producto) => (
                   <Tilt
                     options={defaultOptions2}
-                    style={{ height: 600, width: 450 }}
+                    style={{ height: 600, width: 350 }}
                   >
                     <div
-                      className=" flex flex-col justify-center items-center mx-[40px] mt-5 mb-4 w-[80%] h-[390px] rounded-xl shadow-2xl "
+                      className=" bg-purple-50 flex flex-col justify-center items-center mx-[40px] mt-5 mb-4 w-[80%] h-[390px] rounded-xl shadow-2xl "
                       key={producto.id}
                     >
                       <div className="flex justify-center items-center mt-[-40px]">
@@ -484,16 +487,16 @@ export const Home = () => {
           </div>
         </div>
 
-        <div className="mt-10 bg-teal-300 h-[90vh]">
-          <div className="flex justify-between mx-2 ">
+        <div className="mt-10 bg-teal-100 h-[90vh]">
+          <div className="flex justify-between mx-2  ">
             <div>
               <h1 className="font-bold text-3xl mt-12">PREGUNTAS FRECUENTES</h1>
               <h4>resolvemos tus dudas mas frecuentes</h4>
             </div>
           </div>
 
-          <div className="Preguntas flex justify-evenly w-full mt-10">
-            <div className="w-[30%] bg-slate-50 p-4 rounded-lg h-[350px] shadow-2xl">
+          <div className="Preguntas flex justify-evenly w-full mt-10  ">
+            <div className="w-[30%]  bg-purple-50  p-4 rounded-lg h-[350px] shadow-2xl">
               <h1 className="flex mt-6">
                 <img
                   src="https://www.mrwonderful.com/media/wysiwyg/home-2023/FaqAguacate.png"
@@ -510,7 +513,7 @@ export const Home = () => {
                 viernes en llegar a tu domicilio desde confirmas la compra{" "}
               </p>
             </div>
-            <div className="w-[30%]  bg-slate-50 p-4 rounded-lg">
+            <div className="w-[30%]  bg-purple-50  p-4 rounded-lg">
               <h1 className="flex">
                 <img
                   src=" https://www.mrwonderful.com/media/wysiwyg/home-2023/FaqUnicornio.png"
@@ -532,7 +535,7 @@ export const Home = () => {
                 GRATUITA*{" "}
               </p>
             </div>
-            <div className="w-[30%]  bg-slate-50 p-4 rounded-lg">
+            <div className="w-[30%]  bg-purple-50  p-4 rounded-lg">
               <h1 className="flex">
                 <img
                   src="https://www.mrwonderful.com/media/wysiwyg/home-2023/FaqCorazon.png"

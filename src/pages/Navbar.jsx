@@ -76,10 +76,10 @@ export const Navbar = () => {
   return (
     <>
       <Carousel wrapAround withoutControls slidesToShow={1} autoplay>
-        <div className="bg-teal-300 w-full text-center text-sm">
+        <div className="bg-teal-200 w-full text-center text-sm">
           Imprescindibles para tus vacaciones
         </div>
-        <div className="bg-teal-300 w-full text-sm text-center">
+        <div className="bg-teal-200 w-full text-sm text-center">
           ¡Envíos gratis en pedidos superiores a $100.000!
         </div>
       </Carousel>
@@ -90,7 +90,7 @@ export const Navbar = () => {
             {" "}
             <img
               src="https://github.com/mattyas2/E-commerce/blob/main/src/assets/logotipo.jpeg?raw=true"
-              className="w-[110px]"
+              className="w-[120px]"
             />
           </Link>
         </div>
