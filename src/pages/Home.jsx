@@ -23,7 +23,7 @@ import { getFirestore } from "firebase/firestore";
 import { doc, setDoc, getDocs, collection } from "firebase/firestore";
 import Modal from "react-modal";
 import { Modall } from "react-modal";
-import { Tilt } from "react-tilt";
+import { Tilt } from '@jdion/tilt-react'
 import { IoAddCircle } from "react-icons/io5";
 import { Navbar } from "./Navbar";
 const customStyles = {
@@ -43,6 +43,7 @@ export const Home = () => {
   const [loaded, setLoaded] = useState(false);
   const [data, setData] = useState({});
   const [productos, setProductos] = useState([]);
+  const [iconoSeleccionado, setIconoSeleccionado] = useState(null);
   const db = getFirestore(app);
   const [modalIsOpen, setIsOpen] = useState(false);
   let subtitle;
@@ -103,6 +104,25 @@ export const Home = () => {
     reset: true, // If the tilt effect has to be reset on exit.
     easing: "cubic-bezier(.03,.98,.52,.99)", // Easing on enter/exit.
   };
+  const defaultOptions2 = {
+    reverse: false, // reverse the tilt direction
+    max: 0, // max tilt rotation (degrees)
+    perspective: 50, // Transform perspective, the lower the more extreme the tilt gets.
+    scale: 1.2, // 2 = 200%, 1.5 = 150%, etc..
+    speed: 10, // Speed of the enter/exit transition
+    transition: false, // Set a transition on enter/exit.
+    axis: null, // What axis should be disabled. Can be X or Y.
+    reset: true, // If the tilt effect has to be reset on exit.
+    easing: "cubic-bezier(.05,.98,.52,.99)", // Easing on enter/exit.
+  };
+  const cambiarColor = (icono) => {
+    if (iconoSeleccionado === icono) {
+      setIconoSeleccionado(false);
+    } else {
+      setIconoSeleccionado(icono);
+    }
+  };
+  
   const boton = createContext({
     mixins: [Carousel.ControllerMixin],
     render() {
@@ -153,31 +173,31 @@ export const Home = () => {
 
         <div className="flex justify-between mx-4 mt-5">
           <div className="LINKDEVENTAS flex gap-4 ">
-            <div className="border p-2 w-[90px] flex justify-center hover:bg-sky-400  ">
-              <a className=" text-decoration-none text-black" href="">
-                Accesorios
-              </a>
+            <div className="border p-2 w-[200px] flex justify-center hover:bg-sky-400  ">
+              <Link className=" text-decoration-none text-black" to="/Accesorios">
+               Moda Y Accesorios
+              </Link>
             </div>
             <div className="border p-2 w-[90px] flex justify-center  hover:bg-sky-400 ">
-              <a className=" text-decoration-none text-black" href="">
+              <Link className=" text-decoration-none text-black" to="/Hogar">
                 Hogar
-              </a>
+              </Link>
             </div>
             <div className="border p-2 w-[90px] flex justify-center  hover:bg-sky-400 ">
-              <a className=" text-decoration-none text-black" href="">
+              <Link className=" text-decoration-none text-black" to="/Deporte">
                 Deporte
-              </a>
+              </Link>
             </div>
             <div className="border p-2 w-[100px] flex justify-center  hover:bg-sky-400 ">
-              <a className=" text-decoration-none text-black" href="">
+              <Link className=" text-decoration-none text-black" to="/Electronica">
                 Electronica
-              </a>
+              </Link>
             </div>
 
             <div className="border p-2 w-[90px] flex justify-center  hover:bg-sky-400 ">
-              <a className=" text-decoration-none text-black" href="">
-                Ropa
-              </a>
+              <Link className=" text-decoration-none text-black" to="/Ropa">
+                Tazas
+              </Link>
             </div>
           </div>
 
@@ -308,7 +328,7 @@ export const Home = () => {
         </div>
 
         <Carousel
-          slidesToShow={3}
+          slidesToShow={4}
           cellAlign="start"
           cellSpacing={0}
           dragging={true}
@@ -320,13 +340,13 @@ export const Home = () => {
         >
           {productos.map((producto) => (
             <div
-              className=" flex flex-col justify-center items-center mx-[10px] mt-5 mb-4 w-[80%] h-[360px] rounded-xl shadow-2xl "
+              className=" flex flex-col justify-center items-center mx-[10px] mt-5 mb-4 w-[90%] h-[360px] rounded-xl shadow-2xl "
               key={producto.id}
             >
-              <div className="flex justify-center items-center mt-[-40px]">
+              <div className="flex justify-center items-center">
                 <Tilt
                   options={defaultOptions}
-                  style={{ height: 200, width: 260, marginLeft: 60 }}
+                  style={{ height: 200, width: 200 }}
                 >
                   <img
                     className="w-[200px] h-[200px] "
@@ -335,15 +355,16 @@ export const Home = () => {
                   />
                 </Tilt>
               </div>
-              <div className="mt-1 mb-4">
+              <div className=" mb-4">
                 <h1 className="font-bold text-xl">{producto.name} </h1>
               </div>
               <div className="flex justify-between w-[100%] ">
                 <div className="mx-4 mt-5">${producto.precio}</div>
                 <div className="flex gap-2 mx-4 mt-5">
-                  <Link>
+                  <Link >
                     {" "}
-                    <IoMdHeartEmpty FaBeer size={26} className="" />
+                    <IoMdHeartEmpty FaBeer size={26}  onClick={() => cambiarColor("click")}
+        style={{ color: iconoSeleccionado === "click" ? "red" : "black" }} />
                   </Link>{" "}
                   <Link to="/Car">
                     {" "}
@@ -392,14 +413,14 @@ export const Home = () => {
         <div className="mt-8">
           <div className="flex justify-between">
             <div>
-              <h1 className="font-extrabold text-3xl">
+              <h1 className="font-extrabold text-3xl mx-6">
                 DESCUBRE LOS TOP VENTAS
               </h1>
-              <h4>Descubre Novedades</h4>
+              <h4 className="mx-6">Descubre Novedades</h4>
             </div>
             <div>
               <h4 className="text-decoration-underline">
-                <Link>Ver todos</Link>
+                <Link to="/Todos">Ver todos</Link>
               </h4>
               <p className="flex mx-2 mt-2 gap-2">
                 <button>
@@ -412,9 +433,9 @@ export const Home = () => {
             </div>
           </div>
 
-          <div>
+          <div className="h-[500px] mt-10 ">
             <Carousel
-              slidesToShow={4}
+              slidesToShow={3}
               wrapAround
               autoplay={true}
               withoutControls
@@ -423,11 +444,11 @@ export const Home = () => {
                 coleccion.length > 0 &&
                 coleccion.map((producto) => (
                   <Tilt
-                    options={defaultOptions}
-                    style={{ height: 450, width: 350, marginLeft: 60 }}
+                    options={defaultOptions2}
+                    style={{ height: 600, width: 450 }}
                   >
                     <div
-                      className=" flex flex-col justify-center items-center mx-[10px] mt-5 mb-4 w-[80%] h-[360px] rounded-xl shadow-2xl "
+                      className=" flex flex-col justify-center items-center mx-[40px] mt-5 mb-4 w-[80%] h-[390px] rounded-xl shadow-2xl "
                       key={producto.id}
                     >
                       <div className="flex justify-center items-center mt-[-40px]">
@@ -533,21 +554,36 @@ export const Home = () => {
 
         <div className="h-[20vh] flex justify-center items-center gap-4">
           <div>
+            <Link to="https://www.facebook.com/Ferney03">
             <FaFacebook size={40} />
+            </Link>
+       
           </div>
           <div>
-            <FaInstagramSquare size={40} />
+          <Link to="https://www.instagram.com/mattyasaldana/">
+          <FaInstagramSquare size={40} />
+          </Link>
+          
           </div>
 
           <div>
-            <FaTwitterSquare size={40} />
+          <Link>
+          <FaTwitterSquare size={40} />
+          </Link>
+         
           </div>
 
           <div>
-            <FaFacebookMessenger size={40} />
+          <Link to="https://www.messenger.com/t/1791731265">
+          <FaFacebookMessenger size={40} />
+          </Link>
+           
           </div>
           <div>
-            <FaWhatsappSquare size={40} />
+          <Link to="https://web.whatsapp.com/">
+          <FaWhatsappSquare size={40} />
+          </Link>
+      
           </div>
         </div>
 

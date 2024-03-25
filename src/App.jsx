@@ -12,6 +12,13 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { ResetPassword } from './pages/resetpassword.jsx'
 import { ShopingCar } from './pages/ShopingCar.jsx'
 import { AuthProvider } from "./auth/AuthProvider.jsx";
+import { Accesorios } from "./components/accesorios.jsx";
+import { Deporte } from "./components/Deporte.jsx";
+import { Electronica } from "./components/Electronica.jsx";
+import { Favoritos } from "./components/Favoritos.jsx";
+import {Hogar } from "./components/Hogar.jsx";
+import {Ropa } from "./components/Ropa.jsx";
+import { Todos } from "./components/todos.jsx";
 
 
 
@@ -62,6 +69,15 @@ function App() {
       <Route path="/Login" element={<Login/>} />
       <Route path="/Reset" element={<ResetPassword/>} />
       <Route path="/Car" element={<ShopingCar/>} />
+      <Route path="/Accesorios" element={<Accesorios/>} />
+      <Route path="/Hogar" element={<Hogar/>} />
+      <Route path="/Deporte" element={<Deporte/>} />
+      <Route path="/Electronica" element={<Electronica/>} />
+      <Route path="/Favoritos" element={<Favoritos/>} />
+      <Route path="/Ropa" element={<Ropa/>} />
+      <Route path="/Todos" element={<Todos/>} />
+   
+
 
      </Routes>
      

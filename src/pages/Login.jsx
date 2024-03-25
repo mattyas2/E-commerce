@@ -101,7 +101,8 @@ export const Login = () => {
   return (
     <>
     <Navbar/>
-      <div>
+      <div className="bg-[url(https://th.bing.com/th/id/R.88f09f198d34fa9bc6d646de6bf95498?rik=U%2fJtP2ewwiNptg&pid=ImgRaw&r=0)] bg-cover h-[534px]">
+      
       <div className="relative flex flex-1 flex-col items-center justify-center pb-16 pt-12 text-black ">
           <form onSubmit={funcionAutenticacion}  className="w-full max-w-sm ">
 

@@ -57,9 +57,14 @@ export const Register = () => {
   return (
     <>
     <Navbar usuario={usuario} />
-      <div>
-      <div className="flex justify-center font-bold ">Registrarte</div>
+   
+      <div className="bg-[url(https://image.slidesdocs.com/responsive-images/background/office-business-team-cooperation-data-simple-powerpoint-background_7cb3d2ee4a__960_540.jpg)] bg-cover bg-no-repeat h-[540px] flex  ">
+        <div className="w-[40%] mt-32 ms-28 text-5xl ">
+        <div className="flex justify-center items-center font-bold ">Registrarte</div>
             <div className="flex justify-center font-bold">Es rápido y fácil.</div>
+    </div>
+      
+      <div className="w-[70%] ms-[-300px]">
       <div className="relative flex flex-1 flex-col items-center justify-center  pt-4 text-black ">
           <form onSubmit={registerAccount} className="w-full max-w-sm ">
 
@@ -159,6 +164,9 @@ export const Register = () => {
           </div>
         </footer>
       </div>
+      </div>
+   
+    
     </>
   );
 };
