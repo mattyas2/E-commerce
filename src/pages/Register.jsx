@@ -58,17 +58,19 @@ export const Register = () => {
     <>
     <Navbar usuario={usuario} />
    
-      <div className="bg-[url(https://image.slidesdocs.com/responsive-images/background/office-business-team-cooperation-data-simple-powerpoint-background_7cb3d2ee4a__960_540.jpg)] bg-cover bg-no-repeat h-[540px] flex  ">
-        <div className="w-[40%] mt-32 ms-28 text-5xl ">
-        <div className="flex justify-center items-center font-bold ">Registrarte</div>
+      <div className="bg-[url(https://image.slidesdocs.com/responsive-images/background/office-business-team-cooperation-data-simple-powerpoint-background_7cb3d2ee4a__960_540.jpg)] bg-cover bg-no-repeat h-[540px]  ">
+       <div className="flex justify-center w-full max-sm:flex max-sm:w-full max-sm:justify-center max-sm:flex-col ">
+        
+        <div className="w-[40%] mt-32 ms-28 text-5xl  max-sm:mt-4 max-sm:text-2xl max-sm:ms-0 max-sm:w-[100%] ">
+        <div className="flex justify-center items-center font-bold sm:flex sm:justify-center">Registrarte</div>
             <div className="flex justify-center font-bold">Es rápido y fácil.</div>
     </div>
       
-      <div className="w-[70%] ms-[-300px]">
-      <div className="relative flex flex-1 flex-col items-center justify-center  pt-4 text-black ">
+      <div className="w-[70%] ms-[-300px] max-sm:w-[100%] max-sm:flex max-sm:flex-col max-sm:justify-center max-sm:items-center max-sm:ms-0">
+      <div className="relative flex flex-1 flex-col items-center justify-center  pt-4 text-black max-sm:flex max-sm:justify-center ">
           <form onSubmit={registerAccount} className="w-full max-w-sm ">
 
-          <div className="mb-6">
+          <div className="mb-6 max-sm:mb-3">
               
               <label
                 type="text"
@@ -81,7 +83,7 @@ export const Register = () => {
                 onChange={(e) => setUsuario(e.target.value)}
                 type="text"
                 id="usuario"
-                className="mt-1 appearance-none text-slate-900 bg-white rounded-md block w-full px-2 h-10 shadow-sm sm:text-sm focus:outline-none placeholder:text-slate-400 focus:ring-2 focus:ring-sky-500 ring-1 ring-slate-200"
+                className="mt-1 appearance-none text-slate-900 bg-white rounded-md block w-full px-2 h-10 shadow-sm max-sm:text-sm focus:outline-none placeholder:text-slate-400 focus:ring-2 focus:ring-sky-500 ring-1 ring-slate-200"
                 required="" autoComplete="off"
               />
             </div>
@@ -163,6 +165,7 @@ export const Register = () => {
       
           </div>
         </footer>
+      </div>
       </div>
       </div>
    

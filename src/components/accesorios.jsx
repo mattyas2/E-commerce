@@ -7,6 +7,7 @@ import { GiShoppingCart } from "react-icons/gi";
 import { IoMdHeartEmpty } from "react-icons/io";
 import { useEffect, useState } from "react";
 import { Navbar } from "../pages/Navbar";
+import { useAuth } from "../auth/AuthProvider";
 
 
 
@@ -15,11 +16,14 @@ import { Navbar } from "../pages/Navbar";
 
 
 export const Accesorios = ()=>{
-    const [coleccion, setColeccion] = useState([]);
     const [loaded, setLoaded] = useState(false);
-    const [coleccion1, setColeccion1] = useState([]);
+  
     
-    
+    const {
+      productos, setProductos,
+      total, setTotal,
+    countProducts, setCountProducts,coleccion,setColeccion,newProducto,setNewProducto,newColeccion
+    } = useAuth();
   useEffect(() => {
 
     const coleccions = async ()=>{
@@ -34,7 +38,7 @@ export const Accesorios = ()=>{
              newImpresion.push({ id: doc.id, data: doc.data() });
              console.log(newImpresion)
             })
-            setColeccion(newImpresion);
+            setProductos(newImpresion);
           setLoaded(true);
               
 
@@ -54,7 +58,7 @@ useEffect(() => {
            newImpresion.push({ id: doc.id, data: doc.data() });
            console.log(newImpresion)
           })
-          setColeccion1(newImpresion);
+          setColeccion(newImpresion);
         setLoaded(true);
             
 
@@ -63,7 +67,29 @@ useEffect(() => {
 }, []);
       
         
-    
+const onAddProduct = product => {
+      
+  const productoExistente = newProducto.find(
+    (p) => p.name === product.name
+  );
+
+  if (productoExistente) {
+    const nuevosProductos = newProducto.map((p) =>
+      p.name === product.name ? { ...p, cantidad: p.cantidad + 1 } : p
+    );
+    setNewProducto(nuevosProductos);
+    console.log(nuevosProductos)
+  } else {
+    setNewProducto([...newProducto, ...newColeccion, { ...product, cantidad: 1 }]);
+  }
+
+  setTotal(total + product.precio );
+  setCountProducts(countProducts + 1);
+  setLoaded(true)
+
+
+
+}
 
 
 
@@ -83,17 +109,16 @@ return(
 
     <>
     <Navbar/>
-
-    <div className="text-center font-bold text-2xl">
+<div className="bg-teal-50">  <div className="text-center font-bold text-2xl">
       Moda Y Accesorios
     </div>
     <div className="flex w-[100%] gap-10 flex-col ">
       <div className="w-[30%] flex flex-wrap">
       {loaded &&
-           coleccion.length > 0 &&
-           coleccion.map((producto) => (
+           productos.length > 0 &&
+           productos.map((producto) => (
             <div
-              className=" flex flex-col justify-center items-center mx-[50px] mt-5 mb-4 w-[80%] h-[400px] rounded-xl shadow-2xl "
+              className=" bg-purple-50 flex flex-col justify-center items-center mx-[50px] mt-5 mb-4 w-[80%] h-[400px] rounded-xl shadow-2xl "
               key={producto.id}
             >
               <div className="flex justify-center items-center ">
@@ -118,7 +143,7 @@ return(
                     {" "}
                     <IoMdHeartEmpty FaBeer size={26} className="" />
                   </Link>{" "}
-                  <Link to="/Car">
+                  <Link onClick={()=>{onAddProduct({name:producto.data.name, precio:producto.data.precio})}}>
                     {" "}
                     <GiShoppingCart FaBeer size={26} className="" />
                   </Link>
@@ -131,10 +156,10 @@ return(
 <div className="w-[30%] flex ">
 
 {loaded &&
-           coleccion1.length > 0 &&
-           coleccion1.map((producto) => (
+          coleccion.length > 0 &&
+           coleccion.map((producto) => (
             <div
-              className=" flex flex-col justify-center items-center mx-[10px] mt-5 mb-10  w-[80%] h-[400px] rounded-xl shadow-2xl  "
+              className="bg-purple-50  flex flex-col justify-center items-center mx-[10px] mt-5 mb-10  w-[80%] h-[400px] rounded-xl shadow-2xl  "
               key={producto.id}
             >
               <div className="flex justify-center items-center">
@@ -159,7 +184,7 @@ return(
                     {" "}
                     <IoMdHeartEmpty FaBeer size={26} className="" />
                   </Link>{" "}
-                  <Link to="/Car">
+                  <Link onClick={()=>{onAddProduct({name:producto.data.name, precio:producto.data.Precio})}}>
                     {" "}
                     <GiShoppingCart FaBeer size={26} className="" />
                   </Link>
@@ -168,7 +193,8 @@ return(
             </div>
           ))}
 </div>
-    </div>
+    </div></div>
+  
            
     </>
 )

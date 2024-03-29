@@ -68,7 +68,7 @@ Favoritos
            coleccion.length > 0 &&
            coleccion.map((producto) => (
             <div
-              className=" flex flex-col justify-center items-center mx-[10px] mt-5 mb-4 w-[80%] h-[360px] rounded-xl shadow-2xl "
+              className=" bg-purple-50 flex flex-col justify-center items-center mx-[10px] mt-5 mb-4 w-[80%] h-[360px] rounded-xl shadow-2xl "
               key={producto.id}
             >
               <div className="flex justify-center items-center mt-[-40px]">

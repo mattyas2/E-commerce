@@ -11,20 +11,26 @@ import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthProvider";
 import { getDocs, getFirestore, or } from "firebase/firestore";
 import { collection, query, where } from "firebase/firestore";
+import { Modal } from "bootstrap";
 
 // const auth = getAuth(app);
 
-export const Navbar = () => {
+export const Navbar = (
+) => {
   const [results, setResults] = useState([]);
   const [input, setInput] = useState("");
+  const [active, setActive] = useState(true);
+ 
+
   const db = getFirestore(app);
 
   const {
     isAuthenticated,
     setIsAuthenticated,
     endSession,
-    getSession,
-    isLogin,
+    productos, setProductos,
+    total, setTotal,
+  countProducts, setCountProducts, coleccion, setColeccion,setNewProducto,newProducto,newColeccion,setNewColeccion
   } = useAuth();
 
   const EndSession = () => {
@@ -34,44 +40,35 @@ export const Navbar = () => {
 
   useEffect(() => {}, [isAuthenticated]);
 
+  const Search = async () => {
+    const q = query(collection(db, "Coleccion"), where("name", "==", input));
+    // const q1 = query(
+    //   collection(db, "productos"),
+    //   where("name", "==", input)
+    // );
+
+    const newImpresion = [];
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      newImpresion.push(doc.id, " => ", doc.data());
+      // doc.data() is never undefined for query doc snapshots
+      console.log(doc.id, " => ", doc.data());
+    });
+    setResults(newImpresion);
+  };
+
+  const onDeleteProduct = product => {
+		setTotal(total - product.precio - product.precio);
+		setCountProducts(countProducts - 1);
   
-    const Search = async () => {
-      const q = query(
-        collection(db, "Coleccion"),
-        where("name", "==", input)
-      );
-      // const q1 = query(
-      //   collection(db, "productos"),
-      //   where("name", "==", input)
-      // );
+		
+	};
 
-      const newImpresion = [];
-      const querySnapshot = await getDocs(q);
-      querySnapshot.forEach((doc) => {
-        newImpresion.push(doc.id, " => ", doc.data());
-        // doc.data() is never undefined for query doc snapshots
-        console.log(doc.id, " => ", doc.data());
-      });
-      setResults(newImpresion);
-    };
-  
-   
- 
-  // useEffect(() => {
-  //   const  handleSearch = async () => {
-
-  //     const db = getFirestore(app);
-  //     const q = query(collection(db, "productos") where("name", "==", query));
-  //     const docRefs = await getDocs(q);
-  //     const res = [];
-  //     docRefs.forEach((doc) => {
-  //       res.push({ id: doc.id, ...doc.data() });
-  //     });
-  //     setResults(res);
-  //   };
-
-  //   handleSearch()
-  // }, [query]);
+	const onCleanCart = () => {
+		setNewProducto([]);
+		setTotal(0);
+		setCountProducts(0);
+	};
 
   return (
     <>
@@ -84,71 +81,173 @@ export const Navbar = () => {
         </div>
       </Carousel>
 
-      <nav className="flex justify-around border-y-2 h-[110px] w-[100%] bg-cover bg-[url(https://th.bing.com/th/id/R.284b2edc83453b61c140a43ed4a70f03?rik=Fiu15H6h5z%2bRjw&riu=http%3a%2f%2fwww.openailab.com%2fuploads%2fimg%2f20200814%2f5f36395bebc4e.jpg&ehk=gFvyMGkOMdwj0aQ1KCxWxDd9TBXGtxRSNbqFIiROVWQ%3d&risl=&pid=ImgRaw&r=0)] ">
-        <div className="logo ">
-          <Link to="/">
-            {" "}
-            <img
-              src="https://github.com/mattyas2/E-commerce/blob/main/src/assets/logotipo.jpeg?raw=true"
-              className="w-[120px]"
-            />
-          </Link>
-        </div>
-
-        <div className="buscar mt-10 text-xs flex">
-          <div>
-            <input
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              type="text"
-              className="w-[20rem] h-8 border p-2 shadow-xl  "
-              placeholder="Buscar...."
-            />
-            <ul className="relative z-50">
-              {results.map((result) => (
-                <li key={result.id}>{result.name}</li>
-              ))}
-            </ul>
-          </div>{" "}
-          <button onClick={Search}  className="text-black">
-            <VscSearch
-              style={{
-                marginTop: -26,
-                position: "relative",
-                fontSize: "20px",
-                marginLeft: -30,
-                marginBottom: 0,
-              }}
-            />
-          </button>
-        </div>
-
-        <div className="iconos flex justify-around w-[15%]  text-[12px]">
-          {isAuthenticated ? (
-            <div className="mt-4">
-              <button
-                onClick={EndSession}
-                className="text-black text-decoration-none mt-0"
-              >
-                {" "}
-                <IoPersonCircle FaBeer size={26} className="w-16" />
-                <h1> Cerrar Sesion</h1>
-              </button>
-            </div>
-          ) : (
-            <div className="flex flex-col justify-center">
-              <Link  className="text-black text-decoration-none" to="/Login">
-                {" "}
-                <IoPersonCircle FaBeer size={26} className="w-16" /> iniciar
-                sesion{" "}
-              </Link>
-            </div>
-          )}
-          <div className="mt-7">
-            <Link className="text-decoration-none text-black " to="/Car">
-              <GiShoppingCart FaBeer size={26} className="w-12" />
-              ver carrito
+      <nav className=" bg-cover bg-[url(https://th.bing.com/th/id/R.284b2edc83453b61c140a43ed4a70f03?rik=Fiu15H6h5z%2bRjw&riu=http%3a%2f%2fwww.openailab.com%2fuploads%2fimg%2f20200814%2f5f36395bebc4e.jpg&ehk=gFvyMGkOMdwj0aQ1KCxWxDd9TBXGtxRSNbqFIiROVWQ%3d&risl=&pid=ImgRaw&r=0)] ">
+        <div className="max-sm:flex max-sm:w-full max-sm:justify-between max-sm:gap-2 max-sm:h-[60px] max-sm:mx-2   md:flex md:justify-around border-y-2 h-[110px] md:w-full">
+          <div className="logo ">
+            <Link to="/">
+              {" "}
+              <img
+                src="https://github.com/mattyas2/E-commerce/blob/main/src/assets/logotipo.jpeg?raw=true"
+                className="w-[120px] max-sm:w-[70px] "
+              />
             </Link>
+          </div>
+
+          <div className="buscar mt-10 text-xs flex max-sm: max-sm:flex max-sm:ms-4  max-sm:mt-5 max-sm:justify-end">
+            <div className="max-sm:flex max-sm:justify-center">
+              <input
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                type="text"
+                className="md:w-[20rem] md:h-8 md:border md:p-2 md:shadow-xl max-sm:w-[10rem] max-sm:shadow-2xl max-sm:h-6  "
+                placeholder="Buscar...."
+              />
+              <ul className="relative z-50">
+                {results.map((result) => (
+                  <li key={result.id}>{result.name}</li>
+                ))}
+              </ul>
+            </div>{" "}
+            <button
+              onClick={Search}
+              className="text-black max-sm:mt-4 max-sm:ms-2"
+            >
+              <VscSearch
+                style={{
+                  marginTop: -26,
+                  position: "relative",
+                  fontSize: "20px",
+                  marginLeft: -30,
+                  marginBottom: 0,
+                }}
+              />
+            </button>
+          </div>
+
+          <div className="iconos flex justify-around w-[15%] max-sm:flex  max-sm:w-[20%] max-sm:justify-end max-sm:gap-2 max-sm:mx-4 text-[12px]">
+            {isAuthenticated ? (
+              <div className="mt-4 max-sm:mt-4">
+                <button
+                  onClick={EndSession}
+                  className="text-black text-decoration-none mt-0"
+                >
+                  {" "}
+                  <IoPersonCircle FaBeer size={26} className="w-16" />
+                  <h1> Cerrar Sesion</h1>
+                </button>
+              </div>
+            ) : (
+              <div className="flex flex-col justify-center max-sm:flex max-sm:justify-center max-sm:items-center ">
+                <Link className="text-black text-decoration-none" to="/Login">
+                  {" "}
+                  <IoPersonCircle FaBeer size={38} className="w-16" />{" "}
+                  <span className="max-sm:hidden">iniciar sesion </span>
+                </Link>
+              </div>
+            )}
+            <div className=" mt-7 max-sm:mt-[14px] max-sm:ms-[-33px]">
+            
+              <div
+                className="text-decoration-none text-black pointer-event " 	onClick={() => setActive(!active)}>
+           
+                <GiShoppingCart FaBeer size={38}  className="w-12 icon-cart" />
+              
+              </div>
+              <span className="max-sm:hidden ">ver carrito</span>
+                <div className="count-products">
+						<span id="contador-productos">{countProducts}</span>
+					</div>
+            
+				<div
+					className= {!active ? " " : "hidden-cart"} id="container-cart-products"
+         
+				>
+					{newColeccion && newProducto.length > 0 ? (
+						<>
+							<div className='row-product'>
+								{ newProducto.map(product => (
+									<div className='cart-product' key={product.id}>
+										<div className='info-cart-product'>
+											<span className='cantidad-producto-carrito'>
+												{product.cantidad}
+                        
+											</span>
+											<p className='titulo-producto-carrito'>
+												{product.name}
+											</p>
+											<span className='precio-producto-carrito'>
+												${product.precio} 
+											</span>
+										</div>
+										<svg
+											xmlns='http://www.w3.org/2000/svg'
+											fill='none'
+											viewBox='0 0 24 24'
+											strokeWidth='1.5'
+											stroke='currentColor'
+											className='icon-close'
+											onClick={() => onDeleteProduct({name:product.name, precio:productos.precio})}
+										>
+											<path
+												strokeLinecap='round'
+												strokeLinejoin='round'
+												d='M6 18L18 6M6 6l12 12'
+											/>
+										</svg>
+									</div>
+								))}
+							</div>
+              <div className='row-product'>
+								{ newColeccion.map(product => (
+									<div className='cart-product' key={product.id}>
+										<div className='info-cart-product'>
+											<span className='cantidad-producto-carrito'>
+												{product.data.cantidad}
+											</span>
+											<p className='titulo-producto-carrito'>
+												{product.data.name}
+											</p>
+											<span className='precio-producto-carrito'>
+												${product.data.Precio} 
+											</span>
+										</div>
+										<svg
+											xmlns='http://www.w3.org/2000/svg'
+											fill='none'
+											viewBox='0 0 24 24'
+											strokeWidth='1.5'
+											stroke='currentColor'
+											className='icon-close'
+											onClick={() => onDeleteProduct({product})}
+										>
+											<path
+												strokeLinecap='round'
+												strokeLinejoin='round'
+												d='M6 18L18 6M6 6l12 12'
+											/>
+										</svg>
+									</div>
+								))}
+							</div>
+              
+              
+
+							<div className='cart-total'>
+								<h3>Total:</h3>
+								<span className='total-pagar'>${total}</span>
+							</div>
+
+							<button className='btn-clear-all' onClick={onCleanCart}>
+								Vaciar Carrito
+							</button>
+						</>
+					) : (
+						<p className="text-center">El carrito está vacío</p>
+					)}
+				</div>
+
+            
+            </div>
           </div>
         </div>
       </nav>

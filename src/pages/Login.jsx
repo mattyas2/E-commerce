@@ -102,7 +102,10 @@ export const Login = () => {
     <>
     <Navbar/>
       <div className="bg-[url(https://th.bing.com/th/id/R.88f09f198d34fa9bc6d646de6bf95498?rik=U%2fJtP2ewwiNptg&pid=ImgRaw&r=0)] bg-cover h-[534px]">
+      <div className="max-sm:flex max-sm:flex-col max-sm:justify-center max-sm:items-center">
+
       
+
       <div className="relative flex flex-1 flex-col items-center justify-center pb-16 pt-12 text-black ">
           <form onSubmit={funcionAutenticacion}  className="w-full max-w-sm ">
 
@@ -135,7 +138,7 @@ export const Login = () => {
               onChange={(e) => setPassword(e.target.value)}
                 type="password"
                 id="password"
-                className="mt-2 appearance-none text-slate-900 bg-white rounded-md block w-full px-3 h-9 shadow-sm sm:text-sm focus:outline-none placeholder:text-slate-400 focus:ring-2 focus:ring-sky-500 ring-1 ring-slate-200"
+                className="mt-2 appearance-none text-slate-900 bg-white rounded-md block w-full max-sm:w-full px-3 h-9 shadow-sm max-sm:text-sm focus:outline-none placeholder:text-slate-400 focus:ring-2 focus:ring-sky-500 ring-1 ring-slate-200"
                 required=""
               />
             </div>
@@ -170,6 +173,7 @@ export const Login = () => {
          
           </div>
         </footer>
+      </div>
       </div>
     </>
   );

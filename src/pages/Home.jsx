@@ -26,6 +26,7 @@ import { Modall } from "react-modal";
 import { Tilt } from '@jdion/tilt-react'
 import { IoAddCircle } from "react-icons/io5";
 import { Navbar } from "./Navbar";
+import { useAuth } from "../auth/AuthProvider";
 const customStyles = {
   content: {
     top: "40%",
@@ -39,14 +40,19 @@ const customStyles = {
 };
 
 export const Home = () => {
-  const [coleccion, setColeccion] = useState([]);
+
   const [loaded, setLoaded] = useState(false);
   const [data, setData] = useState({});
-  const [productos, setProductos] = useState([]);
   const [iconoSeleccionado, setIconoSeleccionado] = useState(null);
   const db = getFirestore(app);
   const [modalIsOpen, setIsOpen] = useState(false);
   let subtitle;
+  const {
+    productos, setProductos,
+    total, setTotal,
+  countProducts, setCountProducts,coleccion,setColeccion,newProducto,setNewProducto,setNewColeccion,newColeccion
+  } = useAuth();
+
 
   useEffect(() => {
     const obtenerProductos = async () => {
@@ -137,10 +143,35 @@ export const Home = () => {
     },
   });
 
+
+ 
+
+    const onAddProduct = product => {
+      
+      const productoExistente = newProducto.find(
+        (p) => p.name === product.name
+      );
+  
+      if (productoExistente) {
+        const nuevosProductos = newProducto.map((p) =>
+          p.name === product.name ? { ...p, cantidad: p.cantidad + 1 } : p
+        );
+        setNewProducto(nuevosProductos);
+      } else {
+        setNewProducto([...newProducto, ...newColeccion, { ...product, cantidad: 1 }]);
+      }
+  
+      setTotal(total + product.precio );
+      setCountProducts(countProducts + 1);
+    
+   
+    
+    }
+  
   return (
     <>
-      <div className="bg-teal-50">
-        <Navbar />
+      <div className="bg-teal-50  ">
+        <Navbar/>
 
         <div className="carrusel">
           <Carousel
@@ -171,7 +202,7 @@ export const Home = () => {
           </h1>
         </div>
 
-        <div className="flex justify-between mx-4 mt-5">
+        <div className="flex justify-between mx-4 mt-5   max-sm:w-72">
           <div className="LINKDEVENTAS flex gap-4 ">
             <div className="border p-2 w-[200px] flex justify-center hover:bg-sky-400 bg-purple-50 ">
               <Link className=" text-decoration-none text-black" to="/Accesorios">
@@ -367,10 +398,14 @@ export const Home = () => {
                     <IoMdHeartEmpty FaBeer size={26}  onClick={() => cambiarColor("click")}
         style={{ color: iconoSeleccionado === "click" ? "red" : "black" }} />
                   </Link>{" "}
-                  <Link to="/Car">
-                    {" "}
+                  <Link>
+                    {" "} <span onClick={()=>{onAddProduct(producto)}}>
                     <GiShoppingCart FaBeer size={26} className="" />
+                    </span>
+            
+          
                   </Link>
+                
                 </div>
               </div>
             </div>
@@ -451,7 +486,7 @@ export const Home = () => {
                     style={{ height: 600, width: 350 }}
                   >
                     <div
-                      className=" bg-purple-50 flex flex-col justify-center items-center mx-[40px] mt-5 mb-4 w-[80%] h-[390px] rounded-xl shadow-2xl "
+                      className=" bg-purple-50 flex flex-col justify-center items-center mx-[15px] mt-5 mb-4 w-[80%] h-[390px] rounded-xl shadow-2xl "
                       key={producto.id}
                     >
                       <div className="flex justify-center items-center mt-[-40px]">
@@ -474,7 +509,7 @@ export const Home = () => {
                             {" "}
                             <IoMdHeartEmpty FaBeer size={26} className="" />
                           </Link>{" "}
-                          <Link to="/Car">
+                          <Link onClick={()=>{onAddProduct({name:producto.data.name, precio:producto.data.Precio})}}>
                             {" "}
                             <GiShoppingCart FaBeer size={26} className="" />
                           </Link>
@@ -590,7 +625,7 @@ export const Home = () => {
           </div>
         </div>
 
-        <div className="bg-slate-400 flex justify-around h-[25vh] items-center text-sm gap-6">
+        <div className="bg-teal-200 flex justify-around h-[25vh] items-center text-sm gap-6">
           <div className="flex w-[25%] gap-2 ">
             <div>
               <img

@@ -1,99 +1,153 @@
-import { collection, doc, getDoc, getFirestore, setDoc, getDocs } from "firebase/firestore";
-import { useEffect, useState } from "react";
+/* eslint-disable no-mixed-spaces-and-tabs */
+import { useState } from "react";
+import { useAuth } from "../auth/AuthProvider";
 
+export const ShopingCar =()=>{
+  const [active, setActive] = useState(false);
 
-export const ShopingCar = () => {
-  const [productos, setProductos] = useState([]);
-  const [favoritos, setFavoritos] = useState([]);
-  const [carrito, setCarrito] = useState([]);
-  const db = getFirestore();
+  const {
+    productos, setProductos,
+    total, setTotal,
+  countProducts, setCountProducts,
+  } = useAuth();
 
-  
-  useEffect(() => {
-    const obtenerProductos = async () => {
-      const querySnapshot = await getDocs(collection(db, "Coleccion"));
-      const productosData = querySnapshot.docs.map((doc) => doc.data());
-      setProductos(productosData);
-    };
+  const onAddProduct = product => {
+		if (productos.find(item => item.id !== product.id)) {
+			const products = productos.map(item =>
+				item.id === product.id
+					? { ...item}
+					: item
+			);
+			setTotal(total + product.precio * product.cantidad);
+			setCountProducts(countProducts +  1);
+			return setProductos([...products]);
+		}
 
-    obtenerProductos();
-  }, [db]);
-  const agregarAlCarrito = async (producto) => {
-    const db = getFirestore();
-    const carritoRef = doc(db, "carritos", "miCarrito");
-    const carritoDoc = await getDoc(carritoRef);
+		setTotal(total + product.precio * product.cantidad);
+		setCountProducts(countProducts + 1);
+		setProductos([...productos, product]);
+	};
+  const onDeleteProduct = product => {
+		const results = productos.filter(
+			item => item.id !== product.id
+		);
 
-    if (carritoDoc.exists()) {
-      // Si el carrito ya existe, actualizar los productos en el carrito
-      const carritoData = carritoDoc.data();
-      const nuevosProductos = [...carritoData.productos, producto];
-      await setDoc(carritoRef, { productos: nuevosProductos });
-      setCarrito(nuevosProductos);
-    } else {
-      // Si el carrito no existe, crear uno nuevo con el producto
-      await setDoc(carritoRef, { productos: [producto] });
-      setCarrito([producto]);
-    }
- 
-  };   agregarAlCarrito()
+		setTotal(total - product.precio * product.cantidad);
+		setCountProducts(countProducts - 1);
+		setProductos(results);
+	};
 
-  const agregarAFavoritos = async (producto) => {
-    const db = getFirestore();
-    const favoritosRef = doc(db, "usuarios", "miUsuario", "favoritos");
-    const favoritosDoc = await getDoc(favoritosRef);
+	const onCleanCart = () => {
+		setProductos([]);
+		setTotal(0);
+		setCountProducts(0);
+	};
 
-    if (favoritosDoc.exists()) {
-      // Si la lista de favoritos ya existe, actualizar los productos en la lista
-      const favoritosData = favoritosDoc.data();
-      const nuevosFavoritos = [...favoritosData.productos, producto];
-      await setDoc(favoritosRef, { productos: nuevosFavoritos });
-      setFavoritos(nuevosFavoritos);
-    } else {
-      // Si la lista de favoritos no existe, crear una nueva con el producto
-      await setDoc(favoritosRef, { productos: [producto] });
-      setFavoritos([producto]);
-    }
-  };
-
-  return (
-    <div>
-      <h1>Carrito de Compras</h1>
-      <h2>Productos Disponibles</h2>
-      <ul>
-        {productos.map((producto) => (
-          <li key={producto.id}>
-            <div>
-               <img className="w-[100px]" src={producto.imagen}  alt="" />
-            </div>
+  return(
+    <>
      
-            {producto.name} - {producto.precio}
-            <button
-              onClick={() => agregarAFavoritos(producto)}
-              style={{ color: favoritos.includes(producto) ? "red" : "black" }}
-            >
-              Me gusta
-            </button>
-          </li>
-        ))}
-      </ul>
-      <h2>Favoritos</h2>
-      <ul>
-        {favoritos.map((producto) => (
-          <li key={producto.id}>
-            {producto.name} - {producto.precio}
-          </li>
-        ))}
-      </ul>
-      
+              <div>
 
-      <h2>Carrito</h2>
-      <ul>
-        {carrito.map((producto) => (
-          <li key={producto.id}>
-            {producto.name} - {producto.precio}
-          </li>
-        ))}
-      </ul>
-      </div>
-  );
-};
+           
+    
+    <h1>Tienda</h1>
+
+			<div className='container-icon'>
+				<div
+					className='container-cart-icon flex justify-between'
+					onClick={() => setActive(!active)}
+				>
+					<svg
+						xmlns='http://www.w3.org/2000/svg'
+						fill='none'
+						viewBox='0 0 24 24'
+						strokeWidth='1.5'
+						stroke='currentColor'
+						className='icon-cart'
+					>
+						<path
+							strokeLinecap='round'
+							strokeLinejoin='round'
+							d='M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z'
+						/>
+					</svg>
+					<div className='count-products'>
+						<span id='contador-productos'>{countProducts}</span>
+					</div>
+				</div>
+
+				<div
+					className={`container-cart-products ${
+						active ? '' : 'hidden-cart'
+					}`}
+				>
+					{productos.length ? (
+						<>
+							<div className='row-product'>
+								{productos.map(product => (
+									<div className='cart-product' key={product.id}>
+										<div className='info-cart-product'>
+											<span className='cantidad-producto-carrito'>
+												{product.cantidad}
+											</span>
+											<p className='titulo-producto-carrito'>
+												{product.name}
+											</p>
+											<span className='precio-producto-carrito'>
+												${product.precio}
+											</span>
+										</div>
+										<svg
+											xmlns='http://www.w3.org/2000/svg'
+											fill='none'
+											viewBox='0 0 24 24'
+											strokeWidth='1.5'
+											stroke='currentColor'
+											className='icon-close'
+											onClick={() => onDeleteProduct({product})}
+										>
+											<path
+												strokeLinecap='round'
+												strokeLinejoin='round'
+												d='M6 18L18 6M6 6l12 12'
+											/>
+										</svg>
+									</div>
+								))}
+							</div>
+
+							<div className='cart-total'>
+								<h3>Total:</h3>
+								<span className='total-pagar'>${total}</span>
+							</div>
+
+							<button className='btn-clear-all' onClick={onCleanCart}>
+								Vaciar Carrito
+							</button>
+						</>
+					) : (
+						<p className='cart-empty '>El carrito está vacío</p>
+					)}
+				</div>
+			</div>
+		
+    	<div className='container-items'>
+			{productos.map(product => (
+				<div className='item' key={product.id}>
+						<img  src={product.imagen} alt={product.name} />
+					<div className='info-product'>
+						<h2>{product.name}</h2>
+						<p className='price'>${product.precio}</p>
+						<button onClick={() => onAddProduct(product)}>
+							Añadir al carrito
+						</button>
+					</div>
+				</div>
+			))}
+		</div>
+    </div>
+    </>
+  )
+}
+
+ 
