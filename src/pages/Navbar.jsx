@@ -9,7 +9,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { app } from "../assets/config/firebase";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthProvider";
-import { getDocs, getFirestore, or } from "firebase/firestore";
+import { deleteDoc, doc, getDoc, getDocs, getFirestore, or } from "firebase/firestore";
 import { collection, query, where } from "firebase/firestore";
 import { Modal } from "bootstrap";
 
@@ -30,7 +30,7 @@ export const Navbar = (
     endSession,
     productos, setProductos,
     total, setTotal,
-  countProducts, setCountProducts, coleccion, setColeccion,setNewProducto,newProducto,newColeccion,setNewColeccion
+  countProducts, setCountProducts, coleccion, setColeccion,setNewProducto,newProducto,newColeccion,setNewColeccion,carrito,setCarrito
   } = useAuth();
 
   const EndSession = () => {
@@ -57,15 +57,23 @@ export const Navbar = (
     setResults(newImpresion);
   };
 
-  const onDeleteProduct = product => {
-		setTotal(total - product.precio - product.precio);
-		setCountProducts(countProducts - 1);
+  const onDeleteProduct = async (productId) => {
+    const productoEliminado = carrito.find((item) => item.id === productId);
+    const nuevoCarrito = carrito.filter((producto) => producto.id !== productId);
+    setCarrito(nuevoCarrito);
+    setTotal(total - (productoEliminado.data.precio * productoEliminado.cantidad));
+    setCountProducts(countProducts - productoEliminado.cantidad);
+    }
+   
+  
+  
+	
   
 		
-	};
+	
 
 	const onCleanCart = () => {
-		setNewProducto([]);
+		setCarrito([]);
 		setTotal(0);
 		setCountProducts(0);
 	};
@@ -99,7 +107,7 @@ export const Navbar = (
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 type="text"
-                className="md:w-[20rem] md:h-8 md:border md:p-2 md:shadow-xl max-sm:w-[10rem] max-sm:shadow-2xl max-sm:h-6  "
+                className="md:w-[20rem] md:h-8 md:border border-teal-300  drop-shadow-2xl  md:p-2 md:shadow-2xl max-sm:w-[8rem] max-sm:shadow-2xl max-sm:h-6  "
                 placeholder="Buscar...."
               />
               <ul className="relative z-50">
@@ -145,7 +153,7 @@ export const Navbar = (
                 </Link>
               </div>
             )}
-            <div className=" mt-7 max-sm:mt-[14px] max-sm:ms-[-33px]">
+            <div className=" mt-7 max-sm:mt-[10px] max-sm:ms-[-20px]">
             
               <div
                 className="text-decoration-none text-black pointer-event " 	onClick={() => setActive(!active)}>
@@ -154,18 +162,16 @@ export const Navbar = (
               
               </div>
               <span className="max-sm:hidden ">ver carrito</span>
-                <div className="count-products">
-						<span id="contador-productos">{countProducts}</span>
+                <div className="count-products max-sm:ms-[20px] max-sm:mt-[-25px] max-sm:w-5 max-sm:h-5">
+						<span className="" id="contador-productos">{countProducts}</span>
 					</div>
             
 				<div
-					className= {!active ? " " : "hidden-cart"} id="container-cart-products"
-         
-				>
-					{newColeccion && newProducto.length > 0 ? (
+					className= {!active ? " " : "hidden-cart"} id="container-cart-products">
+					{carrito.length > 0 ? (
 						<>
 							<div className='row-product'>
-								{ newProducto.map(product => (
+								{ carrito.map(product => (
 									<div className='cart-product' key={product.id}>
 										<div className='info-cart-product'>
 											<span className='cantidad-producto-carrito'>
@@ -173,42 +179,10 @@ export const Navbar = (
                         
 											</span>
 											<p className='titulo-producto-carrito'>
-												{product.name}
-											</p>
-											<span className='precio-producto-carrito'>
-												${product.precio} 
-											</span>
-										</div>
-										<svg
-											xmlns='http://www.w3.org/2000/svg'
-											fill='none'
-											viewBox='0 0 24 24'
-											strokeWidth='1.5'
-											stroke='currentColor'
-											className='icon-close'
-											onClick={() => onDeleteProduct({name:product.name, precio:productos.precio})}
-										>
-											<path
-												strokeLinecap='round'
-												strokeLinejoin='round'
-												d='M6 18L18 6M6 6l12 12'
-											/>
-										</svg>
-									</div>
-								))}
-							</div>
-              <div className='row-product'>
-								{ newColeccion.map(product => (
-									<div className='cart-product' key={product.id}>
-										<div className='info-cart-product'>
-											<span className='cantidad-producto-carrito'>
-												{product.data.cantidad}
-											</span>
-											<p className='titulo-producto-carrito'>
 												{product.data.name}
 											</p>
 											<span className='precio-producto-carrito'>
-												${product.data.Precio} 
+												${product.data.precio} 
 											</span>
 										</div>
 										<svg
@@ -218,7 +192,7 @@ export const Navbar = (
 											strokeWidth='1.5'
 											stroke='currentColor'
 											className='icon-close'
-											onClick={() => onDeleteProduct({product})}
+											onClick={() => onDeleteProduct(product.id)}
 										>
 											<path
 												strokeLinecap='round'
@@ -229,20 +203,51 @@ export const Navbar = (
 									</div>
 								))}
 							</div>
-              
-              
-
+            
 							<div className='cart-total'>
 								<h3>Total:</h3>
 								<span className='total-pagar'>${total}</span>
 							</div>
-
-							<button className='btn-clear-all' onClick={onCleanCart}>
+  <div className="flex">
+  <button className='btn-clear-all rounded-2xl' onClick={onCleanCart}>
 								Vaciar Carrito
 							</button>
+              
+              <button className='btn-clear-all rounded-2xl ' >
+                <Link to="https://buy.stripe.com/test_4gwcOJ37h47Y7ZK288">		Comprar</Link>
+					
+							</button>
+           
+  </div>
+           
+             
+
+						
 						</>
 					) : (
-						<p className="text-center">El carrito está vacío</p>
+            
+						<div className=" flex justify-between p-4 items-center  bg-purple-50 rounded-lg">
+        <p className="text-2xl">Tu cesta está vacía</p>
+   <div>
+   <svg
+											xmlns='http://www.w3.org/2000/svg'
+											fill='none'
+											viewBox='0 0 24 24'
+											strokeWidth='1.5'
+											stroke='currentColor'
+											className='icon-close'
+										>
+											<path
+												strokeLinecap='round'
+												strokeLinejoin='round'
+												d='M6 18L18 6M6 6l12 12'
+											/>
+										</svg>
+     
+
+
+    </div>
+            </div>
 					)}
 				</div>
 

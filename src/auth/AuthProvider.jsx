@@ -21,9 +21,12 @@ export function AuthProvider({children}){
     const [coleccion, setColeccion] = useState([]);
     const [newProducto, setNewProducto] = useState([]);
     const [newColeccion, setNewColeccion] = useState([]);
-    
+    const [favorito, setFavorito] = useState([]);
+    const [isLiked, setIsLiked] = useState(false);
+    const [email, setEmail] = useState("");
+    const [carrito, setCarrito] = useState([]);
 
-    return <AuthContext.Provider value={{isAuthenticated, setIsAuthenticated, startSession, endSession, getSession,isLogin, productos,setProductos,total,setTotal,countProducts,setCountProducts, coleccion, setColeccion, newProducto, setNewProducto,setNewColeccion,newColeccion}}>{children}</AuthContext.Provider>
+    return <AuthContext.Provider value={{isAuthenticated, setIsAuthenticated, startSession, endSession, getSession,isLogin, productos,setProductos,total,setTotal,countProducts,setCountProducts, coleccion, setColeccion, newProducto, setNewProducto,setNewColeccion,favorito,setFavorito,newColeccion,isLiked,setIsLiked,email,setEmail,carrito,setCarrito}}>{children}</AuthContext.Provider>
 
 } 
 

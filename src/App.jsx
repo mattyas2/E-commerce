@@ -19,6 +19,9 @@ import { Favoritos } from "./components/Favoritos.jsx";
 import {Hogar } from "./components/Hogar.jsx";
 import {Ropa } from "./components/Ropa.jsx";
 import { Todos } from "./components/todos.jsx";
+import { AccesoriosDeViajes } from "./components/Accesoriosdeviaje.jsx";
+import { Novedades } from "./components/Novedades.jsx";
+
 
 
 
@@ -76,6 +79,9 @@ function App() {
       <Route path="/Favoritos" element={<Favoritos/>} />
       <Route path="/Ropa" element={<Ropa/>} />
       <Route path="/Todos" element={<Todos/>} />
+      <Route path="/Viajes" element={<AccesoriosDeViajes/>} />
+      <Route path="/Novedades" element={<Novedades/>} />
+    
    
 
 

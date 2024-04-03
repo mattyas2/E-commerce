@@ -2,7 +2,8 @@
 /* eslint-disable react/jsx-key */
 /* eslint-disable react/no-unknown-property */
 /* eslint-disable no-unused-vars */
-import react, { createContext } from "react";
+import "firebase/firestore";
+import react, { createContext, useRef } from "react";
 import { GiShoppingCart } from "react-icons/gi";
 import { IoPersonCircle } from "react-icons/io5";
 import { VscSearch } from "react-icons/vsc";
@@ -16,17 +17,23 @@ import { FaInstagramSquare } from "react-icons/fa";
 import { FaTwitterSquare } from "react-icons/fa";
 import { FaFacebookMessenger } from "react-icons/fa6";
 import { FaWhatsappSquare } from "react-icons/fa";
+import { TiStarOutline } from "react-icons/ti";
+import { ImGift } from "react-icons/im";
+import { BsLightningCharge } from "react-icons/bs";
+import { FcLike } from "react-icons/fc";
 
+import { LuBadgePercent } from "react-icons/lu";
 import { useEffect, useState } from "react";
 import { app } from "../assets/config/firebase";
-import { getFirestore } from "firebase/firestore";
+import { addDoc, deleteDoc, getDoc, getFirestore } from "firebase/firestore";
 import { doc, setDoc, getDocs, collection } from "firebase/firestore";
 import Modal from "react-modal";
 import { Modall } from "react-modal";
-import { Tilt } from '@jdion/tilt-react'
+import { Tilt } from "@jdion/tilt-react";
 import { IoAddCircle } from "react-icons/io5";
 import { Navbar } from "./Navbar";
 import { useAuth } from "../auth/AuthProvider";
+
 const customStyles = {
   content: {
     top: "40%",
@@ -40,38 +47,55 @@ const customStyles = {
 };
 
 export const Home = () => {
-
   const [loaded, setLoaded] = useState(false);
   const [data, setData] = useState({});
   const [iconoSeleccionado, setIconoSeleccionado] = useState(null);
   const db = getFirestore(app);
   const [modalIsOpen, setIsOpen] = useState(false);
+  const carouselRef = useRef(null);
+  const [slideIndex, setSlideIndex] = useState(0);
   let subtitle;
   const {
-    productos, setProductos,
-    total, setTotal,
-  countProducts, setCountProducts,coleccion,setColeccion,newProducto,setNewProducto,setNewColeccion,newColeccion
+    productos,
+    setProductos,
+    total,
+    setTotal,
+    countProducts,
+    setCountProducts,
+    coleccion,
+    setColeccion,
+    newProducto,
+    setNewProducto,
+    setNewColeccion,
+    newColeccion,
+    favorito,
+    setFavorito,
+    isLiked,setIsLiked,carrito,setCarrito
   } = useAuth();
-
 
   useEffect(() => {
     const obtenerProductos = async () => {
       const querySnapshot = await getDocs(collection(db, "productos"));
-      const productosData = querySnapshot.docs.map((doc) => doc.data());
-      setProductos(productosData);
+      const newImpresion = [];
+      querySnapshot.forEach((doc) => {
+        newImpresion.push({ id: doc.id, data: doc.data() });
+      });
+
+      setProductos(newImpresion);
+      setLoaded(true);
     };
 
     obtenerProductos();
-  }, []);
+  }, [db]);
 
   useEffect(() => {
     const obtenerProductos = async () => {
       const querySnapshot = await getDocs(collection(db, "Coleccion"));
       const newImpresion = [];
-      querySnapshot.forEach((doc)=>{
-       newImpresion.push({ id: doc.id, data: doc.data() });
-      })
-     
+      querySnapshot.forEach((doc) => {
+        newImpresion.push({ id: doc.id, data: doc.data() });
+      });
+
       setColeccion(newImpresion);
       setLoaded(true);
     };
@@ -128,50 +152,112 @@ export const Home = () => {
       setIconoSeleccionado(icono);
     }
   };
-  
-  const boton = createContext({
-    mixins: [Carousel.ControllerMixin],
-    render() {
-      return (
-        <Carousel
-          ref={Carousel}
-          data={this.setCarouselData.bind(this, "carousel")}
-        >
-          ...
-        </Carousel>
-      );
-    },
-  });
 
+  
+
+  const onAddProduct = async (product) => {
+  
+    const productoExistente = carrito.find((item) => item.id === product.id);
+  if (productoExistente) {
+    const carritoActualizado = carrito.map((item) =>
+      item.id === product.id ? { ...item, cantidad: item.cantidad + 1 } : item
+    );
+    setCarrito(carritoActualizado);
+    
+  } else {
+    setCarrito([...carrito, { ...product, cantidad: 1 }]);
+  
+  }
+  setTotal(total + product.data.precio );
+    setCountProducts(countProducts + 1);
+    
+  };
 
  
 
-    const onAddProduct = product => {
-      
-      const productoExistente = newProducto.find(
-        (p) => p.name === product.name
-      );
-  
-      if (productoExistente) {
-        const nuevosProductos = newProducto.map((p) =>
-          p.name === product.name ? { ...p, cantidad: p.cantidad + 1 } : p
-        );
-        setNewProducto(nuevosProductos);
-      } else {
-        setNewProducto([...newProducto, ...newColeccion, { ...product, cantidad: 1 }]);
-      }
-  
-      setTotal(total + product.precio );
-      setCountProducts(countProducts + 1);
-    
    
     
+
+    const addToFavorites = async (product) => {
+      const personajeExistente = favorito.find((item) => item.id === product.id);
+      if (personajeExistente) {
+        const favoritosActualizados = favorito.filter((item) => item.id !== product.id);
+        setFavorito(favoritosActualizados);
+      } else {
+        setFavorito([...favorito, product]);
+      }
     }
+    
+    
   
+    
+    
+      const handlePrevious = () => {
+        carouselRef.current.previousSlide();
+        setSlideIndex(carouselRef.current.state.currentSlide);
+      };
+    
+      const handleNext = () => {
+        carouselRef.current.nextSlide();
+        setSlideIndex(carouselRef.current.state.currentSlide);
+      };
+      
+   
+     
+    
+ 
+  
+
+
+
   return (
     <>
       <div className="bg-teal-50  ">
-        <Navbar/>
+        <Navbar />
+
+        <div className="flex justify-between mt-2 mb-3 mx-7">
+        <div className="flex justify-start gap-4 mx-10">
+          <div  className="flex justify-center items-center gap-1  bg-red-400 p-2 rounded-lg">
+     
+          <LuBadgePercent size={28} /> <Link to="/">
+          
+          Outlet
+          </Link>
+          </div>
+          <div className="flex justify-center items-center gap-1  bg-purple-300 p-2 rounded-lg">
+          <ImGift  size={28}  />
+          
+          <Link to="/Novedades">
+          
+          Novedades
+          </Link>
+    
+          <div>
+
+          </div>
+          </div>
+        <div className="flex justify-center items-center gap-1  bg-lime-300 p-2 rounded-lg">
+        <BsLightningCharge  size={28}  /> 
+        
+          <Link to="/Viajes">
+          Viaje
+          </Link>
+            
+        
+        </div>
+       
+        
+           
+           </div>
+
+          <button  className=" bg-teal-200 p-2 rounded-2xl flex justify-center items-center">
+          <TiStarOutline size={30}/> 
+          <Link to="/Favoritos"> 
+          favoritos
+          </Link>
+          </button>
+        
+        </div>
 
         <div className="carrusel">
           <Carousel
@@ -183,30 +269,35 @@ export const Home = () => {
             withoutControls
             pauseOnHover
           >
-         
-              <div>
-              <img src="https://github.com/mattyas2/E-commerce/blob/main/src/assets/BBanner_B2C_ES-_Banner_Home_1921x574.jpg?raw=true" alt="" />
-              </div>
-          <div >
-          <img src="https://github.com/mattyas2/E-commerce/blob/main/src/assets/Vviajes-ES-_Banner_Home_-_1921x534_.jpg?raw=true" alt="" />
-          </div>
-
-          
-         
+            <div>
+              <img
+                src="https://github.com/mattyas2/E-commerce/blob/main/src/assets/BBanner_B2C_ES-_Banner_Home_1921x574.jpg?raw=true"
+                alt=""
+              />
+            </div>
+            <div>
+              <img
+                src="https://github.com/mattyas2/E-commerce/blob/main/src/assets/Vviajes-ES-_Banner_Home_-_1921x534_.jpg?raw=true"
+                alt=""
+              />
+            </div>
           </Carousel>
         </div>
 
-        <div className="VENTAS flex justify-start mt-16 mx-3">
-          <h1 className="font-bold text-3xl">
+        <div className="VENTAS flex justify-start mt-16 mx-3 ">
+          <h1 className="font-bold text-3xl max-sm:text-xl">
             PRODUCTOS RECIEN SALIDOS DEL HORNO{" "}
           </h1>
         </div>
 
-        <div className="flex justify-between mx-4 mt-5   max-sm:w-72">
-          <div className="LINKDEVENTAS flex gap-4 ">
+        <div className="flex justify-between mx-4 mt-5   max-sm:flex max-sm:flex-wrap max-sm:w-[370px]">
+          <div className="LINKDEVENTAS flex gap-4 max-sm:flex-wrap ">
             <div className="border p-2 w-[200px] flex justify-center hover:bg-sky-400 bg-purple-50 ">
-              <Link className=" text-decoration-none text-black" to="/Accesorios">
-               Moda Y Accesorios
+              <Link
+                className=" text-decoration-none text-black"
+                to="/Accesorios"
+              >
+                Moda Y Accesorios
               </Link>
             </div>
             <div className="border p-2 w-[90px] flex justify-center  hover:bg-sky-400  bg-purple-50 ">
@@ -220,7 +311,10 @@ export const Home = () => {
               </Link>
             </div>
             <div className="border p-2 w-[100px] flex justify-center  hover:bg-sky-400  bg-purple-50 ">
-              <Link className=" text-decoration-none text-black" to="/Electronica">
+              <Link
+                className=" text-decoration-none text-black"
+                to="/Electronica"
+              >
                 Electronica
               </Link>
             </div>
@@ -239,10 +333,10 @@ export const Home = () => {
               </button>
             </Link>
             <button>
-              <LiaAngleLeftSolid size={30} />
+              <LiaAngleLeftSolid onClick={()=>{handlePrevious}} size={30} />
             </button>
             <button>
-              <LiaAngleRightSolid size={30} />
+              <LiaAngleRightSolid onClick={()=>{handleNext}}  size={30} />
             </button>
           </div>
         </div>
@@ -300,17 +394,18 @@ export const Home = () => {
                     name="select"
                     id="select"
                     onChange={(e) => {
-                      setData({ ...data, Category: e.target.value });
+                      setData({ ...data, category: e.target.value });
                     }}
                   >
                     <option value="">Seleccionar...</option>
-                    <option value="Accesorios">Accesorios</option>
-                    <option value="Hogar">Hogar</option>
-                    <option value="Deporte">Deporte</option>
-                    <option value="Electronica">Electronica</option>
-                    <option value="Ropa">Ropa</option>
-                    <option value="Tazas">Tazas</option>
+                    <option value="accesorios">Accesorios</option>
+                    <option value="hogar">Hogar</option>
+                    <option value="deporte">Deporte</option>
+                    <option value="electronica">Electronica</option>
+                    <option value="ropa">Ropa</option>
+                    <option value="tazas">Tazas</option>
                     <option value="viaje">Viaje</option>
+                    <option value="novedades">Novedades</option>
                   </select>
                 </div>
                 <div>
@@ -319,7 +414,7 @@ export const Home = () => {
                   </label>
                   <input
                     className="border form-control "
-                    type="text"
+                    type="number"
                     placeholder="precio"
                     onChange={(e) => {
                       setData({ ...data, precio: e.target.value });
@@ -343,7 +438,7 @@ export const Home = () => {
               <div className="flex gap-8 mt-4">
                 <button
                   className="bg-green-400 p-2 rounded-lg "
-                  onClick={enviarDatos}
+                  onClick={ enviarDatos ? closeModal : Error}
                 >
                   Guardar
                 </button>
@@ -357,64 +452,134 @@ export const Home = () => {
             </div>
           </Modal>
         </div>
-<div >
-<Carousel
-
-          slidesToShow={4}
-          cellAlign="start"
-          cellSpacing={0}
-          dragging={true}
-          renderTopLeftControls
-          wrapAround
-          autoplay={true}
-          withoutControls
-          pauseOnHover
-        >
-          {productos.map((producto) => (
-            <div
-              className=" flex flex-col justify-center items-center mx-[10px] mt-5 mb-4 w-[90%] h-[360px] rounded-xl shadow-2xl  bg-purple-50 "
-              key={producto.id}
-            >
-              <div className="flex justify-center items-center">
-                <Tilt
-                  options={defaultOptions}
-                  style={{ height: 200, width: 200 }}
-                >
-                  <img
-                    className="w-[200px] h-[200px] "
-                    src={producto.imagen}
-                    alt=""
-                  />
-                </Tilt>
-              </div>
-              <div className=" mb-4">
-                <h1 className="font-bold text-xl">{producto.name} </h1>
-              </div>
-              <div className="flex justify-between w-[100%] ">
-                <div className="mx-4 mt-5">${producto.precio}</div>
-                <div className="flex gap-2 mx-4 mt-5">
-                  <Link >
-                    {" "}
-                    <IoMdHeartEmpty FaBeer size={26}  onClick={() => cambiarColor("click")}
-        style={{ color: iconoSeleccionado === "click" ? "red" : "black" }} />
-                  </Link>{" "}
-                  <Link>
-                    {" "} <span onClick={()=>{onAddProduct(producto)}}>
-                    <GiShoppingCart FaBeer size={26} className="" />
-                    </span>
-            
-          
-                  </Link>
-                
+        <div className="max-2xl:hidden ">
+          <Carousel
+            cellSpacing={30}
+            slidesToShow={1.5}
+            dragging={true}
+            renderTopLeftControls
+            wrapAround
+            autoplay={true}
+            withoutControls
+            pauseOnHover
+          >
+            {productos.map((producto) => (
+              <div
+                className=" flex flex-col justify-center items-center mx-[0] mt-5 mb-4 w-[100%] h-[300px] rounded-xl shadow-2xl   bg-purple-50 "
+                key={producto.id}
+              >
+                <div className="flex justify-center items-center mb-6">
+                  <Tilt
+                    options={defaultOptions}
+                    style={{ height: 90, width: 90 }}
+                  >
+                    <img
+                      className="w-[200px] h-[100px]  "
+                      src={producto.imagen}
+                      alt=""
+                    />
+                  </Tilt>
+                </div>
+                <div className=" mb-4">
+                  <h1 className="font-bold text-xl">{producto.name} </h1>
+                </div>
+                <div className="flex justify-between w-[100%] ">
+                  <div className="mx-2 mt-4">${producto.precio}</div>
+                  <div className="flex gap-2 mx-4 mt-4">
+                    <Link>
+                      {" "}
+                      <IoMdHeartEmpty
+                        FaBeer
+                        size={26}
+                        onClick={() => cambiarColor("click")}
+                        style={{
+                          color:
+                            iconoSeleccionado === "click" ? "red" : "black",
+                        }}
+                      />
+                    </Link>{" "}
+                    <Link>
+                      {" "}
+                      <span
+                        onClick={() => {
+                          onAddProduct(producto);
+                        }}
+                      >
+                        <GiShoppingCart FaBeer size={26} className="" />
+                      </span>
+                    </Link>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </Carousel>
+            ))}
+          </Carousel>
+        </div>
+        <div className=" ">
+          <Carousel
+            slidesToShow={4}
+            cellAlign="start"
+            cellSpacing={0}
+            dragging={true}
+            renderTopLeftControls
+            wrapAround
+            autoplay={true}
+            withoutControls
+            pauseOnHover
+            ref={carouselRef} slideIndex={slideIndex}
+          >
+            {productos.map((producto) => (
+              <div
+                className=" flex flex-col justify-center items-center mx-[10px] mt-5 mb-4 w-[90%] h-[360px] rounded-xl shadow-2xl  bg-purple-50 "
+                key={producto.data.id}
+              >
+                <div className="flex justify-center items-center">
+                  <Tilt
+                    options={defaultOptions}
+                    style={{ height: 200, width: 200 }}
+                  >
+                    <img
+                      className="w-[200px] h-[200px] "
+                      src={producto.data.imagen}
+                      alt=""
+                    />
+                  </Tilt>
+                </div>
+                <div className=" mb-4">
+                  <h1 className="font-bold text-xl">{producto.data.name} </h1>
+                </div>
+                <div className="flex justify-between w-[100%] ">
+                  <div className="mx-4 mt-5">${producto.data.precio}</div>
+                  <div className="flex gap-2 mx-4 mt-5">
+                    <Link>
+                      {" "}
+                   
+                       {favorito.find((item) => item.id === producto.id) ? <FcLike  FaBeer
+                        size={26}
+                        onClick={() => addToFavorites(producto)} /> : <IoMdHeartEmpty
+                        FaBeer
+                        size={26}
+                        onClick={() => addToFavorites(producto)}
+                       
+                      /> }
+                    </Link>{" "}
+                    <Link>
+                      {" "}
+                      <span
+                        onClick={() => {
+                          onAddProduct(producto);
+                        }}
+                      >
+                        <GiShoppingCart FaBeer size={26} className="" />
+                      </span>
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </Carousel>
+        </div>
 
-</div>
-        
-        <div className="text-center flex gap-3">
+        <div className="text-center flex gap-3 max-sm:w-full max-sm:flex-wrap">
           <div>
             <img
               className="w-[600px] h-[400px]"
@@ -422,7 +587,7 @@ export const Home = () => {
               alt=""
             />
             <h4 className="text-decoration-underline ">
-              <Link href="">ACCESORIOS DE VIAJE</Link>
+              <Link to="/Viajes">ACCESORIOS DE VIAJE</Link>
             </h4>
           </div>
 
@@ -433,7 +598,7 @@ export const Home = () => {
               alt=""
             />
             <h4 className="text-decoration-underline">
-              <Link href="">NOVEDADES</Link>
+              <Link to="/Novedades">NOVEDADES</Link>
             </h4>
           </div>
           <div>
@@ -487,7 +652,7 @@ export const Home = () => {
                   >
                     <div
                       className=" bg-purple-50 flex flex-col justify-center items-center mx-[15px] mt-5 mb-4 w-[80%] h-[390px] rounded-xl shadow-2xl "
-                      key={producto.id}
+                      key={producto.data.id}
                     >
                       <div className="flex justify-center items-center mt-[-40px]">
                         <img
@@ -503,13 +668,23 @@ export const Home = () => {
                       </div>
 
                       <div className="flex justify-between w-[100%] ">
-                        <div className="mx-4 mt-5">${producto.data.Precio}</div>
+                        <div className="mx-4 mt-5">${producto.data.precio}</div>
                         <div className="flex gap-2 mx-4 mt-5">
                           <Link>
                             {" "}
-                            <IoMdHeartEmpty FaBeer size={26} className="" />
+                            {favorito.find((item) => item.id === producto.id) ? <FcLike
+                        size={26}
+                        onClick={() => addToFavorites(producto)} /> : <IoMdHeartEmpty
+                        FaBeer
+                        size={26}
+                        onClick={() => addToFavorites(producto)}
+                       
+                      /> }
                           </Link>{" "}
-                          <Link onClick={()=>{onAddProduct({name:producto.data.name, precio:producto.data.Precio})}}>
+                          <Link
+                            onClick={() => {
+                              onAddProduct(producto)}}
+                          >
                             {" "}
                             <GiShoppingCart FaBeer size={26} className="" />
                           </Link>
@@ -522,7 +697,7 @@ export const Home = () => {
           </div>
         </div>
 
-        <div className="mt-10 bg-teal-100 h-[90vh]">
+        <div className="mt-10 bg-teal-100 h-[90vh] max-sm:h-[190vh] max-sm:flex-wrap">
           <div className="flex justify-between mx-2  ">
             <div>
               <h1 className="font-bold text-3xl mt-12">PREGUNTAS FRECUENTES</h1>
@@ -530,8 +705,8 @@ export const Home = () => {
             </div>
           </div>
 
-          <div className="Preguntas flex justify-evenly w-full mt-10  ">
-            <div className="w-[30%]  bg-purple-50  p-4 rounded-lg h-[350px] shadow-2xl">
+          <div className="Preguntas flex justify-evenly w-full mt-10 max-sm:flex-wrap max-sm:flex max-sm:gap-5 max-sm:h-[100vh]">
+            <div className="w-[30%]  bg-purple-50  p-4 rounded-lg h-[350px] shadow-2xl max-sm:w-[90%]">
               <h1 className="flex mt-6">
                 <img
                   src="https://www.mrwonderful.com/media/wysiwyg/home-2023/FaqAguacate.png"
@@ -548,7 +723,7 @@ export const Home = () => {
                 viernes en llegar a tu domicilio desde confirmas la compra{" "}
               </p>
             </div>
-            <div className="w-[30%]  bg-purple-50  p-4 rounded-lg">
+            <div className="w-[30%] max-sm:w-[90%] bg-purple-50  p-4 rounded-lg">
               <h1 className="flex">
                 <img
                   src=" https://www.mrwonderful.com/media/wysiwyg/home-2023/FaqUnicornio.png"
@@ -570,7 +745,7 @@ export const Home = () => {
                 GRATUITA*{" "}
               </p>
             </div>
-            <div className="w-[30%]  bg-purple-50  p-4 rounded-lg">
+            <div className="w-[30%] max-sm:w-[90%] bg-purple-50  p-4 rounded-lg">
               <h1 className="flex">
                 <img
                   src="https://www.mrwonderful.com/media/wysiwyg/home-2023/FaqCorazon.png"
@@ -590,43 +765,38 @@ export const Home = () => {
           </div>
         </div>
 
-        <div className="h-[20vh] flex justify-center items-center gap-4">
+        <div className="h-[20vh] flex justify-center items-center gap-4 max-sm:h-[50vh]">
           <div>
             <Link to="https://www.facebook.com/Ferney03">
-            <FaFacebook size={40} />
+              <FaFacebook size={40} />
             </Link>
-       
           </div>
           <div>
-          <Link to="https://www.instagram.com/mattyasaldana/">
-          <FaInstagramSquare size={40} />
-          </Link>
-          
+            <Link to="https://www.instagram.com/mattyasaldana/">
+              <FaInstagramSquare size={40} />
+            </Link>
           </div>
 
           <div>
-          <Link>
-          <FaTwitterSquare size={40} />
-          </Link>
-         
+            <Link>
+              <FaTwitterSquare size={40} />
+            </Link>
           </div>
 
           <div>
-          <Link to="https://www.messenger.com/t/1791731265">
-          <FaFacebookMessenger size={40} />
-          </Link>
-           
+            <Link to="https://www.messenger.com/t/1791731265">
+              <FaFacebookMessenger size={40} />
+            </Link>
           </div>
           <div>
-          <Link to="https://web.whatsapp.com/">
-          <FaWhatsappSquare size={40} />
-          </Link>
-      
+            <Link to="https://web.whatsapp.com/">
+              <FaWhatsappSquare size={40} />
+            </Link>
           </div>
         </div>
 
-        <div className="bg-teal-200 flex justify-around h-[25vh] items-center text-sm gap-6">
-          <div className="flex w-[25%] gap-2 ">
+        <div className="bg-teal-200 flex justify-around h-[25vh] max-sm:h-[100vh] items-center text-sm gap-6 max-sm:flex-wrap">
+          <div className="flex w-[25%] gap-2 max-sm:w-[80%]">
             <div>
               <img
                 className="w-[250px] p-2"
@@ -642,7 +812,7 @@ export const Home = () => {
               </p>
             </div>
           </div>
-          <div className="flex w-[25%]  gap-2  p-2">
+          <div className="flex w-[25%] max-sm:w-[80%]  gap-2  p-2">
             <div>
               <img
                 className="w-[100px]"
@@ -655,7 +825,7 @@ export const Home = () => {
               <p>Realízala de forma sencilla en 30 días naturales</p>
             </div>
           </div>
-          <div className="flex w-[25%]  gap-2  p-2">
+          <div className="flex w-[25%] max-sm:w-[80%]  gap-2  p-2">
             <div>
               <img
                 className="w-[80px]"
@@ -667,7 +837,7 @@ export const Home = () => {
               <p>¿NECESITAS AYUDA?</p> <p>Llámanos al +57 321 691 224</p>
             </div>
           </div>
-          <div className="flex w-[25%]  gap-2  p-2">
+          <div className="flex w-[25%] max-sm:w-[80%]  gap-2  p-2">
             <div>
               <img
                 className="w-[100px]"
@@ -683,14 +853,9 @@ export const Home = () => {
         </div>
 
         <div className="h-[10vh]">
-<div>
-  <div>
-    
-  </div>
-</div>
-
-
-
+          <div>
+            <div></div>
+          </div>
         </div>
       </div>
     </>

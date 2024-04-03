@@ -13,16 +13,17 @@ import { FcLike } from "react-icons/fc";
 
 
 
-export const Electronica = ()=>{
- 
-    const [loaded, setLoaded] = useState(false);
 
+
+export const Novedades = ()=>{
+    const [loaded, setLoaded] = useState(false);
+  
+    
     const {
       productos, setProductos,
       total, setTotal,
     countProducts, setCountProducts,coleccion,setColeccion,carrito,setCarrito,favorito,setFavorito
-    } = useAuth();
-    
+  } = useAuth();
   useEffect(() => {
 
     const coleccions = async ()=>{
@@ -31,7 +32,7 @@ export const Electronica = ()=>{
         const db = getFirestore(app)
         
             const citiesRef = collection(db, "productos");
-            const querySnapshot = await getDocs( query(citiesRef, where("category", "==", "electronica")));
+            const querySnapshot = await getDocs( query(citiesRef, where("category", "==", "novedades")))  
             const newImpresion = [];
             querySnapshot.forEach((doc)=>{
              newImpresion.push({ id: doc.id, data: doc.data() });
@@ -44,15 +45,14 @@ export const Electronica = ()=>{
     }
     coleccions();
 }, []);
-        
-    
-      
+
+
 useEffect(() => {
 
   const coleccionss = async ()=>{
       const db = getFirestore(app)
           const citiesRef = collection(db, "Coleccion");
-          const querySnapshot = await getDocs( query(citiesRef, where("category", "==", "electronica")));
+          const querySnapshot = await getDocs( query(citiesRef, where("category", "==", "novedades")));
           const newImpresion = [];
           querySnapshot.forEach((doc)=>{
            newImpresion.push({ id: doc.id, data: doc.data() });
@@ -65,8 +65,8 @@ useEffect(() => {
   }
   coleccionss();
 }, []);
-
-
+      
+        
 const onAddProduct = async (product) => {
   
   const productoExistente = carrito.find((item) => item.id === product.id);
@@ -118,19 +118,17 @@ setTotal(total + product.data.precio );
 return(
 
     <>
-      <Navbar/>
-
-<div className="text-center font-bold text-2xl">
- Electronica
-</div>
-               
-<div className="flex flex-col gap-10 ">
-      <div className="w-[22%] flex gap-10 mx-7  ">
+    <Navbar/>
+<div className="bg-teal-50">  <div className="text-center font-bold text-2xl">
+      Novedades
+    </div>
+    <div className="flex w-[100%] gap-10 flex-col ">
+      <div className="w-[30%] flex flex-wrap">
       {loaded &&
            productos.length > 0 &&
            productos.map((producto) => (
             <div
-              className=" bg-purple-50 flex flex-col justify-center items-center mt-5 mb-4 w-[100%]  h-[400px] rounded-xl shadow-2xl "
+              className=" bg-purple-50 flex flex-col justify-center items-center mx-[50px] mt-5 mb-4 w-[80%] h-[400px] rounded-xl shadow-2xl "
               key={producto.id}
             >
               <div className="flex justify-center items-center ">
@@ -179,13 +177,13 @@ return(
           ))}
       </div>
   
-<div className="w-[32%] gap-10 mx-7 flex ">
+<div className="w-[30%] flex ">
 
 {loaded &&
-           coleccion.length > 0 &&
+          coleccion.length > 0 &&
            coleccion.map((producto) => (
             <div
-              className="bg-purple-50  flex flex-col justify-center items-center  mt-5 mb-10 w-[70%] h-[400px] rounded-xl shadow-2xl  "
+              className="bg-purple-50  flex flex-col justify-center items-center mx-[10px] mt-5 mb-10  w-[80%] h-[400px] rounded-xl shadow-2xl  "
               key={producto.id}
             >
               <div className="flex justify-center items-center">
@@ -233,7 +231,9 @@ return(
             </div>
           ))}
 </div>
-    </div>
+    </div></div>
+  
+           
     </>
 )
 

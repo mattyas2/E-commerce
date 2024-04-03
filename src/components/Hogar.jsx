@@ -7,7 +7,7 @@ import { GiShoppingCart } from "react-icons/gi";
 import { IoMdHeartEmpty } from "react-icons/io";
 import { useEffect, useState } from "react";
 import { Navbar } from "../pages/Navbar";
-
+import { FcLike } from "react-icons/fc";
 import { useAuth } from "../auth/AuthProvider";
 
 
@@ -21,7 +21,7 @@ export const Hogar = ()=>{
     const {
       productos, setProductos,
       total, setTotal,
-    countProducts, setCountProducts,coleccion,setColeccion,newProducto,setNewProducto,newColeccion
+    countProducts, setCountProducts,coleccion,setColeccion,carrito,setCarrito,favorito,setFavorito
     } = useAuth();
     
   useEffect(() => {
@@ -66,27 +66,39 @@ useEffect(() => {
   coleccionss();
 }, []);
       
-const onAddProduct = product => {
-      
-  const productoExistente = newProducto.find(
-    (p) => p.name === product.name
+const onAddProduct = async (product) => {
+  
+  const productoExistente = carrito.find((item) => item.id === product.id);
+if (productoExistente) {
+  const carritoActualizado = carrito.map((item) =>
+    item.id === product.id ? { ...item, cantidad: item.cantidad + 1 } : item
   );
-
-  if (productoExistente) {
-    const nuevosProductos = newProducto.map((p) =>
-      p.name === product.name ? { ...p, cantidad: p.cantidad + 1 } : p
-    );
-    setNewProducto(nuevosProductos);
-  } else {
-    setNewProducto([...newProducto, ...newColeccion, { ...product, cantidad: 1 }]);
-  }
-
-  setTotal(total + product.precio );
-  setCountProducts(countProducts + 1);
-
-
+  setCarrito(carritoActualizado);
+  
+} else {
+  setCarrito([...carrito, { ...product, cantidad: 1 }]);
 
 }
+setTotal(total + product.data.precio );
+  setCountProducts(countProducts + 1);
+  
+};
+
+
+
+ 
+  
+
+  const addToFavorites = async (product) => {
+    const personajeExistente = favorito.find((item) => item.id === product.id);
+    if (personajeExistente) {
+      const favoritosActualizados = favorito.filter((item) => item.id !== product.id);
+      setFavorito(favoritosActualizados);
+    } else {
+      setFavorito([...favorito, product]);
+    }
+  }
+  
 
 
 
@@ -138,14 +150,28 @@ Hogar
               <div className="flex justify-between w-[100%] ">
                 <div className="mx-4 mt-5">${producto.data.precio}</div>
                 <div className="flex gap-2 mx-4 mt-5">
-                  <Link>
-                    {" "}
-                    <IoMdHeartEmpty FaBeer size={26} className="" />
-                  </Link>{" "}
-                  <Link  onClick={()=>{onAddProduct({name:producto.data.name, precio:producto.data.precio})}}>
-                    {" "}
-                    <GiShoppingCart FaBeer size={26} className="" />
-                  </Link>
+                <Link>
+                      {" "}
+                   
+                       {favorito.find((item) => item.id === producto.id) ? <FcLike  FaBeer
+                        size={26}
+                        onClick={() => addToFavorites(producto)} /> : <IoMdHeartEmpty
+                        FaBeer
+                        size={26}
+                        onClick={() => addToFavorites(producto)}
+                       
+                      /> }
+                    </Link>{" "}
+                    <Link>
+                      {" "}
+                      <span
+                        onClick={() => {
+                          onAddProduct(producto);
+                        }}
+                      >
+                        <GiShoppingCart FaBeer size={26} className="" />
+                      </span>
+                    </Link>
                 </div>
               </div>
             </div>
@@ -179,14 +205,28 @@ Hogar
               <div className="flex justify-between w-[100%] ">
                 <div className="mx-4 mt-5">${producto.data.Precio}</div>
                 <div className="flex gap-2 mx-4 mt-5">
-                  <Link>
-                    {" "}
-                    <IoMdHeartEmpty FaBeer size={26} className="" />
-                  </Link>{" "}
-                  <Link  onClick={()=>{onAddProduct({name:producto.data.name, precio:producto.data.precio})}}>
-                    {" "}
-                    <GiShoppingCart FaBeer size={26} className="" />
-                  </Link>
+                <Link>
+                      {" "}
+                   
+                       {favorito.find((item) => item.id === producto.id) ? <FcLike  FaBeer
+                        size={26}
+                        onClick={() => addToFavorites(producto)} /> : <IoMdHeartEmpty
+                        FaBeer
+                        size={26}
+                        onClick={() => addToFavorites(producto)}
+                       
+                      /> }
+                    </Link>{" "}
+                    <Link>
+                      {" "}
+                      <span
+                        onClick={() => {
+                          onAddProduct(producto);
+                        }}
+                      >
+                        <GiShoppingCart FaBeer size={26} className="" />
+                      </span>
+                    </Link>
                 </div>
               </div>
             </div>

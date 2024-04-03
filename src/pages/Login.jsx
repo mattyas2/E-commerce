@@ -23,13 +23,12 @@ import { Navbar } from "./Navbar";
 const auth = getAuth(app);
 
 export const Login = () => {
-
+const {email,setEmail} = useAuth()
 
 
   const navigate = useNavigate();
 
   const [error, setError] = useState("");
-  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const {setIsAuthenticated,startSession} = useAuth();
 
