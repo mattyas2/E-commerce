@@ -119,11 +119,11 @@ return(
 
     <>
     <Navbar/>
-<div className="bg-teal-50">  <div className="text-center font-bold text-2xl">
+<div className="bg-teal-50 h-[100%]">  <div className="text-center font-bold text-2xl">
  Accesorios de Viaje
     </div>
     <div className="flex w-[100%] gap-10 flex-col ">
-      <div className="w-[30%] flex flex-wrap">
+      <div className="w-[30%] flex flex-wrap max-sm:flex max-sm:flex-wrap max-sm:w-[100%]">
       {loaded &&
            productos.length > 0 &&
            productos.map((producto) => (
@@ -186,7 +186,7 @@ return(
               className="bg-purple-50  flex flex-col justify-center items-center mx-[10px] mt-5 mb-10  w-[80%] h-[400px] rounded-xl shadow-2xl  "
               key={producto.id}
             >
-              <div className="flex justify-center items-center">
+              <div className="flex justify-center items-center max-sm:flex max-sm:flex-wrap max-sm:w-[100%]">
                 <Tilt
                   options={defaultOptions}
                   style={{ height: 200, width: 260, marginLeft: 60 }}
@@ -202,7 +202,7 @@ return(
                 <h1 className="font-bold text-xl">{producto.data.name} </h1>
               </div>
               <div className="flex justify-between w-[100%] ">
-                <div className="mx-4 mt-5">${producto.data.Precio}</div>
+                <div className="mx-4 mt-5">${producto.data.precio}</div>
                 <div className="flex gap-2 mx-4 mt-5">
                 <Link>
                       {" "}
@@ -230,6 +230,9 @@ return(
               </div>
             </div>
           ))}
+</div>
+<div className="h-36">
+
 </div>
     </div></div>
   

@@ -104,11 +104,11 @@ export const Todos = ()=>{
     <>
 
 <Navbar/>
-<div className="bg-teal-50 h-[300vh]">
+<div className="bg-teal-50 h-[100%]">
 <div className="p-6">
         <h1 className="text-center text-3xl ">PRODUCTOS</h1>
     </div>
-     <div className=" mt-10 flex flex-wrap gap-12 mb-4">
+     <div className=" mt-10 flex flex-wrap gap-12 mb-4 max-sm:flex max-sm:flex-wrap max-sm:w-[100%] max-sm:mb-0 max-sm:mt-0" >
            
           
               {loaded &&
@@ -118,7 +118,7 @@ export const Todos = ()=>{
                     options={defaultOptions2}
                     style={{ height: 400, width: 350 }}
                   >
-                    <div className=" bg-purple-50 flex flex-col justify-center items-center mx-20 mt-5 mb-4 w-[100%] h-[390px] rounded-xl shadow-2xl"key={producto.id}>
+                    <div className=" bg-purple-50 flex flex-col justify-center items-center mx-20 max-sm:mx-4 mt-5 mb-4 w-[100%] h-[390px] rounded-xl shadow-2xl"key={producto.id}>
                       <div className="flex justify-center items-center mt-[-40px]">
                         <img
                           className="w-[200px] h-[200px] "
@@ -164,7 +164,7 @@ export const Todos = ()=>{
                 ))}
          
           </div>
-          <div className=" mt-10 flex flex-wrap gap-12 mb-28">
+          <div className=" mt-10 flex flex-wrap gap-12 mb-28 max-sm:flex max-sm:flex-wrap max-sm:w-[100%] max-sm:justify-center max-sm:mb-10">
            
           
            {loaded &&
@@ -174,8 +174,8 @@ export const Todos = ()=>{
                  options={defaultOptions2}
                  style={{ height: 400, width: 340 }}
                >
-                 <div className=" bg-purple-50 flex flex-col justify-center items-center mx-20 mt-5 mb-4 w-[100%] h-[390px] rounded-xl shadow-2xl"key={producto.id}>
-                   <div className="flex justify-center items-center mt-[-40px]">
+                 <div className=" bg-purple-50 flex flex-col justify-center items-center mx-20 max-sm:mx-2 max-sm:mt-8 mt-5 mb-4 w-[100%] h-[390px] rounded-xl shadow-2xl"key={producto.id}>
+                   <div className="flex justify-center items-center mt-[-40px] max-sm:mt-0">
                      <img
                        className="w-[200px] h-[200px] "
                        src={producto.data.imagen}
@@ -220,9 +220,12 @@ export const Todos = ()=>{
              ))}
       
        </div>
-</div>
-  
+       <div className="h-36">
+
+  </div>
     
+</div>
+
     
     </>
   )

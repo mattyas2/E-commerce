@@ -54,6 +54,7 @@ export const Home = () => {
   const [modalIsOpen, setIsOpen] = useState(false);
   const carouselRef = useRef(null);
   const [slideIndex, setSlideIndex] = useState(0);
+  const [Suscríbete, setSuscribete] = useState("");
   let subtitle;
   const {
     productos,
@@ -70,7 +71,10 @@ export const Home = () => {
     newColeccion,
     favorito,
     setFavorito,
-    isLiked,setIsLiked,carrito,setCarrito
+    isLiked,
+    setIsLiked,
+    carrito,
+    setCarrito,
   } = useAuth();
 
   useEffect(() => {
@@ -153,110 +157,82 @@ export const Home = () => {
     }
   };
 
-  
-
   const onAddProduct = async (product) => {
-  
     const productoExistente = carrito.find((item) => item.id === product.id);
-  if (productoExistente) {
-    const carritoActualizado = carrito.map((item) =>
-      item.id === product.id ? { ...item, cantidad: item.cantidad + 1 } : item
-    );
-    setCarrito(carritoActualizado);
-    
-  } else {
-    setCarrito([...carrito, { ...product, cantidad: 1 }]);
-  
-  }
-  setTotal(total + product.data.precio );
+    if (productoExistente) {
+      const carritoActualizado = carrito.map((item) =>
+        item.id === product.id ? { ...item, cantidad: item.cantidad + 1 } : item
+      );
+      setCarrito(carritoActualizado);
+    } else {
+      setCarrito([...carrito, { ...product, cantidad: 1 }]);
+    }
+    setTotal(total + product.data.precio);
     setCountProducts(countProducts + 1);
-    
   };
 
- 
-
-   
-    
-
-    const addToFavorites = async (product) => {
-      const personajeExistente = favorito.find((item) => item.id === product.id);
-      if (personajeExistente) {
-        const favoritosActualizados = favorito.filter((item) => item.id !== product.id);
-        setFavorito(favoritosActualizados);
-      } else {
-        setFavorito([...favorito, product]);
-      }
+  const addToFavorites = async (product) => {
+    const personajeExistente = favorito.find((item) => item.id === product.id);
+    if (personajeExistente) {
+      const favoritosActualizados = favorito.filter(
+        (item) => item.id !== product.id
+      );
+      setFavorito(favoritosActualizados);
+    } else {
+      setFavorito([...favorito, product]);
     }
-    
-    
-  
-    
-    
-      const handlePrevious = () => {
-        carouselRef.current.previousSlide();
-        setSlideIndex(carouselRef.current.state.currentSlide);
-      };
-    
-      const handleNext = () => {
-        carouselRef.current.nextSlide();
-        setSlideIndex(carouselRef.current.state.currentSlide);
-      };
-      
-   
-     
-    
- 
-  
+  };
 
+  const handlePrevious = () => {
+    carouselRef.current.previousSlide();
+    setSlideIndex(carouselRef.current.state.currentSlide);
+  };
 
+  const handleNext = () => {
+    carouselRef.current.nextSlide();
+    setSlideIndex(carouselRef.current.state.currentSlide);
+  };
+
+  const Suscripcion = (e) => {
+    setSuscribete(e.target.value);
+  };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Aquí puedes agregar la lógica para manejar el envío de la suscripción
+    console.log("Email de suscripción:", Suscríbete);
+    setSuscribete("");
+    // Puedes enviar los datos a un servidor, guardarlos en el almacenamiento local, etc.
+    // También puedes mostrar un mensaje de éxito o error según sea necesario
+  };
 
   return (
     <>
       <div className="bg-teal-50  ">
         <Navbar />
 
-        <div className="flex justify-between mt-2 mb-3 mx-7">
-        <div className="flex justify-start gap-4 mx-10">
-          <div  className="flex justify-center items-center gap-1  bg-red-400 p-2 rounded-lg">
-     
-          <LuBadgePercent size={28} /> <Link to="/">
-          
-          Outlet
-          </Link>
-          </div>
-          <div className="flex justify-center items-center gap-1  bg-purple-300 p-2 rounded-lg">
-          <ImGift  size={28}  />
-          
-          <Link to="/Novedades">
-          
-          Novedades
-          </Link>
-    
-          <div>
+        <div className="max-sm:flex max-sm:w-[375px] flex justify-between mt-2 mb-3 mx-7 max-sm:hidden">
+          <div className="flex justify-start gap-4 mx-10 max-sm:flex max-sm:w-[375px] max-sm:flex-wrap ">
+            <div className="flex justify-center items-center gap-1  bg-red-400 p-2 rounded-lg max-sm:flex">
+              <LuBadgePercent size={28} /> <Link to="/">Outlet</Link>
+            </div>
+            <div className="flex justify-center items-center gap-1  bg-purple-300 p-2 rounded-lg">
+              <ImGift size={28} />
 
-          </div>
-          </div>
-        <div className="flex justify-center items-center gap-1  bg-lime-300 p-2 rounded-lg">
-        <BsLightningCharge  size={28}  /> 
-        
-          <Link to="/Viajes">
-          Viaje
-          </Link>
-            
-        
-        </div>
-       
-        
-           
-           </div>
+              <Link to="/Novedades">Novedades</Link>
 
-          <button  className=" bg-teal-200 p-2 rounded-2xl flex justify-center items-center">
-          <TiStarOutline size={30}/> 
-          <Link to="/Favoritos"> 
-          favoritos
-          </Link>
+              <div></div>
+            </div>
+            <div className="flex justify-center items-center gap-1  bg-lime-300 p-2 rounded-lg">
+              <BsLightningCharge size={28} />
+
+              <Link to="/Viajes">Viaje</Link>
+            </div>
+          </div>
+
+          <button className=" bg-teal-200 p-2 rounded-2xl flex justify-center items-center">
+            <TiStarOutline size={30} />
+            <Link to="/Favoritos">favoritos</Link>
           </button>
-        
         </div>
 
         <div className="carrusel">
@@ -284,13 +260,13 @@ export const Home = () => {
           </Carousel>
         </div>
 
-        <div className="VENTAS flex justify-start mt-16 mx-3 ">
+        <div className="VENTAS flex justify-start mt-16 mx-3  max-sm:text-center ">
           <h1 className="font-bold text-3xl max-sm:text-xl">
             PRODUCTOS RECIEN SALIDOS DEL HORNO{" "}
           </h1>
         </div>
 
-        <div className="flex justify-between mx-4 mt-5   max-sm:flex max-sm:flex-wrap max-sm:w-[370px]">
+        <div className="flex justify-between mx-4 mt-5  max-sm:hidden">
           <div className="LINKDEVENTAS flex gap-4 max-sm:flex-wrap ">
             <div className="border p-2 w-[200px] flex justify-center hover:bg-sky-400 bg-purple-50 ">
               <Link
@@ -326,17 +302,27 @@ export const Home = () => {
             </div>
           </div>
 
-          <div className="flex gap-4">
+          <div className="flex gap-4 max-sm:hidden">
             <Link>
               <button className="mt-2" onClick={openModal}>
                 <IoAddCircle FaBeer size={26} />
               </button>
             </Link>
             <button>
-              <LiaAngleLeftSolid onClick={()=>{handlePrevious}} size={30} />
+              <LiaAngleLeftSolid
+                onClick={() => {
+                  handlePrevious;
+                }}
+                size={30}
+              />
             </button>
             <button>
-              <LiaAngleRightSolid onClick={()=>{handleNext}}  size={30} />
+              <LiaAngleRightSolid
+                onClick={() => {
+                  handleNext;
+                }}
+                size={30}
+              />
             </button>
           </div>
         </div>
@@ -438,7 +424,7 @@ export const Home = () => {
               <div className="flex gap-8 mt-4">
                 <button
                   className="bg-green-400 p-2 rounded-lg "
-                  onClick={ enviarDatos ? closeModal : Error}
+                  onClick={enviarDatos ? closeModal : Error}
                 >
                   Guardar
                 </button>
@@ -452,7 +438,7 @@ export const Home = () => {
             </div>
           </Modal>
         </div>
-        <div className="max-2xl:hidden ">
+        <div className="md:hidden ">
           <Carousel
             cellSpacing={30}
             slidesToShow={1.5}
@@ -462,6 +448,7 @@ export const Home = () => {
             autoplay={true}
             withoutControls
             pauseOnHover
+            cellAlign="center"
           >
             {productos.map((producto) => (
               <div
@@ -475,28 +462,32 @@ export const Home = () => {
                   >
                     <img
                       className="w-[200px] h-[100px]  "
-                      src={producto.imagen}
+                      src={producto.data.imagen}
                       alt=""
                     />
                   </Tilt>
                 </div>
                 <div className=" mb-4">
-                  <h1 className="font-bold text-xl">{producto.name} </h1>
+                  <h1 className="font-bold text-xl">{producto.data.name} </h1>
                 </div>
                 <div className="flex justify-between w-[100%] ">
-                  <div className="mx-2 mt-4">${producto.precio}</div>
+                  <div className="mx-4 mt-4">${producto.data.precio}</div>
                   <div className="flex gap-2 mx-4 mt-4">
                     <Link>
                       {" "}
-                      <IoMdHeartEmpty
-                        FaBeer
-                        size={26}
-                        onClick={() => cambiarColor("click")}
-                        style={{
-                          color:
-                            iconoSeleccionado === "click" ? "red" : "black",
-                        }}
-                      />
+                      {favorito.find((item) => item.id === producto.id) ? (
+                        <FcLike
+                          FaBeer
+                          size={26}
+                          onClick={() => addToFavorites(producto)}
+                        />
+                      ) : (
+                        <IoMdHeartEmpty
+                          FaBeer
+                          size={26}
+                          onClick={() => addToFavorites(producto)}
+                        />
+                      )}
                     </Link>{" "}
                     <Link>
                       {" "}
@@ -514,7 +505,7 @@ export const Home = () => {
             ))}
           </Carousel>
         </div>
-        <div className=" ">
+        <div className="max-sm:hidden ">
           <Carousel
             slidesToShow={4}
             cellAlign="start"
@@ -525,7 +516,8 @@ export const Home = () => {
             autoplay={true}
             withoutControls
             pauseOnHover
-            ref={carouselRef} slideIndex={slideIndex}
+            ref={carouselRef}
+            slideIndex={slideIndex}
           >
             {productos.map((producto) => (
               <div
@@ -552,15 +544,19 @@ export const Home = () => {
                   <div className="flex gap-2 mx-4 mt-5">
                     <Link>
                       {" "}
-                   
-                       {favorito.find((item) => item.id === producto.id) ? <FcLike  FaBeer
-                        size={26}
-                        onClick={() => addToFavorites(producto)} /> : <IoMdHeartEmpty
-                        FaBeer
-                        size={26}
-                        onClick={() => addToFavorites(producto)}
-                       
-                      /> }
+                      {favorito.find((item) => item.id === producto.id) ? (
+                        <FcLike
+                          FaBeer
+                          size={26}
+                          onClick={() => addToFavorites(producto)}
+                        />
+                      ) : (
+                        <IoMdHeartEmpty
+                          FaBeer
+                          size={26}
+                          onClick={() => addToFavorites(producto)}
+                        />
+                      )}
                     </Link>{" "}
                     <Link>
                       {" "}
@@ -615,13 +611,13 @@ export const Home = () => {
 
         <div className="mt-8">
           <div className="flex justify-between">
-            <div>
+            <div className="max-sm:text-center">
               <h1 className="font-extrabold text-3xl mx-6">
                 DESCUBRE LOS TOP VENTAS
               </h1>
               <h4 className="mx-6">Descubre Novedades</h4>
             </div>
-            <div>
+            <div className="max-sm:hidden">
               <h4 className="text-decoration-underline">
                 <Link to="/Todos">Ver todos</Link>
               </h4>
@@ -636,7 +632,7 @@ export const Home = () => {
             </div>
           </div>
 
-          <div className="h-[500px] mt-10 ">
+          <div className="h-[500px] mt-10 max-sm:hidden">
             <Carousel
               slidesToShow={4}
               wrapAround
@@ -672,18 +668,93 @@ export const Home = () => {
                         <div className="flex gap-2 mx-4 mt-5">
                           <Link>
                             {" "}
-                            {favorito.find((item) => item.id === producto.id) ? <FcLike
-                        size={26}
-                        onClick={() => addToFavorites(producto)} /> : <IoMdHeartEmpty
-                        FaBeer
-                        size={26}
-                        onClick={() => addToFavorites(producto)}
-                       
-                      /> }
+                            {favorito.find(
+                              (item) => item.id === producto.id
+                            ) ? (
+                              <FcLike
+                                size={26}
+                                onClick={() => addToFavorites(producto)}
+                              />
+                            ) : (
+                              <IoMdHeartEmpty
+                                FaBeer
+                                size={26}
+                                onClick={() => addToFavorites(producto)}
+                              />
+                            )}
                           </Link>{" "}
                           <Link
                             onClick={() => {
-                              onAddProduct(producto)}}
+                              onAddProduct(producto);
+                            }}
+                          >
+                            {" "}
+                            <GiShoppingCart FaBeer size={26} className="" />
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                  </Tilt>
+                ))}
+            </Carousel>
+          </div>
+          <div className="h-[500px] mt-10 md:hidden ">
+            <Carousel
+              slidesToShow={1.2}
+              wrapAround
+              autoplay={true}
+              withoutControls
+              cellAlign="center"
+              cellSpacing={2}
+            >
+              {loaded &&
+                coleccion.length > 0 &&
+                coleccion.map((producto) => (
+                  <Tilt
+                    options={defaultOptions2}
+                    style={{ height: 600, width: 350 }}
+                  >
+                    <div
+                      className=" bg-purple-50 flex flex-col justify-center items-center mx-[15px] mt-5 mb-4 w-[80%] h-[390px] rounded-xl shadow-2xl "
+                      key={producto.data.id}
+                    >
+                      <div className="flex justify-center items-center mt-[-40px]">
+                        <img
+                          className="w-[200px] h-[200px] "
+                          src={producto.data.imagen}
+                          alt=""
+                        />
+                      </div>
+                      <div className="mt-1 mb-4">
+                        <h1 className="font-bold text-xl">
+                          {producto.data.name}{" "}
+                        </h1>
+                      </div>
+
+                      <div className="flex justify-between w-[100%] ">
+                        <div className="mx-4 mt-5">${producto.data.precio}</div>
+                        <div className="flex gap-2 mx-4 mt-5">
+                          <Link>
+                            {" "}
+                            {favorito.find(
+                              (item) => item.id === producto.id
+                            ) ? (
+                              <FcLike
+                                size={26}
+                                onClick={() => addToFavorites(producto)}
+                              />
+                            ) : (
+                              <IoMdHeartEmpty
+                                FaBeer
+                                size={26}
+                                onClick={() => addToFavorites(producto)}
+                              />
+                            )}
+                          </Link>{" "}
+                          <Link
+                            onClick={() => {
+                              onAddProduct(producto);
+                            }}
                           >
                             {" "}
                             <GiShoppingCart FaBeer size={26} className="" />
@@ -697,9 +768,9 @@ export const Home = () => {
           </div>
         </div>
 
-        <div className="mt-10 bg-teal-100 h-[90vh] max-sm:h-[190vh] max-sm:flex-wrap">
+        <div className="mt-10 bg-teal-100 h-[90vh] max-sm:h-[200vh] max-sm:flex-wrap">
           <div className="flex justify-between mx-2  ">
-            <div>
+            <div className="max-sm:text-center">
               <h1 className="font-bold text-3xl mt-12">PREGUNTAS FRECUENTES</h1>
               <h4>resolvemos tus dudas mas frecuentes</h4>
             </div>
@@ -765,7 +836,7 @@ export const Home = () => {
           </div>
         </div>
 
-        <div className="h-[20vh] flex justify-center items-center gap-4 max-sm:h-[50vh]">
+        <div className="h-[20vh] flex justify-center items-center gap-4 max-sm:h-[60vh]">
           <div>
             <Link to="https://www.facebook.com/Ferney03">
               <FaFacebook size={40} />
@@ -852,8 +923,235 @@ export const Home = () => {
           </div>
         </div>
 
-        <div className="h-[10vh]">
+        <div className="h-[60vh]">
           <div>
+            <img
+              className="md:hidden"
+              src="https://www.mrwonderful.com/media/wysiwyg/2024/Marzo/DiaPadre/banner-Editables_ES-Banner-mobile.png"
+              alt=""
+            />
+            <img
+              className="max-sm:hidden"
+              src="https://www.mrwonderful.com/media/wysiwyg/2024/Marzo/DiaPadre/banner-Editables_ES-Banner.png"
+            />
+          </div>
+        </div>
+
+        <div className="my-8 h-[40vh] bg-cyan-200 max-sm:hidden">
+          <section className="flex justify-center items-center">
+            <div className=" flex justify-center items-center gap-10">
+              <div className="flex">
+                <div className="mt-16">
+                  <span className="flex justify-center text-4xl">
+                    Consigue un <span className="text-red-600">15% DTO.</span>
+                  </span>
+                  <span className="flex justify-center text-4xl">
+                    EN TU PRIMERA COMPRA
+                  </span>
+                  <br></br>
+
+                  <p>
+                    <span className="flex justify-center">
+                      Suscríbete a la newsletter y no te pierdas nada
+                    </span>
+                  </p>
+                </div>
+              </div>
+              <div className="newsletter__content">
+                <header className="newsletter__header"></header>
+                <form
+                  onSubmit={handleSubmit}
+                  className="form subscribe flex flex-col justify-start items-start"
+                >
+                  <div className="flex justify-start flex-col items-start mt-3 mb-3">
+                    <div className="control flex justify-start ">
+                      <input
+                        className="border-b border-black w-[500px] bg-slate-200 mt-3"
+                        name="email"
+                        type="email"
+                        placeholder="Introduce tu email"
+                        value={Suscríbete}
+                        onChange={Suscripcion}
+                      />
+                      <button
+                        className="action subscribe primary   "
+                        title="Suscribirse"
+                        type="submit"
+                      >
+                        <span className="p-3 bg-red-600 rounded-lg">
+                          Suscribirse
+                        </span>
+                      </button>
+                    </div>
+
+                    <div className="flex justify-start items-center">
+                      <input type="checkbox" className="required-entry" />
+                      <label className="label">
+                        <button type="button" className="action action-show">
+                          <span>
+                            He leído y acepto las condiciones contenidas en la
+                            política de privacidad.
+                          </span>
+                        </button>
+                      </label>
+                    </div>
+
+                    <div className="flex justify-start items-center">
+                      <div className="g-recaptcha-text-box small">
+                        Este sitio está protegido por reCAPTCHA y se aplican la{" "}
+                        <a
+                          href="https://policies.google.com/privacy"
+                          className="text-decoration-underline"
+                          target="_blank"
+                        >
+                          Política de Privacidad
+                        </a>{" "}
+                        y{" "}
+                        <a
+                          href="https://policies.google.com/terms"
+                          className="text-decoration-underline"
+                          target="_blank"
+                        >
+                          Terminos de Servicio
+                        </a>{" "}
+                        de Google.
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </section>
+        </div>
+        <div className="my-8 h-[45vh] bg-cyan-200 md:hidden">
+          <section className="">
+            <div className=" ">
+              <div className="">
+                <div className="">
+                  <span className=" flex justify-center text-2xl">
+                    Consigue un <span className="text-red-600">15% DTO.</span>
+                  </span>
+                  <span className=" flex justify-center text-2xl">
+                    EN TU PRIMERA COMPRA
+                  </span>
+                  <br></br>
+
+                  <p>
+                    <span className="flex justify-center">
+                      Suscríbete a la newsletter y no te pierdas nada
+                    </span>
+                  </p>
+                </div>
+              </div>
+              <div className="newsletter__content">
+                <form
+                  onSubmit={handleSubmit}
+                  className="form subscribe flex flex-col justify-center items-center"
+                >
+                  <div className="flex justify-center flex-col items-center mt-3 mb-3 mx-3">
+                    <div className="control ">
+                      <input
+                        className="border-b border-black w-[230px] bg-slate-200 mt-1 ms-3"
+                        name="email"
+                        type="email"
+                        placeholder="Introduce tu email"
+                        value={Suscríbete}
+                        onChange={Suscripcion}
+                      />
+                      <button
+                        className="action subscribe primary   "
+                        title="Suscribirse"
+                        type="submit"
+                      >
+                        <span className="p-2 bg-red-600 rounded-lg">
+                          Suscribirse
+                        </span>
+                      </button>
+
+                      <div className="flex justify-start items-start text-xs mt-2">
+                        <input
+                          type="checkbox"
+                          className="required-entry flex justify-center items-center"
+                        />
+                        <label className="label">
+                          <button type="button" className="action action-show">
+                            <span>
+                              He leído y acepto las condiciones contenidas en la
+                              política de privacidad. Este sitio está protegido
+                              por reCAPTCHA y se aplican la {""}
+                              <a
+                                href="https://policies.google.com/privacy"
+                                className="text-decoration-underline"
+                                target="_blank"
+                              >
+                                Política de Privacidad
+                              </a>{" "}
+                              <a
+                                href="https://policies.google.com/terms"
+                                className="text-decoration-underline"
+                                target="_blank"
+                              >
+                                Terminos de Servicio
+                              </a>{" "}
+                              de Google.
+                            </span>
+                          </button>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <div className="pie de pagina h-[50vh] w-full max-sm:h-[90vh] flex justify-evenly  bg-purple-400 text-black max-sm:flex max-sm:justify-evenly  max-sm:gap-4 max-sm:flex-wrap">
+          <div className="max-sm:mx-4 max-sm:w-[40%] max-sm:h-[5%]">
+            <div className="mt-20  max-sm:mt-4 text-black font-bold ">CONTACTO</div>
+            <div>puntos de venta</div>
+            <div>sobre Nosotros</div>
+            <div>blog</div>
+            <div>
+                <Link to="https://www.facebook.com/Ferney03">
+              <FaFacebook size={40} />
+            </Link>
+            </div>
+            <div>
+            <Link to="https://www.instagram.com/mattyasaldana/">
+              <FaInstagramSquare size={40} />
+            </Link>
+          </div>
+          <div>
+            <Link to="https://web.whatsapp.com/">
+              <FaWhatsappSquare size={40} />
+            </Link>
+          </div>
+          </div>
+
+          <div className="max-sm:mx-4 max-sm:w-[30%] max-sm:h-[15%]">
+            <div className="mt-20 max-sm:mt-4 text-black font-bold">PRODUCTOS</div>
+            <div>Accesorios</div>
+            <div>Hogar</div>
+            <div>Electronica</div>
+            <div>Tazas</div>
+            <div>Viajes</div>
+            <div>Regalos</div>
+            <div>Novedades</div>
+            <div>Top Ventas</div>
+          </div>
+
+          <div className="max-sm:mx-4 max-sm:w-[45%]">
+            <div className="mt-20 max-sm:mt-0 text-black font-bold">INFORMACION</div>
+            <div>Condiciones de compra</div>
+            <div>Gastos de envio</div>
+            <div>Preguntas Frecuentes</div>
+            <div>Politica de Privacidad</div>
+            <div>Terminos Y Condiciones</div>
+          </div>
+
+          <div className="max-sm:mx-4 max-sm:w-[30%]"> 
+            <div className="mt-20 max-sm:mt-0 text-black font-bold">Acceso Tiendas</div>
             <div></div>
           </div>
         </div>

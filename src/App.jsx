@@ -29,6 +29,7 @@ import { Novedades } from "./components/Novedades.jsx";
 
 
 
+
 //  const router = createBrowserRouter([
 
   
@@ -81,6 +82,7 @@ function App() {
       <Route path="/Todos" element={<Todos/>} />
       <Route path="/Viajes" element={<AccesoriosDeViajes/>} />
       <Route path="/Novedades" element={<Novedades/>} />
+      
     
    
 

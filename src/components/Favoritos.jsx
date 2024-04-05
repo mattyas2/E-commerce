@@ -10,13 +10,34 @@ import { useAuth } from "../auth/AuthProvider";
 
 
 export const Favoritos = () => {
-  const { favorito,setFavorito } = useAuth();
+
+  const {
+    total, setTotal,
+  countProducts, setCountProducts,carrito,setCarrito,favorito,setFavorito
+  } = useAuth();
 
   const eliminarDeFavoritos = (personaje) => {
     const favoritosActualizados = favorito.filter((item) => item.id !== personaje.id);
     setFavorito(favoritosActualizados);
   };
 
+  const onAddProduct = async (product) => {
+  
+    const productoExistente = carrito.find((item) => item.id === product.id);
+  if (productoExistente) {
+    const carritoActualizado = carrito.map((item) =>
+      item.id === product.id ? { ...item, cantidad: item.cantidad + 1 } : item
+    );
+    setCarrito(carritoActualizado);
+    
+  } else {
+    setCarrito([...carrito, { ...product, cantidad: 1 }]);
+  
+  }
+  setTotal(total + product.data.precio );
+    setCountProducts(countProducts + 1);
+    
+  };
 
 
 
@@ -37,12 +58,12 @@ export const Favoritos = () => {
       <Navbar />
 
       <div className="text-center font-bold text-2xl">Favoritos</div>
-      <div className="w-full flex ">
-        <div className="w-[100%] flex flex-wrap ">
+      <div className="w-full flex max-sm:mb-20 bg-teal-50 h-[100%]">
+        <div className="w-[100%] flex flex-wrap max-sm:flex max-sm:flex-wrap max-sm:w-[100%]  ">
           {favorito &&
             favorito.map((producto) => (
               <div
-                className=" bg-purple-50 flex flex-col justify-center items-center mx-[50px] mt-5 mb-4 w-[25%] h-[400px] rounded-xl shadow-2xl "
+                className=" bg-purple-50 flex flex-col justify-center  max-sm:flex max-sm:flex-wrap max-sm:w-[100%] max-sm:mx-4 max-sm: max-sm:mt-4 items-center mx-[50px] mt-5 mb-4 w-[25%] h-[400px] rounded-xl shadow-2xl "
                 key={producto.id}
               >
                 <div className="flex justify-center items-center mt-[-40px]">
@@ -70,7 +91,10 @@ export const Favoritos = () => {
                       size={26}
                      />: '' }
                     </Link>{" "}
-                    <Link>
+                    <Link
+                      onClick={() => {
+                        onAddProduct(producto);
+                      }}>
                       {" "}
                       <GiShoppingCart FaBeer size={26} className="" />
                     </Link>

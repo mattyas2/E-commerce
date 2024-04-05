@@ -119,16 +119,16 @@ return(
       <Navbar/>
 
 <div className="text-center font-bold text-2xl">
- Ropa
+ TAZAS
 </div>
     
-<div className="flex flex-col gap-10 ">
-      <div className="w-[22%] flex gap-10 mx-7  ">
+<div className="flex flex-col gap-10  bg-teal-50 h-[100%]">
+      <div className="w-[22%] flex gap-10 mx-7 max-sm:flex max-sm:flex-wrap max-sm:w-[100%] max-sm:mx-0  ">
       {loaded &&
            productos.length > 0 &&
            productos.map((producto) => (
             <div
-              className=" bg-purple-50 flex flex-col justify-center items-center mt-5 mb-4 w-[100%]  h-[400px] rounded-xl shadow-2xl "
+              className=" bg-purple-50 flex flex-col justify-center items-center mt-5 mb-4 w-[100%] max-sm:mx-6  h-[400px] rounded-xl shadow-2xl "
               key={producto.id}
             >
               <div className="flex justify-center items-center ">
@@ -177,13 +177,13 @@ return(
           ))}
       </div>
   
-<div className="w-[32%] gap-10 mx-7 flex ">
+<div className="w-[32%] gap-10 mx-7 flex max-sm:flex max-sm:flex-wrap max-sm:w-[100%] max-sm:mx-0 max-sm:justify-center max-sm:mb-20 ">
 
 {loaded &&
            coleccion.length > 0 &&
            coleccion.map((producto) => (
             <div
-              className="bg-purple-50 flex flex-col justify-center items-center  mt-5 mb-10 w-[70%] h-[400px] rounded-xl shadow-2xl  "
+              className="bg-purple-50 flex flex-col justify-center items-center max-sm:w-[100%] max-sm:mx-6  mt-5 mb-10 w-[70%] h-[400px] rounded-xl shadow-2xl  "
               key={producto.id}
             >
               <div className="flex justify-center items-center">
@@ -202,7 +202,7 @@ return(
                 <h1 className="font-bold text-xl">{producto.data.name} </h1>
               </div>
               <div className="flex justify-between w-[100%] ">
-                <div className="mx-4 mt-5">${producto.data.Precio}</div>
+                <div className="mx-4 mt-5">${producto.data.precio}</div>
                 <div className="flex gap-2 mx-4 mt-5">
                 <Link>
                       {" "}
@@ -230,6 +230,9 @@ return(
               </div>
             </div>
           ))}
+</div>
+<div className="h-36">
+
 </div>
     </div>
     </>

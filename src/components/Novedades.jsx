@@ -119,11 +119,11 @@ return(
 
     <>
     <Navbar/>
-<div className="bg-teal-50">  <div className="text-center font-bold text-2xl">
+<div className=" bg-teal-50 h-[100%] ">  <div className="text-center font-bold text-2xl">
       Novedades
     </div>
     <div className="flex w-[100%] gap-10 flex-col ">
-      <div className="w-[30%] flex flex-wrap">
+      <div className="w-[30%] flex flex-wrap max-sm:flex max-sm:flex-wrap max-sm:w-[100%]">
       {loaded &&
            productos.length > 0 &&
            productos.map((producto) => (
@@ -177,7 +177,7 @@ return(
           ))}
       </div>
   
-<div className="w-[30%] flex ">
+<div className="w-[30%] flex max-sm:flex max-sm:flex-wrap max-sm:w-[100%]">
 
 {loaded &&
           coleccion.length > 0 &&
@@ -202,7 +202,7 @@ return(
                 <h1 className="font-bold text-xl">{producto.data.name} </h1>
               </div>
               <div className="flex justify-between w-[100%] ">
-                <div className="mx-4 mt-5">${producto.data.Precio}</div>
+                <div className="mx-4 mt-5">${producto.data.precio}</div>
                 <div className="flex gap-2 mx-4 mt-5">
                 <Link>
                       {" "}
@@ -230,6 +230,9 @@ return(
               </div>
             </div>
           ))}
+</div>
+<div className="h-36">
+
 </div>
     </div></div>
   

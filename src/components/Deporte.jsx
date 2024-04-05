@@ -121,8 +121,8 @@ return(
 <div className="text-center font-bold text-2xl">
   Deporte
 </div>
-<div className="flex w-[100%] gap-10 flex-wrap ">
-      <div className="w-[30%]">
+<div className="flex w-[100%] gap-10 flex-wrap bg-teal-50 h-[100%]">
+      <div className="w-[30%] max-sm:flex max-sm:flex-wrap max-sm:w-[100%]">
       {loaded &&
            productos.length > 0 &&
            productos.map((producto) => (
@@ -176,7 +176,7 @@ return(
           ))}
       </div>
   
-<div className="w-[30%]">
+<div className="w-[30%] max-sm:flex max-sm:flex-wrap max-sm:w-[100%]">
 
 {loaded &&
            coleccion.length > 0 &&
@@ -229,6 +229,9 @@ return(
               </div>
             </div>
           ))}
+</div>
+<div className="h-36">
+
 </div>
     </div>
     </>
