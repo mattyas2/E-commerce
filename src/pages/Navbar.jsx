@@ -93,7 +93,7 @@ export const Navbar = (
 
   return (
     <>
-      <Carousel wrapAround withoutControls slidesToShow={1} autoplay>
+      <Carousel wrapAround withoutControls slidesToShow={1} autoplay >
         <div className="bg-teal-200 w-full text-center text-sm">
           Imprescindibles para tus vacaciones
         </div>

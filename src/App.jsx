@@ -10,7 +10,7 @@ import {  BrowserRouter, Route, Routes } from "react-router-dom";
 import {createBrowserRouter} from 'react-router-dom'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { ResetPassword } from './pages/resetpassword.jsx'
-import { ShopingCar } from './pages/ShopingCar.jsx'
+
 import { AuthProvider } from "./auth/AuthProvider.jsx";
 import { Accesorios } from "./components/accesorios.jsx";
 import { Deporte } from "./components/Deporte.jsx";
@@ -72,7 +72,6 @@ function App() {
       <Route path="/Register" element={<Register/>} />
       <Route path="/Login" element={<Login/>} />
       <Route path="/Reset" element={<ResetPassword/>} />
-      <Route path="/Car" element={<ShopingCar/>} />
       <Route path="/Accesorios" element={<Accesorios/>} />
       <Route path="/Hogar" element={<Hogar/>} />
       <Route path="/Deporte" element={<Deporte/>} />

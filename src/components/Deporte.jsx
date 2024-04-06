@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 
 import { collection, getDocs, getFirestore, query, where, } from "firebase/firestore";
 import { app } from "../assets/config/firebase";
@@ -10,7 +11,11 @@ import { Navbar } from "../pages/Navbar";
 import { useAuth } from "../auth/AuthProvider";
 import { FcLike } from "react-icons/fc";
 
-
+import estrella from "../assets/img/estrella.png";
+import reloj from "../assets/img/reloj.png";
+import vector from "../assets/img/vect.png";
+import flecha from "../assets/img/flecha.png";
+import color from "../assets/img/colors.png";
 
 
 
@@ -98,21 +103,6 @@ setTotal(total + product.data.precio );
   }
   
 
-
-
-
-      const defaultOptions = {
-        reverse: true, // reverse the tilt direction
-        max: 15, // max tilt rotation (degrees)
-        perspective: 70, // Transform perspective, the lower the more extreme the tilt gets.
-        scale: 1.3, // 2 = 200%, 1.5 = 150%, etc..
-        speed: 100, // Speed of the enter/exit transition
-        transition: true, // Set a transition on enter/exit.
-        axis: null, // What axis should be disabled. Can be X or Y.
-        reset: true, // If the tilt effect has to be reset on exit.
-        easing: "cubic-bezier(.03,.98,.52,.99)", // Easing on enter/exit.
-      };
-
 return(
 
     <>
@@ -126,53 +116,83 @@ return(
       {loaded &&
            productos.length > 0 &&
            productos.map((producto) => (
-            <div
-              className=" bg-purple-50 flex flex-col justify-center items-center mx-[50px] mt-5 mb-4 w-[80%] h-[400px] rounded-xl shadow-2xl "
-              key={producto.id}
-            >
-              <div className="flex justify-center items-center ">
-                <Tilt
-                  options={defaultOptions}
-                  style={{ height: 200, width: 260, marginLeft: 60 }}
-                >
-                  <img
-                    className="w-[200px] h-[200px] "
-                    src={producto.data.imagen}
-                    alt=""
-                  />
-                </Tilt>
+            <div className="relative  mx-4 mt-2 rounded-xl shadow-2xl w-[320px] flex flex-col justify-center  bg-purple-50 mb-9 h-[500px]" key={producto.id}>
+            <Tilt>
+              <div className="bg-red-500 w-fit px-2 text-white font-bold rounded-sm absolute top-3 left-6">
+                <p>sale</p>
               </div>
-              <div className="mt-1 mb-4">
-                <h1 className="font-bold text-xl">{producto.data.name} </h1>
-              </div>
-              <div className="flex justify-between w-[100%] ">
-                <div className="mx-4 mt-5">${producto.data.precio}</div>
-                <div className="flex gap-2 mx-4 mt-5">
-                <Link>
-                      {" "}
-                   
-                       {favorito.find((item) => item.id === producto.id) ? <FcLike  FaBeer
-                        size={26}
-                        onClick={() => addToFavorites(producto)} /> : <IoMdHeartEmpty
-                        FaBeer
-                        size={26}
-                        onClick={() => addToFavorites(producto)}
-                       
-                      /> }
-                    </Link>{" "}
-                    <Link>
-                      {" "}
-                      <span
-                        onClick={() => {
-                          onAddProduct(producto);
-                        }}
-                      >
-                        <GiShoppingCart FaBeer size={26} className="" />
-                      </span>
-                    </Link>
+
+              <img
+                className="w-full h-[300px]"
+                src={producto.data.imagen}
+                alt=""
+              />
+            </Tilt>
+            <div>
+              <div className="flex items-center mt-3 justify-between me-3 mx-6">
+                <h6 className="text-cyan-500  font-bold">{producto.data.name}</h6>
+                <div className="bg-slate-900 text-white flex items-center gap-1">
+                  <div>
+                    <img src={estrella} alt="" />
+                  </div>{" "}
+                  4.9
                 </div>
               </div>
+
+              <div className="flex gap-5 my-2 mt-1 mx-4">
+                <h3 className="text-green-700 font-bold">
+                  ${producto.data.precio}
+                </h3>
+              </div>
+              <img className="mx-4" src={color} alt="" />
+              <div className="flex gap-3 mt-2 mx-4">
+                <div className="flex gap-1 items-center">
+                  <img src={reloj} alt="" />
+                  Pro...
+                </div>
+                <div className="flex  gap-1  items-center">
+                  <img src={vector} alt="" />
+                  64 Las...
+                </div>
+                <div className="flex  gap-1  items-center">
+                  <img src={reloj} alt="" />
+                  22 hr..
+                </div>
+              </div>
+
+              <div className="flex items-center justify-center gap-3 border-sky-500 border rounded-full w-[150px] mt-3 p-2 mx-16 ">
+                <p className="text-cyan-500 font-bold flex gap-7 ">
+                  <Link>
+                    {" "}
+                    {favorito.find((item) => item.id === producto.id) ? (
+                      <FcLike
+                        FaBeer
+                        size={36}
+                        onClick={() => addToFavorites(producto)}
+                      />
+                    ) : (
+                      <IoMdHeartEmpty
+                        FaBeer
+                        size={36}
+                        onClick={() => addToFavorites(producto)}
+                      />
+                    )}
+                  </Link>{" "}
+                  <Link>
+                    {" "}
+                    <span
+                      onClick={() => {
+                        onAddProduct(producto);
+                      }}
+                    >
+                      <GiShoppingCart FaBeer size={36} className="" />
+                    </span>
+                  </Link>{" "}
+                </p>
+                <img src={flecha} alt="" />
+              </div>
             </div>
+          </div>
           ))}
       </div>
   
@@ -181,53 +201,83 @@ return(
 {loaded &&
            coleccion.length > 0 &&
            coleccion.map((producto) => (
-            <div
-              className="bg-purple-50  flex flex-col justify-center items-center mx-[10px] mt-5  w-[80%] h-[400px] rounded-xl shadow-2xl  "
-              key={producto.id}
-            >
-              <div className="flex justify-center items-center">
-                <Tilt
-                  options={defaultOptions}
-                  style={{ height: 200, width: 260, marginLeft: 60 }}
-                >
-                  <img
-                    className="w-[200px] h-[200px] "
-                    src={producto.data.imagen}
-                    alt=""
-                  />
-                </Tilt>
+            <div className="relative  mx-4 mt-2 rounded-xl shadow-2xl w-[320px] flex flex-col justify-center  bg-purple-50 mb-9 h-[500px]"  key={producto.id}>
+            <Tilt>
+              <div className="bg-red-500 w-fit px-2 text-white font-bold rounded-sm absolute top-3 left-6">
+                <p>sale</p>
               </div>
-              <div className="mt-1 mb-4">
-                <h1 className="font-bold text-xl">{producto.data.name} </h1>
-              </div>
-              <div className="flex justify-between w-[100%] ">
-                <div className="mx-4 mt-5">${producto.data.precio}</div>
-                <div className="flex gap-2 mx-4 mt-5">
-                <Link>
-                      {" "}
-                   
-                       {favorito.find((item) => item.id === producto.id) ? <FcLike  FaBeer
-                        size={26}
-                        onClick={() => addToFavorites(producto)} /> : <IoMdHeartEmpty
-                        FaBeer
-                        size={26}
-                        onClick={() => addToFavorites(producto)}
-                       
-                      /> }
-                    </Link>{" "}
-                    <Link>
-                      {" "}
-                      <span
-                        onClick={() => {
-                          onAddProduct(producto);
-                        }}
-                      >
-                        <GiShoppingCart FaBeer size={26} className="" />
-                      </span>
-                    </Link>
+
+              <img
+                className="w-full h-[300px]"
+                src={producto.data.imagen}
+                alt=""
+              />
+            </Tilt>
+            <div>
+              <div className="flex items-center mt-3 justify-between me-3 mx-6">
+                <h6 className="text-cyan-500  font-bold">{producto.data.name}</h6>
+                <div className="bg-slate-900 text-white flex items-center gap-1">
+                  <div>
+                    <img src={estrella} alt="" />
+                  </div>{" "}
+                  4.9
                 </div>
               </div>
+
+              <div className="flex gap-5 my-2 mt-1 mx-4">
+                <h3 className="text-green-700 font-bold">
+                  ${producto.data.precio}
+                </h3>
+              </div>
+              <img className="mx-4" src={color} alt="" />
+              <div className="flex gap-3 mt-2 mx-4">
+                <div className="flex gap-1 items-center">
+                  <img src={reloj} alt="" />
+                  Pro...
+                </div>
+                <div className="flex  gap-1  items-center">
+                  <img src={vector} alt="" />
+                  64 Las...
+                </div>
+                <div className="flex  gap-1  items-center">
+                  <img src={reloj} alt="" />
+                  22 hr..
+                </div>
+              </div>
+
+              <div className="flex items-center justify-center gap-3 border-sky-500 border rounded-full w-[150px] mt-3 p-2 mx-16 ">
+                <p className="text-cyan-500 font-bold flex gap-7 ">
+                  <Link>
+                    {" "}
+                    {favorito.find((item) => item.id === producto.id) ? (
+                      <FcLike
+                        FaBeer
+                        size={36}
+                        onClick={() => addToFavorites(producto)}
+                      />
+                    ) : (
+                      <IoMdHeartEmpty
+                        FaBeer
+                        size={36}
+                        onClick={() => addToFavorites(producto)}
+                      />
+                    )}
+                  </Link>{" "}
+                  <Link>
+                    {" "}
+                    <span
+                      onClick={() => {
+                        onAddProduct(producto);
+                      }}
+                    >
+                      <GiShoppingCart FaBeer size={36} className="" />
+                    </span>
+                  </Link>{" "}
+                </p>
+                <img src={flecha} alt="" />
+              </div>
             </div>
+          </div>
           ))}
 </div>
 <div className="h-36">

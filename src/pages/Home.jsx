@@ -3,10 +3,17 @@
 /* eslint-disable react/no-unknown-property */
 /* eslint-disable no-unused-vars */
 import "firebase/firestore";
-import react, { createContext, useRef } from "react";
+import { createContext, useRef } from "react";
 import { GiShoppingCart } from "react-icons/gi";
 import { IoPersonCircle } from "react-icons/io5";
 import { VscSearch } from "react-icons/vsc";
+
+import estrella from "../assets/img/estrella.png";
+import reloj from "../assets/img/reloj.png";
+import vector from "../assets/img/vect.png";
+import flecha from "../assets/img/flecha.png";
+import color from "../assets/img/colors.png";
+
 import Carousel from "nuka-carousel";
 import { Link } from "react-router-dom";
 import { LiaAngleRightSolid } from "react-icons/lia";
@@ -33,6 +40,9 @@ import { Tilt } from "@jdion/tilt-react";
 import { IoAddCircle } from "react-icons/io5";
 import { Navbar } from "./Navbar";
 import { useAuth } from "../auth/AuthProvider";
+import { register } from "swiper/element/bundle";
+// register Swiper custom elements
+register();
 
 const customStyles = {
   content: {
@@ -210,7 +220,7 @@ export const Home = () => {
       <div className="bg-teal-50  ">
         <Navbar />
 
-        <div className="max-sm:flex max-sm:w-[375px] flex justify-between mt-2 mb-3 mx-7 max-sm:hidden">
+        <div className=" max-sm:w-[375px] flex justify-between mt-2 mb-3 mx-7 max-sm:hidden">
           <div className="flex justify-start gap-4 mx-10 max-sm:flex max-sm:w-[375px] max-sm:flex-wrap ">
             <div className="flex justify-center items-center gap-1  bg-red-400 p-2 rounded-lg max-sm:flex">
               <LuBadgePercent size={28} /> <Link to="/">Outlet</Link>
@@ -266,7 +276,7 @@ export const Home = () => {
           </h1>
         </div>
 
-        <div className="flex justify-between mx-4 mt-5  max-sm:hidden">
+        <div className="flex justify-between mx-4 mt-5 mb-4 max-sm:hidden">
           <div className="LINKDEVENTAS flex gap-4 max-sm:flex-wrap ">
             <div className="border p-2 w-[200px] flex justify-center hover:bg-sky-400 bg-purple-50 ">
               <Link
@@ -316,7 +326,7 @@ export const Home = () => {
                 size={30}
               />
             </button>
-            <button>
+            <button className="button">
               <LiaAngleRightSolid
                 onClick={() => {
                   handleNext;
@@ -440,134 +450,183 @@ export const Home = () => {
         </div>
         <div className="md:hidden ">
           <Carousel
-            cellSpacing={30}
-            slidesToShow={1.5}
+     
+            slidesToShow={1.1}
             dragging={true}
             renderTopLeftControls
             wrapAround
             autoplay={true}
             withoutControls
             pauseOnHover
-            cellAlign="center"
+            cellAlign="start"
           >
             {productos.map((producto) => (
-              <div
-                className=" flex flex-col justify-center items-center mx-[0] mt-5 mb-4 w-[100%] h-[300px] rounded-xl shadow-2xl   bg-purple-50 "
-                key={producto.id}
-              >
-                <div className="flex justify-center items-center mb-6">
-                  <Tilt
-                    options={defaultOptions}
-                    style={{ height: 90, width: 90 }}
-                  >
-                    <img
-                      className="w-[200px] h-[100px]  "
-                      src={producto.data.imagen}
-                      alt=""
-                    />
-                  </Tilt>
-                </div>
-                <div className=" mb-4">
-                  <h1 className="font-bold text-xl">{producto.data.name} </h1>
-                </div>
-                <div className="flex justify-between w-[100%] ">
-                  <div className="mx-4 mt-4">${producto.data.precio}</div>
-                  <div className="flex gap-2 mx-4 mt-4">
-                    <Link>
-                      {" "}
-                      {favorito.find((item) => item.id === producto.id) ? (
-                        <FcLike
-                          FaBeer
-                          size={26}
-                          onClick={() => addToFavorites(producto)}
-                        />
-                      ) : (
-                        <IoMdHeartEmpty
-                          FaBeer
-                          size={26}
-                          onClick={() => addToFavorites(producto)}
-                        />
-                      )}
-                    </Link>{" "}
-                    <Link>
-                      {" "}
-                      <span
-                        onClick={() => {
-                          onAddProduct(producto);
-                        }}
-                      >
-                        <GiShoppingCart FaBeer size={26} className="" />
-                      </span>
-                    </Link>
-                  </div>
+            <div className="relative  mx-4 mt-2 rounded-xl shadow-2xl w-[320px] flex flex-col justify-center  bg-purple-50 mb-9 h-[500px]" key={producto.id}>
+            <Tilt>
+              <div className="bg-red-500 w-fit px-2 text-white font-bold rounded-sm absolute top-3 left-6">
+                <p>sale</p>
+              </div>
+
+              <img
+                className="w-full h-[300px]"
+                src={producto.data.imagen}
+                alt=""
+              />
+            </Tilt>
+            <div>
+              <div className="flex items-center mt-3 justify-between me-3 mx-6">
+                <h6 className="text-cyan-500  font-bold">{producto.data.name}</h6>
+                <div className="bg-slate-900 text-white flex items-center gap-1">
+                  <div>
+                    <img src={estrella} alt="" />
+                  </div>{" "}
+                  4.9
                 </div>
               </div>
+
+              <div className="flex gap-5 my-2 mt-1 mx-4">
+                <h3 className="text-green-700 font-bold">
+                  ${producto.data.precio}
+                </h3>
+              </div>
+              <img className="mx-4" src={color} alt="" />
+              <div className="flex gap-3 mt-2 mx-4">
+                <div className="flex gap-1 items-center">
+                  <img src={reloj} alt="" />
+                  Pro...
+                </div>
+                <div className="flex  gap-1  items-center">
+                  <img src={vector} alt="" />
+                  64 Las...
+                </div>
+                <div className="flex  gap-1  items-center">
+                  <img src={reloj} alt="" />
+                  22 hr..
+                </div>
+              </div>
+
+              <div className="flex items-center justify-center gap-3 border-sky-500 border rounded-full w-[150px] mt-3 p-2 mx-16 ">
+                <p className="text-cyan-500 font-bold flex gap-7 ">
+                  <Link>
+                    {" "}
+                    {favorito.find((item) => item.id === producto.id) ? (
+                      <FcLike
+                        FaBeer
+                        size={36}
+                        onClick={() => addToFavorites(producto)}
+                      />
+                    ) : (
+                      <IoMdHeartEmpty
+                        FaBeer
+                        size={36}
+                        onClick={() => addToFavorites(producto)}
+                      />
+                    )}
+                  </Link>{" "}
+                  <Link>
+                    {" "}
+                    <span
+                      onClick={() => {
+                        onAddProduct(producto);
+                      }}
+                    >
+                      <GiShoppingCart FaBeer size={36} className="" />
+                    </span>
+                  </Link>{" "}
+                </p>
+                <img src={flecha} alt="" />
+              </div>
+            </div>
+          </div>
             ))}
           </Carousel>
         </div>
-        <div className="max-sm:hidden ">
+        <div className="max-sm:hidden   ">
           <Carousel
-            slidesToShow={4}
-            cellAlign="start"
-            cellSpacing={0}
-            dragging={true}
-            renderTopLeftControls
-            wrapAround
+            slidesToShow={3.5}
+            cellAlign="center"
+            cellSpacing={40}
             autoplay={true}
             withoutControls
-            pauseOnHover
-            ref={carouselRef}
-            slideIndex={slideIndex}
+            showDots
+            swiping
+            wrapAround
           >
             {productos.map((producto) => (
-              <div
-                className=" flex flex-col justify-center items-center mx-[10px] mt-5 mb-4 w-[90%] h-[360px] rounded-xl shadow-2xl  bg-purple-50 "
-                key={producto.data.id}
-              >
-                <div className="flex justify-center items-center">
-                  <Tilt
-                    options={defaultOptions}
-                    style={{ height: 200, width: 200 }}
-                  >
-                    <img
-                      className="w-[200px] h-[200px] "
-                      src={producto.data.imagen}
-                      alt=""
-                    />
-                  </Tilt>
-                </div>
-                <div className=" mb-4">
-                  <h1 className="font-bold text-xl">{producto.data.name} </h1>
-                </div>
-                <div className="flex justify-between w-[100%] ">
-                  <div className="mx-4 mt-5">${producto.data.precio}</div>
-                  <div className="flex gap-2 mx-4 mt-5">
-                    <Link>
-                      {" "}
-                      {favorito.find((item) => item.id === producto.id) ? (
-                        <FcLike
-                          FaBeer
-                          size={26}
-                          onClick={() => addToFavorites(producto)}
-                        />
-                      ) : (
-                        <IoMdHeartEmpty
-                          FaBeer
-                          size={26}
-                          onClick={() => addToFavorites(producto)}
-                        />
-                      )}
-                    </Link>{" "}
-                    <Link>
-                      {" "}
-                      <span
-                        onClick={() => {
-                          onAddProduct(producto);
-                        }}
-                      >
-                        <GiShoppingCart FaBeer size={26} className="" />
-                      </span>
-                    </Link>
+              <div className="relative  mx-4 mt-2 rounded-xl shadow-2xl w-[320px] flex flex-col justify-center  bg-purple-50 mb-9 h-[500px]" key={producto.id}>
+                <Tilt>
+                  <div className="bg-red-500 w-fit px-2 text-white font-bold rounded-sm absolute top-3 left-6">
+                    <p>sale</p>
+                  </div>
+
+                  <img
+                    className="w-full h-[300px]"
+                    src={producto.data.imagen}
+                    alt=""
+                  />
+                </Tilt>
+                <div>
+                  <div className="flex items-center mt-3 justify-between me-3 mx-6">
+                    <h6 className="text-cyan-500  font-bold">{producto.data.name}</h6>
+                    <div className="bg-slate-900 text-white flex items-center gap-1">
+                      <div>
+                        <img src={estrella} alt="" />
+                      </div>{" "}
+                      4.9
+                    </div>
+                  </div>
+
+                  <div className="flex gap-5 my-2 mt-1 mx-4">
+                    <h3 className="text-green-700 font-bold">
+                      ${producto.data.precio}
+                    </h3>
+                  </div>
+                  <img className="mx-4" src={color} alt="" />
+                  <div className="flex gap-3 mt-2 mx-4">
+                    <div className="flex gap-1 items-center">
+                      <img src={reloj} alt="" />
+                      Pro...
+                    </div>
+                    <div className="flex  gap-1  items-center">
+                      <img src={vector} alt="" />
+                      64 Las...
+                    </div>
+                    <div className="flex  gap-1  items-center">
+                      <img src={reloj} alt="" />
+                      22 hr..
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-center gap-3 border-sky-500 border rounded-full w-[150px] mt-3 p-2 mx-16 ">
+                    <p className="text-cyan-500 font-bold flex gap-7 ">
+                      <Link>
+                        {" "}
+                        {favorito.find((item) => item.id === producto.id) ? (
+                          <FcLike
+                            FaBeer
+                            size={36}
+                            onClick={() => addToFavorites(producto)}
+                          />
+                        ) : (
+                          <IoMdHeartEmpty
+                            FaBeer
+                            size={36}
+                            onClick={() => addToFavorites(producto)}
+                          />
+                        )}
+                      </Link>{" "}
+                      <Link>
+                        {" "}
+                        <span
+                          onClick={() => {
+                            onAddProduct(producto);
+                          }}
+                        >
+                          <GiShoppingCart FaBeer size={36} className="" />
+                        </span>
+                      </Link>{" "}
+                    </p>
+                    <img src={flecha} alt="" />
                   </div>
                 </div>
               </div>
@@ -634,7 +693,7 @@ export const Home = () => {
 
           <div className="h-[500px] mt-10 max-sm:hidden">
             <Carousel
-              slidesToShow={4}
+              slidesToShow={3.4}
               wrapAround
               autoplay={true}
               withoutControls
@@ -642,127 +701,175 @@ export const Home = () => {
               {loaded &&
                 coleccion.length > 0 &&
                 coleccion.map((producto) => (
-                  <Tilt
-                    options={defaultOptions2}
-                    style={{ height: 600, width: 350 }}
-                  >
-                    <div
-                      className=" bg-purple-50 flex flex-col justify-center items-center mx-[15px] mt-5 mb-4 w-[80%] h-[390px] rounded-xl shadow-2xl "
-                      key={producto.data.id}
-                    >
-                      <div className="flex justify-center items-center mt-[-40px]">
-                        <img
-                          className="w-[200px] h-[200px] "
-                          src={producto.data.imagen}
-                          alt=""
-                        />
+                  <div className="relative  mx-4 mt-2 rounded-xl shadow-2xl w-[320px] flex flex-col justify-center  bg-purple-50 mb-9 h-[500px]">
+                  <Tilt>
+                    <div className="bg-red-500 w-fit px-2 text-white font-bold rounded-sm absolute top-3 left-6">
+                      <p>sale</p>
+                    </div>
+  
+                    <img
+                      className="w-full h-[300px]"
+                      src={producto.data.imagen}
+                      alt=""
+                    />
+                  </Tilt>
+                  <div>
+                    <div className="flex items-center mt-3 justify-between me-3 mx-6">
+                      <h6 className="text-cyan-500  font-bold">{producto.data.name}</h6>
+                      <div className="bg-slate-900 text-white flex items-center gap-1">
+                        <div>
+                          <img src={estrella} alt="" />
+                        </div>{" "}
+                        4.9
                       </div>
-                      <div className="mt-1 mb-4">
-                        <h1 className="font-bold text-xl">
-                          {producto.data.name}{" "}
-                        </h1>
+                    </div>
+  
+                    <div className="flex gap-5 my-2 mt-1 mx-4">
+                      <h3 className="text-green-700 font-bold">
+                        ${producto.data.precio}
+                      </h3>
+                    </div>
+                    <img className="mx-4" src={color} alt="" />
+                    <div className="flex gap-3 mt-2 mx-4">
+                      <div className="flex gap-1 items-center">
+                        <img src={reloj} alt="" />
+                        Pro...
                       </div>
-
-                      <div className="flex justify-between w-[100%] ">
-                        <div className="mx-4 mt-5">${producto.data.precio}</div>
-                        <div className="flex gap-2 mx-4 mt-5">
-                          <Link>
-                            {" "}
-                            {favorito.find(
-                              (item) => item.id === producto.id
-                            ) ? (
-                              <FcLike
-                                size={26}
-                                onClick={() => addToFavorites(producto)}
-                              />
-                            ) : (
-                              <IoMdHeartEmpty
-                                FaBeer
-                                size={26}
-                                onClick={() => addToFavorites(producto)}
-                              />
-                            )}
-                          </Link>{" "}
-                          <Link
+                      <div className="flex  gap-1  items-center">
+                        <img src={vector} alt="" />
+                        64 Las...
+                      </div>
+                      <div className="flex  gap-1  items-center">
+                        <img src={reloj} alt="" />
+                        22 hr..
+                      </div>
+                    </div>
+  
+                    <div className="flex items-center justify-center gap-3 border-sky-500 border rounded-full w-[150px] mt-3 p-2 mx-16 ">
+                      <p className="text-cyan-500 font-bold flex gap-7 ">
+                        <Link>
+                          {" "}
+                          {favorito.find((item) => item.id === producto.id) ? (
+                            <FcLike
+                              FaBeer
+                              size={36}
+                              onClick={() => addToFavorites(producto)}
+                            />
+                          ) : (
+                            <IoMdHeartEmpty
+                              FaBeer
+                              size={36}
+                              onClick={() => addToFavorites(producto)}
+                            />
+                          )}
+                        </Link>{" "}
+                        <Link>
+                          {" "}
+                          <span
                             onClick={() => {
                               onAddProduct(producto);
                             }}
                           >
-                            {" "}
-                            <GiShoppingCart FaBeer size={26} className="" />
-                          </Link>
-                        </div>
-                      </div>
+                            <GiShoppingCart FaBeer size={36} className="" />
+                          </span>
+                        </Link>{" "}
+                      </p>
+                      <img src={flecha} alt="" />
                     </div>
-                  </Tilt>
+                  </div>
+                </div>
                 ))}
             </Carousel>
           </div>
           <div className="h-[500px] mt-10 md:hidden ">
             <Carousel
-              slidesToShow={1.2}
+              slidesToShow={1.1}
               wrapAround
               autoplay={true}
               withoutControls
-              cellAlign="center"
-              cellSpacing={2}
+             
+             
             >
               {loaded &&
                 coleccion.length > 0 &&
                 coleccion.map((producto) => (
-                  <Tilt
-                    options={defaultOptions2}
-                    style={{ height: 600, width: 350 }}
-                  >
-                    <div
-                      className=" bg-purple-50 flex flex-col justify-center items-center mx-[15px] mt-5 mb-4 w-[80%] h-[390px] rounded-xl shadow-2xl "
-                      key={producto.data.id}
-                    >
-                      <div className="flex justify-center items-center mt-[-40px]">
-                        <img
-                          className="w-[200px] h-[200px] "
-                          src={producto.data.imagen}
-                          alt=""
-                        />
+                  <div className="relative  mx-4 mt-2 rounded-xl shadow-2xl w-[320px] flex flex-col justify-center  bg-purple-50 mb-9 h-[500px]" key={producto.id}>
+                  <Tilt>
+                    <div className="bg-red-500 w-fit px-2 text-white font-bold rounded-sm absolute top-3 left-6">
+                      <p>sale</p>
+                    </div>
+  
+                    <img
+                      className="w-full h-[300px]"
+                      src={producto.data.imagen}
+                      alt=""
+                    />
+                  </Tilt>
+                  <div>
+                    <div className="flex items-center mt-3 justify-between me-3 mx-6">
+                      <h6 className="text-cyan-500  font-bold">{producto.data.name}</h6>
+                      <div className="bg-slate-900 text-white flex items-center gap-1">
+                        <div>
+                          <img src={estrella} alt="" />
+                        </div>{" "}
+                        4.9
                       </div>
-                      <div className="mt-1 mb-4">
-                        <h1 className="font-bold text-xl">
-                          {producto.data.name}{" "}
-                        </h1>
+                    </div>
+  
+                    <div className="flex gap-5 my-2 mt-1 mx-4">
+                      <h3 className="text-green-700 font-bold">
+                        ${producto.data.precio}
+                      </h3>
+                    </div>
+                    <img className="mx-4" src={color} alt="" />
+                    <div className="flex gap-3 mt-2 mx-4">
+                      <div className="flex gap-1 items-center">
+                        <img src={reloj} alt="" />
+                        Pro...
                       </div>
-
-                      <div className="flex justify-between w-[100%] ">
-                        <div className="mx-4 mt-5">${producto.data.precio}</div>
-                        <div className="flex gap-2 mx-4 mt-5">
-                          <Link>
-                            {" "}
-                            {favorito.find(
-                              (item) => item.id === producto.id
-                            ) ? (
-                              <FcLike
-                                size={26}
-                                onClick={() => addToFavorites(producto)}
-                              />
-                            ) : (
-                              <IoMdHeartEmpty
-                                FaBeer
-                                size={26}
-                                onClick={() => addToFavorites(producto)}
-                              />
-                            )}
-                          </Link>{" "}
-                          <Link
+                      <div className="flex  gap-1  items-center">
+                        <img src={vector} alt="" />
+                        64 Las...
+                      </div>
+                      <div className="flex  gap-1  items-center">
+                        <img src={reloj} alt="" />
+                        22 hr..
+                      </div>
+                    </div>
+  
+                    <div className="flex items-center justify-center gap-3 border-sky-500 border rounded-full w-[150px] mt-3 p-2 mx-16 ">
+                      <p className="text-cyan-500 font-bold flex gap-7 ">
+                        <Link>
+                          {" "}
+                          {favorito.find((item) => item.id === producto.id) ? (
+                            <FcLike
+                              FaBeer
+                              size={36}
+                              onClick={() => addToFavorites(producto)}
+                            />
+                          ) : (
+                            <IoMdHeartEmpty
+                              FaBeer
+                              size={36}
+                              onClick={() => addToFavorites(producto)}
+                            />
+                          )}
+                        </Link>{" "}
+                        <Link>
+                          {" "}
+                          <span
                             onClick={() => {
                               onAddProduct(producto);
                             }}
                           >
-                            {" "}
-                            <GiShoppingCart FaBeer size={26} className="" />
-                          </Link>
-                        </div>
-                      </div>
+                            <GiShoppingCart FaBeer size={36} className="" />
+                          </span>
+                        </Link>{" "}
+                      </p>
+                      <img src={flecha} alt="" />
                     </div>
-                  </Tilt>
+                  </div>
+                </div>
                 ))}
             </Carousel>
           </div>
@@ -1108,29 +1215,33 @@ export const Home = () => {
 
         <div className="pie de pagina h-[50vh] w-full max-sm:h-[90vh] flex justify-evenly  bg-purple-400 text-black max-sm:flex max-sm:justify-evenly  max-sm:gap-4 max-sm:flex-wrap">
           <div className="max-sm:mx-4 max-sm:w-[40%] max-sm:h-[5%]">
-            <div className="mt-20  max-sm:mt-4 text-black font-bold ">CONTACTO</div>
+            <div className="mt-20  max-sm:mt-4 text-black font-bold ">
+              CONTACTO
+            </div>
             <div>puntos de venta</div>
             <div>sobre Nosotros</div>
             <div>blog</div>
             <div>
-                <Link to="https://www.facebook.com/Ferney03">
-              <FaFacebook size={40} />
-            </Link>
+              <Link to="https://www.facebook.com/Ferney03">
+                <FaFacebook size={40} />
+              </Link>
             </div>
             <div>
-            <Link to="https://www.instagram.com/mattyasaldana/">
-              <FaInstagramSquare size={40} />
-            </Link>
-          </div>
-          <div>
-            <Link to="https://web.whatsapp.com/">
-              <FaWhatsappSquare size={40} />
-            </Link>
-          </div>
+              <Link to="https://www.instagram.com/mattyasaldana/">
+                <FaInstagramSquare size={40} />
+              </Link>
+            </div>
+            <div>
+              <Link to="https://web.whatsapp.com/">
+                <FaWhatsappSquare size={40} />
+              </Link>
+            </div>
           </div>
 
           <div className="max-sm:mx-4 max-sm:w-[30%] max-sm:h-[15%]">
-            <div className="mt-20 max-sm:mt-4 text-black font-bold">PRODUCTOS</div>
+            <div className="mt-20 max-sm:mt-4 text-black font-bold">
+              PRODUCTOS
+            </div>
             <div>Accesorios</div>
             <div>Hogar</div>
             <div>Electronica</div>
@@ -1142,7 +1253,9 @@ export const Home = () => {
           </div>
 
           <div className="max-sm:mx-4 max-sm:w-[45%]">
-            <div className="mt-20 max-sm:mt-0 text-black font-bold">INFORMACION</div>
+            <div className="mt-20 max-sm:mt-0 text-black font-bold">
+              INFORMACION
+            </div>
             <div>Condiciones de compra</div>
             <div>Gastos de envio</div>
             <div>Preguntas Frecuentes</div>
@@ -1150,8 +1263,10 @@ export const Home = () => {
             <div>Terminos Y Condiciones</div>
           </div>
 
-          <div className="max-sm:mx-4 max-sm:w-[30%]"> 
-            <div className="mt-20 max-sm:mt-0 text-black font-bold">Acceso Tiendas</div>
+          <div className="max-sm:mx-4 max-sm:w-[30%]">
+            <div className="mt-20 max-sm:mt-0 text-black font-bold">
+              Acceso Tiendas
+            </div>
             <div></div>
           </div>
         </div>
