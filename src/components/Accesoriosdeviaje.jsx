@@ -7,7 +7,6 @@ import { Link } from "react-router-dom";
 import { GiShoppingCart } from "react-icons/gi";
 import { IoMdHeartEmpty } from "react-icons/io";
 import { useEffect, useState } from "react";
-import { Navbar } from "../pages/Navbar";
 import { useAuth } from "../auth/AuthProvider";
 import { FcLike } from "react-icons/fc";
 import estrella from "../assets/img/estrella.png";
@@ -15,6 +14,7 @@ import reloj from "../assets/img/reloj.png";
 import vector from "../assets/img/vect.png";
 import flecha from "../assets/img/flecha.png";
 import color from "../assets/img/colors.png";
+import { Navbar } from "../pages/Navbar";
 
 
 
@@ -25,9 +25,8 @@ export const AccesoriosDeViajes = ()=>{
   
     
     const {
-      productos, setProductos,
-      total, setTotal,
-    countProducts, setCountProducts,coleccion,setColeccion,carrito,setCarrito,favorito,setFavorito
+      productos, setProductos,coleccion,setColeccion,favorites,onAddProduct,onDeleteFavort,addToFavorites
+                        
     } = useAuth();
   useEffect(() => {
 
@@ -72,38 +71,10 @@ useEffect(() => {
 }, []);
       
         
-const onAddProduct = async (product) => {
-  
-  const productoExistente = carrito.find((item) => item.id === product.id);
-if (productoExistente) {
-  const carritoActualizado = carrito.map((item) =>
-    item.id === product.id ? { ...item, cantidad: item.cantidad + 1 } : item
-  );
-  setCarrito(carritoActualizado);
-  
-} else {
-  setCarrito([...carrito, { ...product, cantidad: 1 }]);
-
-}
-setTotal(total + product.data.precio );
-  setCountProducts(countProducts + 1);
-  
-};
-
-
 
  
   
 
-  const addToFavorites = async (product) => {
-    const personajeExistente = favorito.find((item) => item.id === product.id);
-    if (personajeExistente) {
-      const favoritosActualizados = favorito.filter((item) => item.id !== product.id);
-      setFavorito(favoritosActualizados);
-    } else {
-      setFavorito([...favorito, product]);
-    }
-  }
   
 
 
@@ -112,6 +83,7 @@ return(
 
     <>
     <Navbar/>
+ 
 <div className="bg-teal-50 h-[100%]">  <div className="text-center font-bold text-2xl">
  Accesorios de Viaje
     </div>
@@ -126,11 +98,15 @@ return(
                 <p>sale</p>
               </div>
 
-              <img
-                className="w-full h-[300px]"
-                src={producto.data.imagen}
-                alt=""
-              />
+              <Link to={`/ProductsPage/${producto.id}`}>
+                     
+                     <img
+                       className="w-full h-[300px]"
+                       src={producto.data.imagen}
+                       alt=""
+                     />
+                 
+                   </Link>
             </Tilt>
             <div>
               <div className="flex items-center mt-3 justify-between me-3 mx-6">
@@ -145,7 +121,7 @@ return(
 
               <div className="flex gap-5 my-2 mt-1 mx-4">
                 <h3 className="text-green-700 font-bold">
-                  ${producto.data.precio}
+                  ${producto.data.precio}.000
                 </h3>
               </div>
               <img className="mx-4" src={color} alt="" />
@@ -168,11 +144,11 @@ return(
                 <p className="text-cyan-500 font-bold flex gap-7 ">
                   <Link>
                     {" "}
-                    {favorito.find((item) => item.id === producto.id) ? (
+                    {favorites.find((item) => item.id === producto.id) ? (
                       <FcLike
                         FaBeer
                         size={36}
-                        onClick={() => addToFavorites(producto)}
+                        onClick={() => onDeleteFavort(producto.id)}
                       />
                     ) : (
                       <IoMdHeartEmpty
@@ -205,32 +181,35 @@ return(
 {loaded &&
           coleccion.length > 0 &&
            coleccion.map((producto) => (
-            <div className="relative  mx-4 mt-2 rounded-xl shadow-2xl w-[320px] flex flex-col justify-center  bg-purple-50 mb-9 h-[500px]" key={producto.id}>
+            <div key={producto.id} className="relative  mx-4 mt-2 mb-6 rounded-xl shadow-2xl w-[320px] flex flex-col justify-center  bg-purple-50  h-[535px]">
+
+                 
             <Tilt>
               <div className="bg-red-500 w-fit px-2 text-white font-bold rounded-sm absolute top-3 left-6">
                 <p>sale</p>
               </div>
-
-              <img
-                className="w-full h-[300px]"
-                src={producto.data.imagen}
-                alt=""
-              />
+              <Link to={`/ColeccionPage/${producto.id}`}>
+                <img
+                  className="w-full h-[290px]"
+                  src={producto.data.imagen}
+                  alt=""
+                />
+              </Link>
             </Tilt>
             <div>
-              <div className="flex items-center mt-3 justify-between me-3 mx-6">
-                <h6 className="text-cyan-500  font-bold">{producto.data.name}</h6>
-                <div className="bg-slate-900 text-white flex items-center gap-1">
-                  <div>
-                    <img src={estrella} alt="" />
-                  </div>{" "}
+              <div className="col-10 flex items-center mt-3 justify-between  me-3 mx-6">
+                <h6 className="text-cyan-500  font-bold">
+                  {producto.data.name}
+                </h6>
+                <div className="col-1 bg-slate-900 text-white flex items-center gap-2 w-14">
+                  <img className="w-5 h-5" src={estrella} alt="" />
                   4.9
                 </div>
               </div>
 
               <div className="flex gap-5 my-2 mt-1 mx-4">
                 <h3 className="text-green-700 font-bold">
-                  ${producto.data.precio}
+                ${producto.data.precio}.000
                 </h3>
               </div>
               <img className="mx-4" src={color} alt="" />
@@ -249,22 +228,23 @@ return(
                 </div>
               </div>
 
-              <div className="flex items-center justify-center gap-3 border-sky-500 border rounded-full w-[150px] mt-3 p-2 mx-16 ">
+              <div className="flex items-center mb-2 justify-center gap-3 border-sky-500 border rounded-full w-[150px] mt-3 p-2 mx-16 ">
                 <p className="text-cyan-500 font-bold flex gap-7 ">
                   <Link>
                     {" "}
-                    {favorito.find((item) => item.id === producto.id) ? (
-                      <FcLike
-                        FaBeer
-                        size={36}
-                        onClick={() => addToFavorites(producto)}
-                      />
+                    {favorites.find((item) => item.id === producto.id) ? (
+                      <button  onClick={() => onDeleteFavort(producto.id)}><FcLike
+                      size={36}
+                     
+                    /></button>
+                      
                     ) : (
+                      <button  onClick={() => addToFavorites(producto)}> 
                       <IoMdHeartEmpty
-                        FaBeer
-                        size={36}
-                        onClick={() => addToFavorites(producto)}
-                      />
+                      size={36}
+                     
+                    /></button>
+                     
                     )}
                   </Link>{" "}
                   <Link>
@@ -281,7 +261,7 @@ return(
                 <img src={flecha} alt="" />
               </div>
             </div>
-          </div>
+            </div>
           ))}
 </div>
 <div className="h-36">

@@ -1,17 +1,13 @@
 /* eslint-disable no-unused-vars */
-import { app } from "./assets/config/firebase.js"
-import { getAuth, onAuthStateChanged } from "firebase/auth"
-import { useState } from "react";
+
 import {Login} from "./pages/Login.jsx";
 import { Register } from "./pages/Register.jsx";
-import {Navbar} from "./pages/Navbar.jsx";
-import {Home} from './pages/Home.jsx';
-import {  BrowserRouter, Route, Routes } from "react-router-dom";
-import {createBrowserRouter} from 'react-router-dom'
+
+import { Home } from './pages/Home.jsx';
+import {  BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { ResetPassword } from './pages/resetpassword.jsx'
 
-import { AuthProvider } from "./auth/AuthProvider.jsx";
 import { Accesorios } from "./components/accesorios.jsx";
 import { Deporte } from "./components/Deporte.jsx";
 import { Electronica } from "./components/Electronica.jsx";
@@ -21,54 +17,36 @@ import {Ropa } from "./components/Ropa.jsx";
 import { Todos } from "./components/todos.jsx";
 import { AccesoriosDeViajes } from "./components/Accesoriosdeviaje.jsx";
 import { Novedades } from "./components/Novedades.jsx";
+import { Checkout } from "./components/Checkout.jsx";
+import { Cart }  from './components/Cart.jsx'
+
+import { ProductsPage } from "./products/ProductsPage.jsx";
+import { ColeccionPage } from "./products/ColeccionPage.jsx";
+import { Search } from "./components/filter.jsx";
+import { Footer } from "./components/Footer.jsx";
 
 
 
 
 
 
-
-
-
-//  const router = createBrowserRouter([
-
-  
-//   {
-//     path:"/",
-//     element:<Home/>
-//   },
-//   {
-//     path:"/Register",
-//     element:<Register/>
-//   },
-//   {
-//     path:"/Login",
-//     element:<Login/>
-//   },
-//   {
-//     path:"/Reset",
-//     element:<ResetPassword/>
-//   }, 
-//   {
-//     path:"/Car",
-//     element:<ShopingCar/>
-//   },
-// ])
 
 
 function App() {
 
- 
+  
   
   return (
 
     <>
+  
 
-     <AuthProvider >
-     <BrowserRouter>
+    
+    
+     <BrowserRouter>    
      <Routes>
 
-      <Route path="/" element={<Home/>} />
+      <Route path="/" element={<Home/>} />      
       <Route path="/Register" element={<Register/>} />
       <Route path="/Login" element={<Login/>} />
       <Route path="/Reset" element={<ResetPassword/>} />
@@ -81,21 +59,26 @@ function App() {
       <Route path="/Todos" element={<Todos/>} />
       <Route path="/Viajes" element={<AccesoriosDeViajes/>} />
       <Route path="/Novedades" element={<Novedades/>} />
-      
+      <Route path="/Checkout" element={<Checkout/>} />
+      <Route path="/Carrito" element={<Cart/>}/>
+      <Route path="/ProductsPage/:productoId" element={<ProductsPage/>}/>
+      <Route path="/ColeccionPage/:productoId" element={<ColeccionPage/>}/>
+      <Route path="/Filters" element={<Search/>}/>
     
    
 
 
      </Routes>
-     
+     <Footer/>
+ 
      </BrowserRouter>
-
-     </AuthProvider>
-
-
+   
+  
 
 
-{/* <RouterProvider router={router}/> */}
+
+
+
 
 
 

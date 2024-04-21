@@ -4,14 +4,13 @@ import { useState } from "react";
 import { app } from "../assets/config/firebase"
 
 import {
-  getAuth,
-  createUserWithEmailAndPassword,
+  getAuth
+
 } from "firebase/auth";
 import { Link, useNavigate } from "react-router-dom";
-import {createUser} from "../assets/config/firebase"
-import {startSession} from "./sesion";
 import { Navbar } from "./Navbar";
 import { useAuth } from "../auth/AuthProvider";
+
 
 
 const auth = getAuth(app);
@@ -19,46 +18,35 @@ const auth = getAuth(app);
 
 export const Register = () => {
 
-  const [usuario, setUsuario] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [repeatPassword, setRepeatPassword] = useState("");
-    const [error, setError] = useState("");
-    const navigate = useNavigate();
+  const { signup} = useAuth();
 
-    const {setIsAuthenticated} = useAuth();
-  
-    const registerAccount = async (e) => {
-      e.preventDefault();
-     // validate the inputs
-     if (!email || !password || !repeatPassword) {
-      setError("Please fill out all the fields.");
-      return;
-    }
-    if (password !== repeatPassword) {
-      setError("Passwords do not match");
-      return;
-    }
+  const [user, setUser] = useState({
+    email: "",
+    password: "",
+    displayName:"",
+  });
 
-    // clear the errors
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     setError("");
     try {
-      let registerResponse = await createUser(email, password,usuario);
-      startSession(registerResponse.user);
-      setIsAuthenticated(true);
+      await signup(user.email, user.password,user.displayName);
       navigate("/");
     } catch (error) {
-      console.error(error.message);
       setError(error.message);
-      alert('Error')
     }
-  }
+  };
+
+  
    
   return (
     <>
-    <Navbar usuario={usuario} />
-   
-      <div className="bg-[url(https://image.slidesdocs.com/responsive-images/background/office-business-team-cooperation-data-simple-powerpoint-background_7cb3d2ee4a__960_540.jpg)] bg-cover bg-no-repeat h-[540px]  ">
+    <Navbar/>
+  
+      <div className="bg-teal-50 h-[540px] max-sm:h-[600px] ">
        <div className="flex justify-center w-full max-sm:flex max-sm:w-full max-sm:justify-center max-sm:flex-col ">
         
         <div className="w-[40%] mt-32 ms-28 text-5xl  max-sm:mt-4 max-sm:text-2xl max-sm:ms-0 max-sm:w-[100%] ">
@@ -68,21 +56,24 @@ export const Register = () => {
       
       <div className="w-[70%] ms-[-300px] max-sm:w-[100%] max-sm:flex max-sm:flex-col max-sm:justify-center max-sm:items-center max-sm:ms-0">
       <div className="relative flex flex-1 flex-col items-center justify-center  pt-4 text-black max-sm:flex max-sm:justify-center ">
-          <form onSubmit={registerAccount} className="w-full max-w-sm ">
+     
+          <form onSubmit={ handleSubmit} className="w-full max-w-sm ">
 
           <div className="mb-6 max-sm:mb-3">
               
               <label
                 type="text"
                 className="block text-sm font-semibold leading-6 text-gray-900"
-                id="usuario">
+                id="usuario"
+                >
+                  
                 Usuario:
               </label>
               <input
-                value={usuario}
-                onChange={(e) => setUsuario(e.target.value)}
+             name="displayName"
+                onChange={(e) => setUser({ ...user, displayName: e.target.value })}
                 type="text"
-                id="usuario"
+                id="displayName"
                 className="mt-1 appearance-none text-slate-900 bg-white rounded-md block w-full px-2 h-10 shadow-sm max-sm:text-sm focus:outline-none placeholder:text-slate-400 focus:ring-2 focus:ring-sky-500 ring-1 ring-slate-200"
                 required="" autoComplete="off"
               />
@@ -96,8 +87,8 @@ export const Register = () => {
                 Email address
               </label>
               <input
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                name="email"
+                onChange={(e) => setUser({ ...user, email: e.target.value })}
                 type="email"
                 id="email"
                 className="mt-1 appearance-none text-slate-900 bg-white rounded-md block w-full px-3 h-10 shadow-sm sm:text-sm focus:outline-none placeholder:text-slate-400 focus:ring-2 focus:ring-sky-500 ring-1 ring-slate-200"
@@ -112,8 +103,8 @@ export const Register = () => {
                 Password
               </label>
               <input
-               value={password}
-               onChange={(e) => setPassword(e.target.value)}
+             name="password"
+             onChange={(e) => setUser({ ...user, password: e.target.value })}
                 type="password"
                 id="password"
                 className="mt-1 appearance-none text-slate-900 bg-white rounded-md block w-full px-3 h-9 shadow-sm sm:text-sm focus:outline-none placeholder:text-slate-400 focus:ring-2 focus:ring-sky-500 ring-1 ring-slate-200"
@@ -122,16 +113,17 @@ export const Register = () => {
             </div>
             <div className="mb-6">
               <label
-                tabIndex="repeatpassword"
+                tabIndex="repeatPaswword"
                 className="block text-sm font-semibold leading-7 text-gray-900"
               >
                Repeat Password
               </label>
               <input
-               value={repeatPassword}
-               onChange={(e) => setRepeatPassword(e.target.value)}
+              
+               onChange={(e) => setUser({ ...user, repeatpassword: e.target.value })}
                 type="password"
                 id="password"
+                name="repeatPaswword"
                 className="mt-1 appearance-none text-slate-900 bg-white rounded-md block w-full px-3 h-9 shadow-sm sm:text-sm focus:outline-none placeholder:text-slate-400 focus:ring-2 focus:ring-sky-500 ring-1 ring-slate-200"
                 required=""
               />
@@ -152,10 +144,10 @@ export const Register = () => {
             </p>
           </form>
           </div>
-        <footer className="mb-6 ">
-          <div className="space-y-2 text-sm text-gray-900 sm:flex sm:items-center sm:justify-center sm:space-x-4 sm:space-y-0">
+        <footer className="mb-6 max-sm-mb-10 ">
+          <div className="space-y-2 text-sm text-gray-900 sm:flex sm:items-center sm:justify-center sm:space-x-4 sm:space-y-0 ">
       
-            <span>¿Ya Tienes Una Cuenta?</span>
+            <span className="max-sm:mx-4">¿Ya Tienes Una Cuenta?</span>
                 <button className="bg-slate-900 text-white p-2 rounded-lg " >
                   <Link to={"/Login"} className="text-white text-decoration-none">Iniciar Sesion </Link>
                   <span aria-hidden="true">→</span>

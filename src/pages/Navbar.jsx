@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 
 import { GiShoppingCart } from "react-icons/gi";
@@ -5,95 +6,121 @@ import { IoPersonCircle } from "react-icons/io5";
 import { VscSearch } from "react-icons/vsc";
 import Carousel from "nuka-carousel";
 import { useEffect, useState } from "react";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { app } from "../assets/config/firebase";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { onAuthStateChanged } from "firebase/auth";
+import { app, auth } from "../assets/config/firebase";
+import { Link } from "react-router-dom";
 import { useAuth } from "../auth/AuthProvider";
-import { deleteDoc, doc, getDoc, getDocs, getFirestore, or } from "firebase/firestore";
+import { doc, getDoc, getDocs, getFirestore, updateDoc } from "firebase/firestore";
 import { collection, query, where } from "firebase/firestore";
-import { Modal } from "bootstrap";
+import { GrLogout } from "react-icons/gr";
+import { IoMdArrowRoundBack } from "react-icons/io";
 import { IoMdMenu } from "react-icons/io";
-import { FaWhatsappSquare } from "react-icons/fa";
 import { TiStarOutline } from "react-icons/ti";
 import { ImGift } from "react-icons/im";
 import { BsLightningCharge } from "react-icons/bs";
-
-
 import { LuBadgePercent } from "react-icons/lu";
+
 
 // const auth = getAuth(app);
 
-export const Navbar = (
-) => {
-  const [results, setResults] = useState([]);
+export const Navbar = () => {
   const [input, setInput] = useState("");
   const [active, setActive] = useState(true);
+  const [actived, setActived] = useState(true);
   const [mostrarMenu, setMostrarMenu] = useState(false);
- 
-
+  const [busqueda, setBusqueda] = useState("");
+  const [total, setTotal] = useState(0);
   const db = getFirestore(app);
 
-  const {
-    isAuthenticated,
-    setIsAuthenticated,
-    endSession,
-    productos, setProductos,
-    total, setTotal,
-  countProducts, setCountProducts, coleccion, setColeccion,setNewProducto,newProducto,newColeccion,setNewColeccion,carrito,setCarrito
-  } = useAuth();
+  const { logout, user,carrito, setCarrito } = useAuth();
 
-  const EndSession = () => {
-    endSession();
-    setIsAuthenticated(false);
-  };
-
-  useEffect(() => {}, [isAuthenticated]);
 
   const Search = async () => {
     const q = query(collection(db, "productos"), where("name", ">=", input));
-    // const q1 = query(
-    //   collection(db, "productos"),
-    //   where("name", "==", input)
-    // );
-
+   
     const newImpresion = [];
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
       newImpresion.push(doc.id, " => ", doc.data());
-      // doc.data() is never undefined for query doc snapshots
-      // console.log(doc.id, " => ", doc.data());
+
     });
-    setResults(newImpresion);
+    setBusqueda(newImpresion);
   };
 
-  const onDeleteProduct = async (productId) => {
-    const productoEliminado = carrito.find((item) => item.id === productId);
-    const nuevoCarrito = carrito.filter((producto) => producto.id !== productId);
-    setCarrito(nuevoCarrito);
-    setTotal(total - (productoEliminado.data.precio * productoEliminado.cantidad));
-    setCountProducts(countProducts - productoEliminado.cantidad);
-    }
-   
-  
-  
-	
-  
-		
-	
-
-	const onCleanCart = () => {
-		setCarrito([]);
-		setTotal(0);
-		setCountProducts(0);
-	};
   const toggleMenu = () => {
     setMostrarMenu(!mostrarMenu);
   };
 
 
+
+  // const auth = getAuth();
+
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      const uid = user.uid;
+
+      // Obtener datos del usuario
+      const userRef = doc(db, "usuarios", uid);
+      const userDoc = await getDoc(userRef);
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+
+        // Imprimir productos del carrito
+        if (userData.Carrito) {
+          userData.Carrito.forEach((productId) => {
+            setCarrito(userData.Carrito || []);
+          });
+        }
+      }
+    } else {
+      // Usuario sin iniciar sesión
+    }
+  });
+  useEffect(() => {
+    let total = 0;
+    carrito.forEach((producto) => {
+      total += parseFloat(producto.data.precio);
+    });
+    setTotal(total);
+  }, [carrito]);
+
+  const emptyCart = async () => {
+    if (user) {     
+      // Obtener datos del usuario
+      const userRef = doc(db, "usuarios", user.uid);
+        await updateDoc(userRef, {
+   Carrito: []
+});
+ setCarrito([]);
+
+    } else {
+      // Usuario sin iniciar sesión
+    }
+ 
+return emptyCart,carrito
+    
+  };
+
+    const onDeleteProduct = async (productId)=>{
+        if (user) {     
+          // Obtener datos del usuario
+          const userRef = doc(db, "usuarios", user.uid);
+            await updateDoc(userRef, {
+       Carrito: carrito.filter((product) => product.id !== productId),
+    });
+     setCarrito(carrito.filter((product) => product.id !== productId));
+  
+        } else {
+          // Usuario sin iniciar sesión
+        }
+     
+   return onDeleteProduct,carrito
+    }
+  
+
   return (
     <>
-      <Carousel wrapAround withoutControls slidesToShow={1} autoplay >
+      <Carousel wrapAround withoutControls slidesToShow={1} autoplay>
         <div className="bg-teal-200 w-full text-center text-sm">
           Imprescindibles para tus vacaciones
         </div>
@@ -102,78 +129,90 @@ export const Navbar = (
         </div>
       </Carousel>
 
-      <nav className=" bg-cover bg-[url(https://th.bing.com/th/id/R.284b2edc83453b61c140a43ed4a70f03?rik=Fiu15H6h5z%2bRjw&riu=http%3a%2f%2fwww.openailab.com%2fuploads%2fimg%2f20200814%2f5f36395bebc4e.jpg&ehk=gFvyMGkOMdwj0aQ1KCxWxDd9TBXGtxRSNbqFIiROVWQ%3d&risl=&pid=ImgRaw&r=0)] ">
+      <nav className="mt-[-20px] bg-cover bg-[url(https://th.bing.com/th/id/R.284b2edc83453b61c140a43ed4a70f03?rik=Fiu15H6h5z%2bRjw&riu=http%3a%2f%2fwww.openailab.com%2fuploads%2fimg%2f20200814%2f5f36395bebc4e.jpg&ehk=gFvyMGkOMdwj0aQ1KCxWxDd9TBXGtxRSNbqFIiROVWQ%3d&risl=&pid=ImgRaw&r=0)]  ">
         <div className="max-sm:flex max-sm:w-full max-sm:justify-between max-sm:gap-2 max-sm:h-[60px] max-sm:mx-2   md:flex md:justify-around border-y-2 h-[110px] md:w-full">
-        
           <div className="logo flex ">
-          <div className="max-sm:mt-0 max-sm:mb-2 max-sm: mt-10">
-          <div className="md:hidden">
-      <button onClick={toggleMenu}> <IoMdMenu size={38} /></button>
-      {mostrarMenu && (
-        <ul className="bg-gray-200 p-4 mt-2 absolute w-48 text-sm flex flex-col gap-2 z-50 ">
-             <li className="py-2  bg-red-400 justify-center rounded-lg max-sm:flex w-24">
-              <LuBadgePercent size={28} /> <Link to="/">Outlet</Link>
-            </li>
-            <li className="py-2 bg-purple-300 p-2 rounded-lg max-sm:flex justify-center w-28 items-center">
-              <ImGift size={28} />
+            <div className="max-sm:mt-0 max-sm:mb-2 max-sm: mt-10">
+              <div className="md:hidden">
+                <button onClick={toggleMenu}>
+                  {" "}
+                  <IoMdMenu size={38} />
+                </button>
+                {mostrarMenu && (
+                  <ul className="bg-cyan-700 justify-start items-center mt-[-10px] h-[700px] absolute w-[80%] text-sm flex flex-col gap-2 z-50 ">
 
-              <Link to="/Novedades" >Novedades</Link>
+                    <div className="mx-4 text-2xl mt-2 mb-2 flex items-start gap-10">
+                   <div className="mr-32" onClick={toggleMenu}>
+                   <IoMdArrowRoundBack size={38} /> 
+                    </div>  Menu
+                    </div>
+                    <li className="py-2  bg-red-400 justify-center rounded-lg max-sm:flex w-52 text-2xl items-center">
+                      <LuBadgePercent size={28} /> <Link to="/">Outlet</Link>
+                    </li>
+                    <li className="py-2 bg-purple-300 p-2 rounded-lg max-sm:flex justify-center w-52 text-2xl items-center">
+                      <ImGift size={28} />
 
-              
-            </li>
-            <li className="py-2  bg-lime-300 p-2 rounded-lg max-sm:flex justify-center w-24 items-center">
-              <BsLightningCharge size={28} />
+                      <Link to="/Novedades">Novedades</Link>
+                    </li>
+                    <li className="py-2  bg-lime-300 p-2 rounded-lg max-sm:flex justify-center w-52 text-2xl items-center">
+                      <BsLightningCharge size={28} />
 
-              <Link to="/Viajes">Viaje</Link>
-            </li>
-        
+                      <Link to="/Viajes">Viaje</Link>
+                    </li>
 
-          <li className=" py-2 bg-teal-200 p-2 rounded-2xl flex justify-center items-center max-sm:flex w-28">
-            <TiStarOutline size={30} />
-            <Link to="/Favoritos">favoritos</Link>
-          </li>
-          <div className="border p-2 w-[150px] flex justify-center hover:bg-sky-400 bg-purple-50 ">
-              <Link
-                className=" text-decoration-none text-black"
-                to="/Accesorios"
-              >
-                Moda Y Accesorios
-              </Link>
-            </div>
-            <div className="border p-2 w-[90px] flex justify-center  hover:bg-sky-400  bg-purple-50 ">
-              <Link className=" text-decoration-none text-black" to="/Hogar">
-                Hogar
-              </Link>
-            </div>
-            <div className="border p-2 w-[90px] flex justify-center  hover:bg-sky-400  bg-purple-50 ">
-              <Link className=" text-decoration-none text-black" to="/Deporte">
-                Deporte
-              </Link>
-            </div>
-            <div className="border p-2 w-[100px] flex justify-center  hover:bg-sky-400  bg-purple-50 ">
-              <Link
-                className=" text-decoration-none text-black"
-                to="/Electronica"
-              >
-                Electronica
-              </Link>
-            </div>
+                    <li className=" py-2 bg-teal-200 p-2 rounded-2xl flex justify-center items-center max-sm:flex w-52 text-2xl">
+                      <TiStarOutline size={30} />
+                      <Link to="/Favoritos">favoritos</Link>
+                    </li>
+                    <div className="border p-2 w-[250px] text-2xl flex justify-center hover:bg-sky-400 bg-purple-50 ">
+                      <Link
+                        className=" text-decoration-none text-black"
+                        to="/Accesorios"
+                      >
+                        Moda Y Accesorios
+                      </Link>
+                    </div>
+                    <div className="border p-2 w-[190px] text-2xl flex justify-center  hover:bg-sky-400  bg-purple-50 ">
+                      <Link
+                        className=" text-decoration-none text-black"
+                        to="/Hogar"
+                      >
+                        Hogar
+                      </Link>
+                    </div>
+                    <div className="border p-2 w-[190px] text-2xl flex justify-center  hover:bg-sky-400  bg-purple-50 ">
+                      <Link
+                        className=" text-decoration-none text-black"
+                        to="/Deporte"
+                      >
+                        Deporte
+                      </Link>
+                    </div>
+                    <div className="border p-2 w-[190px] text-2xl flex justify-center  hover:bg-sky-400  bg-purple-50 ">
+                      <Link
+                        className=" text-decoration-none text-black"
+                        to="/Electronica"
+                      >
+                        Electronica
+                      </Link>
+                    </div>
 
-            <div className="border p-2 w-[90px] flex justify-center  hover:bg-sky-400  bg-purple-50 ">
-              <Link className=" text-decoration-none text-black" to="/Ropa">
-                Tazas
-              </Link>
-            </div>
-            <h4 className="border p-2 w-[90px] flex justify-center  hover:bg-sky-400  bg-purple-50 ">
-                <Link to="/Todos">Ver todos</Link>
-              </h4>
-        </ul>
-      )}
-    </div>
-           
+                    <div className="border p-2 w-[190px] text-2xl  flex justify-center  hover:bg-sky-400  bg-purple-50 ">
+                      <Link
+                        className=" text-decoration-none text-black"
+                        to="/Ropa"
+                      >
+                        Tazas
+                      </Link>
+                    </div>
+                    <h4 className="border p-2 w-[190px] text-2xl flex justify-center  hover:bg-sky-400  bg-purple-50 ">
+                      <Link to="/Todos">Ver todos</Link>
+                    </h4>
+                  </ul>
+                )}
+              </div>
             </div>
             <Link to="/">
-
               {" "}
               <img
                 src="https://github.com/mattyas2/E-commerce/blob/main/src/assets/logotipo.jpeg?raw=true"
@@ -188,25 +227,31 @@ export const Navbar = (
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 type="text"
-                className="md:w-[20rem] md:h-8 md:border border-teal-300  drop-shadow-2xl  md:p-2 md:shadow-2xl max-sm:w-[8rem] max-sm:shadow-2xl max-sm:h-6  "
+                className="md:w-[20rem] md:h-8 md:border max-sm:hidden border-teal-300  drop-shadow-2xl  md:p-2 md:shadow-2xl max-sm:w-[8rem] max-sm:shadow-2xl max-sm:h-6  "
                 placeholder="Buscar...."
               />
               <div className="absolute z-50 w-[320px] max-sm:w-[150px] bg-gray-200 bg-opacity-60 max-sm:mt-8">
-              <div className="relative z-50  w-full">
-                {results.map((result) => (
-                  <div key={result.id}>
-                    <Link className="flex justify-center items-center gap-7 max-sm:gap-2"  to="/Todos"><img className="w-16 max-sm:w-8" src={result.imagen} alt="" />
-                    <div> {result.name}</div>
-                <div>{result.precio}</div></Link>
-                    
-                    </div>
-                ))}
-              </div>
+                <div className="relative z-50  w-full">
+                  {busqueda &&
+                    busqueda.map((result) => (
+                      <div key={result.id}>
+                        <Link className="flex justify-center items-center gap-7 max-sm:gap-2">
+                          <img
+                            className="w-16 max-sm:w-8"
+                            src={result.imagen}
+                            alt=""
+                          />
+                          <div> {result.name}</div>
+                          <div>{result.precio}</div>
+                        </Link>
+                      </div>
+                    ))}
+                </div>
               </div>
             </div>{" "}
             <button
               onClick={Search}
-              className="text-black max-sm:mt-4 max-sm:ms-2"
+              className="text-black max-sm:mt-4 max-sm:ms-2 mx-sm:flex max-sm:justify-center max-sm:items-center max-sm:hidden "
             >
               <VscSearch
                 style={{
@@ -220,130 +265,193 @@ export const Navbar = (
             </button>
           </div>
 
-          <div className="iconos flex justify-around w-[15%] max-sm:flex  max-sm:w-[20%] max-sm:justify-end max-sm:gap-2 max-sm:mx-4 text-[12px]">
-            {isAuthenticated ? (
-              <div className="mt-4 max-sm:mt-4">
-                <button
-                  onClick={EndSession}
-                  className="text-black text-decoration-none mt-0"
-                >
-                  {" "}
-                  <IoPersonCircle FaBeer size={38} className="w-16" />
-                  <h1> Cerrar Sesion</h1>
-                </button>
+          <div className="iconos flex justify-center gap-8 w-[25%] max-sm:flex  max-sm:w-[20%] max-sm:justify-end max-sm:gap-2 max-sm:mx-4 text-[12px]">
+            {user ? (
+              <div className="mt-2 max-sm:mt-4 flex justify-center  gap-3 max-sm:gap-0">
+                <h5 className=" h-10 flex justify-center items-center mt-10 rounded-lg p-2 font-serif bg-teal-200 mx-sm:flex max-sm:mt-1 max-sm:w-36 max-sm:mr-[-8px] " >
+                  {user.displayName || user.email}
+                </h5>
+                <div className="mt-8 max-sm:mt-0 max-sm:me-4 cursor-pointer" onClick={() => setActived(!actived)}>
+                  <IoPersonCircle size={48} />
+                </div>
+                <div className={!actived ? " " : "hidden-cart"}  id="container-cart-products3">
+                  <button
+                    onClick={() => {
+                      logout();
+                      window.location.reload();
+                    }}
+                    className="text-black text-decoration-none mt-0"
+                  >
+                    {" "}
+                    <h1 className="flex gap-2 max-sm:flex justify-center items-center max-sm:mx-0" > Cerrar Sesion <GrLogout size={20}/> </h1>
+                  </button>
+                </div>
               </div>
             ) : (
-              <div className="flex flex-col justify-center max-sm:flex max-sm:justify-center max-sm:items-center ">
-                <Link className="text-black text-decoration-none" to="/Login">
+              <div className="flex flex-col justify-center mt-3 items-end max-sm:flex max-sm:justify-center max-sm:items-center cursor-pointer max-sm:mx-7 max-sm:mb-2 ">
+                <Link className="text-black text-decoration-none " to="/Login">
                   {" "}
-                  <IoPersonCircle FaBeer size={38} className="w-16" />{" "}
-                  <span className="max-sm:hidden">iniciar sesion </span>
+                  <IoPersonCircle size={48} />{" "}
+                 
                 </Link>
               </div>
             )}
-            <div className=" mt-7 max-sm:mt-[10px] max-sm:ms-[-20px]">
-            
+            <div className=" mt-7 max-sm:mt-[1px] max-sm:ms-[-20px] ">
               <div
-                className="text-decoration-none text-black pointer-event " 	onClick={() => setActive(!active)}>
-           
-                <GiShoppingCart FaBeer size={38}  className="w-12 icon-cart" />
-              
+                className="text-decoration-none text-black pointer-event mt-2 max-sm:mt-[-20px] cursor-pointer"
+                onClick={() => setActive(!active)}
+              >
+                <GiShoppingCart size={48} />
               </div>
-              <span className="max-sm:hidden ">ver carrito</span>
-                <div className="count-products max-sm:ms-[20px] max-sm:mt-[-25px] max-sm:w-5 max-sm:h-5">
-						<span className="" id="contador-productos">{countProducts}</span>
-					</div>
-            
-				<div
-					className= {!active ? " " : "hidden-cart "} id="container-cart-products">
-					{carrito.length > 0 ? (
-						<>
-							<div className='row-product '>
-								{ carrito.map(product => (
-									<div className='cart-product' key={product.id}>
-										<div className='info-cart-product'>
-											<span className='cantidad-producto-carrito'>
-												{product.cantidad}
-                        
-											</span>
-											<p className='titulo-producto-carrito'>
-												{product.data.name}
-											</p>
-											<span className='precio-producto-carrito'>
-												${product.data.precio} 
-											</span>
-										</div>
-										<svg
-											xmlns='http://www.w3.org/2000/svg'
-											fill='none'
-											viewBox='0 0 24 24'
-											strokeWidth='1.5'
-											stroke='currentColor'
-											className='icon-close'
-											onClick={() => onDeleteProduct(product.id)}
-										>
-											<path
-												strokeLinecap='round'
-												strokeLinejoin='round'
-												d='M6 18L18 6M6 6l12 12'
-											/>
-										</svg>
-									</div>
-								))}
-							</div>
-            
-							<div className='cart-total'>
-								<h3>Total:</h3>
-								<span className='total-pagar'>${total}</span>
-							</div>
-  <div className="flex">
-  <button className='btn-clear-all rounded-2xl' onClick={onCleanCart}>
-								Vaciar Carrito
-							</button>
-              
-              <button className='btn-clear-all rounded-2xl ' >
-                <Link to="https://buy.stripe.com/test_4gwcOJ37h47Y7ZK288">		Comprar</Link>
-					
-							</button>
-           
-  </div>
-           
-             
 
-						
-						</>
-					) : (
-            
-						<div className=" flex justify-between p-4 items-center  bg-purple-50 rounded-lg">
-        <p className="text-2xl">Tu cesta está vacía</p>
-   <div>
-   <svg
-											xmlns='http://www.w3.org/2000/svg'
-											fill='none'
-											viewBox='0 0 24 24'
-											strokeWidth='1.5'
-											stroke='currentColor'
-											className='icon-close'
-										>
-											<path
-												strokeLinecap='round'
-												strokeLinejoin='round'
-												d='M6 18L18 6M6 6l12 12'
-											/>
-										</svg>
-     
+              <div className="count-products max-sm:ms-[24px] max-sm:mt-[-35px]  max-sm:w-6  max-sm:h-6">
+                <span className=" " id="contador-productos">
+                  {carrito.length}
+                </span>
+              </div>
+              <div
+                className={!active ? " " : "hidden-cart"}
+                id="container-cart-products"
+              >
+                <div>
+                  <h4 className="flex justify-content-center gap-6 text-center mt-4 mb-3">
+                    <span className="text-primary text-2xl mt-2">
+                      Productos:
+                    </span>
+                    <span className="badge bg-primary rounded-pill text-xl">
+                      {carrito.length}
+                    </span>
+                  </h4>
+                  <div className="mx-2 mb-2 max-sm:mx-4">
+                    <li className="flex justify-between w-[380px] items-center border text-lg max-sm:w-[290px] max-sm:flex max-sm:justify-center">
+                      <span className="mx-4">Total (COP)</span>
+                      <strong className="mx-4">${total}.000</strong>
+                    </li>
+                  </div>
+                </div>
+                <br />
 
+                {carrito && carrito.length > 0 ? (
+                  <>
+                    <div className="row-product w-[50%]  ">
+                      {carrito &&
+                        carrito.map((product) => (
+                          <>
+                            <div
+                              className="border w-[380px] mb-2 flex max-sm:w-[290px] justify-center mx-2 mr-6 "
+                              key={product.id}
+                            >
+                              <div className="info-cart-produc w-[100%] flex justify-center items-center col-12 ">
+                                <span className=" col-1 ">
+                                  {product.cantidad}
+                                </span>
+                                <span className="col-6 text-lg mx-2">
+                                  {product.data.name}
+                                </span>
 
-    </div>
-            </div>
-					)}
-				</div>
+                                <span className="text-lg">
+                                  ${product.data.precio}.000
+                                </span>
+                                <button></button>
+                              </div>
+                              <div className="">
+                                <button className="mr-8 " onClick={()=>onDeleteProduct(product.id)}>
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth="1.5"
+                                    stroke="currentColor"
+                                    className=" mt-2 w-8 mr-0 hover:stroke-red-500 cursor-pointer"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      d="M6 18L18 6M6 6l12 12"
+                                    />
+                                  </svg>
+                                </button>
+                              </div>
+                            </div>
+                          </>
+                        ))}
+                    </div>
 
-            
+                    <div className="cart-total">
+                      <h3>Total:</h3>
+                      <span className="total-pagar">${total}.000</span>
+                    </div>
+                    <div className="flex  justify-center items-center gap-2 mx-4">
+                      <button
+                        onClick={emptyCart}
+                        className="btn-clear-all rounded-2xl"
+                      >
+                        Vaciar Carrito
+                      </button>
+
+                      <button className="btn-clear-all rounded-2xl ">
+                        <Link to="/Checkout"> Comprar</Link>
+                      </button>
+                    </div>
+                    <button className="btn-clear-all rounded-2xl mx-32 mb-2 max-sm:mx-20">
+                      <Link to="/Carrito"> Ver Carrito</Link>
+                    </button>
+                  </>
+                ) : (
+                  <div className=" flex justify-between p-4 items-center  bg-purple-50 rounded-lg">
+                    <p className="text-2xl">Tu cesta está vacía</p>
+                    <div>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth="1.5"
+                        stroke="currentColor"
+                        className="icon-close"
+                        onClick={() => setActive(!active)}
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M6 18L18 6M6 6l12 12"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
       </nav>
+
+      <div className="w-full  bg-teal-50 p-3 ">
+        <div className=" max-sm:w-[375px] flex justify-between  mx-7 max-sm:hidden">
+          <div className="flex justify-start gap-4 mx-10 max-sm:flex max-sm:w-[375px] max-sm:flex-wrap ">
+            <div className="flex justify-center items-center gap-1  bg-red-400 p-2 rounded-lg max-sm:flex">
+              <LuBadgePercent size={28} />{" "}
+              <Link onClick={() => window.location.reload()}>Outlet</Link>
+            </div>
+            <div className="flex justify-center items-center gap-1  bg-purple-300 p-2 rounded-lg">
+              <ImGift size={28} />
+
+              <Link to="/Novedades">Novedades</Link>
+
+              <div></div>
+            </div>
+            <div className="flex justify-center items-center gap-1  bg-lime-300 p-2 rounded-lg">
+              <BsLightningCharge size={28} />
+
+              <Link to="/Viajes">Viaje</Link>
+            </div>
+          </div>
+
+          <button className=" bg-teal-200 p-2 rounded-2xl flex justify-center items-center">
+            <TiStarOutline size={30} />
+            <Link to="/Favoritos">favoritos</Link>
+          </button>
+        </div>
+      </div>
     </>
   );
 };
