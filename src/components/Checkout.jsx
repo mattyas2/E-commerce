@@ -6,6 +6,8 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc, getFirestore, updateDoc } from "firebase/firestore";
 import { app } from "../assets/config/firebase";
 import { useAuth } from "../auth/AuthProvider";
+import { IoMdArrowRoundBack } from "react-icons/io";
+import { Link } from "react-router-dom";
 
 export const Checkout = () => {
   const [total, setTotal] = useState(0);
@@ -68,7 +70,15 @@ return onDeleteProduct,carrito
       <Navbar />
       <div className="flex justify-center bg-teal-50">
         <div className="col-md-4 col-lg-4 flex flex-col justify-center mx-10 items-center mb-10 ">
-          <h4 className="mb-3 text-3xl mt-6">Billing address</h4>
+        <div className="text-center font-bold text-2xl flex  justify-start items-center max-sm:gap-16 max-sm:mx-4">
+<Link to="/">
+<IoMdArrowRoundBack size={38} /> 
+</Link>
+
+<h4 className="mb-3 text-3xl mt-6">Billing address</h4>
+
+    </div>
+          
 
           <form className="card p-2 col-lg-6">
             <div className="input-group">

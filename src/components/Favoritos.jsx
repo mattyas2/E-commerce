@@ -20,6 +20,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { Tilt } from "react-tilt";
 import { Link } from "react-router-dom";
 import { GiShoppingCart } from "react-icons/gi";
+import { IoMdArrowRoundBack } from "react-icons/io";
 
 
 
@@ -86,7 +87,13 @@ return onDeleteProduct,favorites
     <>
       <Navbar />
     <div className=" bg-teal-50 h-[100%]">
-    <div className="text-center font-bold  p-6 text-2xl">Favoritos</div>
+    <div className="text-center font-bold text-2xl flex  justify-start items-center max-sm:gap-16 max-sm:mx-4">
+<Link to="/">
+<IoMdArrowRoundBack size={38} /> 
+</Link>
+
+
+  Favoritos</div>
     
     <div className="w-full flex max-sm:mb-20 bg-teal-50 mb-10 mt-10 ">
     

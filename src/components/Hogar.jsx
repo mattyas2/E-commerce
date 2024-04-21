@@ -5,7 +5,7 @@ import { app } from "../assets/config/firebase";
 import { Tilt } from "react-tilt";
 import { Link } from "react-router-dom";
 import { GiShoppingCart } from "react-icons/gi";
-import { IoMdHeartEmpty } from "react-icons/io";
+import { IoMdArrowRoundBack, IoMdHeartEmpty } from "react-icons/io";
 import { useEffect, useState } from "react";
 import { Navbar } from "../pages/Navbar";
 import { FcLike } from "react-icons/fc";
@@ -83,8 +83,13 @@ return(
 
     <>
       <Navbar/>
+      <div className="text-center font-bold text-2xl flex  justify-start items-center max-sm:gap-16 max-sm:mx-4">
+<Link to="/">
+<IoMdArrowRoundBack size={38} /> 
+</Link>
 
-<div className="text-center font-bold text-2xl mt-10 bg-teal-50">
+
+ 
   Productos del
 Hogar
 </div>

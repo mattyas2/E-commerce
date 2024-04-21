@@ -268,19 +268,20 @@ return emptyCart,carrito
           <div className="iconos flex justify-center gap-8 w-[25%] max-sm:flex  max-sm:w-[20%] max-sm:justify-end max-sm:gap-2 max-sm:mx-4 text-[12px]">
             {user ? (
               <div className="mt-2 max-sm:mt-4 flex justify-center  gap-3 max-sm:gap-0">
-                <h5 className=" h-10 flex justify-center items-center mt-10 rounded-lg p-2 font-serif bg-teal-200 mx-sm:flex max-sm:mt-1 max-sm:w-36 max-sm:mr-[-8px] " >
-                  {user.displayName || user.email}
-                </h5>
+               
                 <div className="mt-8 max-sm:mt-0 max-sm:me-4 cursor-pointer" onClick={() => setActived(!actived)}>
                   <IoPersonCircle size={48} />
                 </div>
                 <div className={!actived ? " " : "hidden-cart"}  id="container-cart-products3">
+                <h5 className=" mb-2 border w-32 p-2 text-primary" >
+                  {user.displayName || user.email}
+                </h5>
                   <button
                     onClick={() => {
                       logout();
                       window.location.reload();
                     }}
-                    className="text-black text-decoration-none mt-0"
+                    className="text-black text-decoration-none mt-0 border p-2 bg-green-300 rounded-lg hover:bg-green-500"
                   >
                     {" "}
                     <h1 className="flex gap-2 max-sm:flex justify-center items-center max-sm:mx-0" > Cerrar Sesion <GrLogout size={20}/> </h1>

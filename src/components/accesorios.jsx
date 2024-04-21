@@ -5,7 +5,7 @@ import { app } from "../assets/config/firebase";
 import { Tilt } from "react-tilt";
 import { Link } from "react-router-dom";
 import { GiShoppingCart } from "react-icons/gi";
-import { IoMdHeartEmpty } from "react-icons/io";
+import { IoMdArrowRoundBack, IoMdHeartEmpty } from "react-icons/io";
 import { useEffect, useState } from "react";
 
 import { useAuth } from "../auth/AuthProvider";
@@ -88,8 +88,14 @@ return(
 
     <>
   <Navbar/>
-<div className="bg-teal-50 h-[100%]">  <div className="text-center font-bold text-2xl">
-      Moda Y Accesorios
+<div className="bg-teal-50 h-[100%]"> 
+ <div className="text-center font-bold text-2xl flex  justify-start items-center max-sm:gap-16 max-sm:mx-4">
+<Link to="/">
+<IoMdArrowRoundBack size={38} /> 
+</Link>
+
+
+  Moda Y Accesorios
     </div>
     <div className="flex w-[100%] gap-10 flex-col max-sm:flex max-sm:flex-wrap max-sm:mt-10 ">
       <div className="w-[100%] flex max-sm:justify-center flex-wrap max-sm:flex max-sm:flex-wrap max-sm:w-[100%]">

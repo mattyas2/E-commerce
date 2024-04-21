@@ -19,6 +19,7 @@ import { app } from "../assets/config/firebase.js";
 
 import { useEffect, useState } from "react";
 import { useAuth } from "../auth/AuthProvider.jsx";
+import { IoMdArrowRoundBack } from "react-icons/io";
 
 export function Cart() {
 
@@ -109,9 +110,19 @@ return emptyCart,carrito
     <>
       <Navbar />
       <div className="bg-teal-50 mt-[-40px]">
-        <div className="text-center mb-10 mt-10 text-2xl font-bold">
+      <div className="text-center font-bold text-2xl flex  justify-start items-center max-sm:gap-16 max-sm:mx-4">
+<Link to="/">
+<IoMdArrowRoundBack size={38} /> 
+</Link>
+
+<div className="text-center mb-10 mt-10 text-2xl font-bold">
           Productos: {carrito.length}
         </div>
+
+    </div>
+  
+      
+       
 
         <aside className="cart flex justify-center items-center w-full mt-10 ">
           <ul className="w-full ">

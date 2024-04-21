@@ -7,7 +7,7 @@ import { getFirestore } from "firebase/firestore";
 import {  getDocs, collection } from "firebase/firestore";
 import { Tilt } from '@jdion/tilt-react'
 import { GiShoppingCart } from "react-icons/gi";
-import { IoMdHeartEmpty } from "react-icons/io";
+import { IoMdArrowRoundBack, IoMdHeartEmpty } from "react-icons/io";
 import { Link } from "react-router-dom";
 import { Navbar } from "../pages/Navbar";
 import { useAuth } from "../auth/AuthProvider";
@@ -70,7 +70,13 @@ export const Todos = ()=>{
 <Navbar/>
 <div className="bg-teal-50 h-[100%]">
 <div className="p-6">
-        <h1 className="text-center text-3xl ">PRODUCTOS</h1>
+<div className="text-center font-bold text-2xl flex  justify-start items-center max-sm:gap-16 max-sm:mx-4">
+<Link to="/">
+<IoMdArrowRoundBack size={38} /> 
+</Link>
+
+PRODUCTOS
+</div>
     </div>
      <div className=" mt-10 flex justify-center flex-wrap gap-12 mb-4 max-sm:flex max-sm:flex-wrap max-sm:w-[100%] max-sm:mb-0 max-sm:mt-0" >
            
