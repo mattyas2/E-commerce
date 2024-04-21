@@ -35,7 +35,7 @@ import {
   setDoc,
   updateDoc,
 } from "firebase/firestore";
-import { Alert } from "../components/Alert"
+
 
 
 const AuthContext = createContext();
@@ -164,7 +164,7 @@ export function AuthProvider({ children }) {
           // El producto no está en favoritos, agregarlo
           const updatedFavorites = [...favorites, productId];
           await setDoc(userRef, { Favoritos: updatedFavorites},{merge:true})
-          console.log(<Alert message="producto agregado a favoritos" duration={3000} />);
+          console.log("producto agregado a favoritos" );
         
         
       

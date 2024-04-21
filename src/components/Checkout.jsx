@@ -18,10 +18,8 @@ export const Checkout = () => {
   useEffect(() => {
     onAuthStateChanged(auth, async (user) => {
       if (user) {
-        const uid = user.uid;
-
         // Obtener datos del usuario
-        const userRef = doc(db, "usuarios", uid);
+        const userRef = doc(db, "usuarios",user.uid);
         const userDoc = await getDoc(userRef);
         if (userDoc.exists()) {
           const userData = userDoc.data();
@@ -35,7 +33,7 @@ export const Checkout = () => {
           }
         }
       } else {
-        // Usuario sin iniciar sesión
+        console.log('error al obtener el uid del usuario')
       }
     });
   }, []);
