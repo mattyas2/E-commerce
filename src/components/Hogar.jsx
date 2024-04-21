@@ -83,7 +83,7 @@ return(
 
     <>
       <Navbar/>
-      <div className="text-center font-bold text-2xl flex  justify-start items-center max-sm:gap-16 max-sm:mx-4">
+      <div className="text-center font-bold text-2xl flex justify-center gap-20 mb-10 max-sm:justify-start items-center max-sm:gap-16 max-sm:mx-4">
 <Link to="/">
 <IoMdArrowRoundBack size={38} /> 
 </Link>

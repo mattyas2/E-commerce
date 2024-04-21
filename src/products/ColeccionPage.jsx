@@ -4,10 +4,11 @@ import {  useEffect, useState } from "react";
 import { FaAngleUp } from "react-icons/fa";
 import { FaAngleDown } from "react-icons/fa";
 
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { collection, doc, getDoc, getDocs, getFirestore, setDoc } from "firebase/firestore";
 import { useAuth } from "../auth/AuthProvider";
 import { Navbar } from "../pages/Navbar";
+import { IoMdArrowRoundBack } from "react-icons/io";
 
 export const ColeccionPage = () => {
 
@@ -83,7 +84,13 @@ useEffect(() => {
     <>
   <Navbar/>
     <div className="col-12 bg-teal-50 max-sm:w-full max-sm:mb-6">
+    <div className="text-center font-bold text-2xl flex  justify-center gap-20 mb-10 max-sm:justify-start items-center max-sm:gap-16 max-sm:mx-4">
+<Link to="/">
+<IoMdArrowRoundBack size={38} /> 
+</Link>
 
+inicio
+</div>
 <div>
     
       {producto && (

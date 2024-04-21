@@ -110,7 +110,7 @@ return emptyCart,carrito
     <>
       <Navbar />
       <div className="bg-teal-50 mt-[-40px]">
-      <div className="text-center font-bold text-2xl flex  justify-start items-center max-sm:gap-16 max-sm:mx-4">
+      <div className="text-center font-bold text-2xl flex  justify-center gap-20 mb-10 max-sm:justify-start items-center max-sm:gap-16 max-sm:mx-4">
 <Link to="/">
 <IoMdArrowRoundBack size={38} /> 
 </Link>
@@ -164,7 +164,7 @@ return emptyCart,carrito
                               viewBox="0 0 24 24"
                               strokeWidth="1.5"
                               stroke="currentColor"
-                              className=" mt-2 w-16 hover:stroke-red-500 cursor-pointer"
+                              className=" mt-2 w-16 max-sm:w-10 hover:stroke-red-500 cursor-pointer"
                             >
                               <path
                                 strokeLinecap="round"
