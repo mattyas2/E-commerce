@@ -25,9 +25,8 @@ import {
 } from "firebase/auth";
 import { app, auth } from "../assets/config/firebase";
 import {
- 
+  addDoc,
   collection,
-
   doc,
   getDoc,
   getDocs,
@@ -36,10 +35,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 
-
-
 const AuthContext = createContext();
-
 
 export function AuthProvider({ children }) {
   const [productos, setProductos] = useState([]);
@@ -54,13 +50,16 @@ export function AuthProvider({ children }) {
   const [cantidad, setCantidad] = useState(0);
   const [loaded, setLoaded] = useState(false);
 
- 
-
   const signup = (email, password) => {
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         // Signed up
         const userId = userCredential.user;
+        const userDataRef = doc(db, 'usuarios', userId.uid);
+        setDoc(userDataRef, {
+         Carrito: [],
+         Favoritos: []
+       });
         // ...
       })
       .catch((error) => {
@@ -77,15 +76,18 @@ export function AuthProvider({ children }) {
         // Signed up
         const userId = userCredential.user;
         // ...
-         
-        
+        const userDataRef = doc(db, 'usuarios', userId.uid);
+         setDoc(userDataRef, {
+          Carrito: [],
+          Favoritos: []
+        });
         console.log(userId);
       })
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
         console.log(errorCode + errorMessage);
-        
+
         // ..
       });
   };
@@ -96,7 +98,30 @@ export function AuthProvider({ children }) {
 
   const loginWithGoogle = () => {
     const googleProvider = new GoogleAuthProvider();
-    return signInWithPopup(auth, googleProvider);
+    signInWithPopup(auth, googleProvider)
+  .then((result) => {
+    // This gives you a Google Access Token. You can use it to access the Google API.
+    const credential = GoogleAuthProvider.credentialFromResult(result);
+    const token = credential.accessToken;
+    // The signed-in user info.
+    const user = result.user;
+       const userDataRef = doc(db, 'usuarios', user.uid);
+         setDoc(userDataRef, {
+          Carrito: [],
+          Favoritos: []
+        });
+    // IdP data available using getAdditionalUserInfo(result)
+    // ...
+  }).catch((error) => {
+    // Handle Errors here.
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    // The email of the user's account used.
+    const email = error.customData.email;
+    // The AuthCredential type that was used.
+    const credential = GoogleAuthProvider.credentialFromError(error);
+    // ...
+  });
   };
 
   const logout = () => {
@@ -109,109 +134,62 @@ export function AuthProvider({ children }) {
   const resetPassword = async (email) => sendPasswordResetEmail(auth, email);
   const db = getFirestore(app);
 
-  useEffect(() => {
-    onAuthStateChanged(auth,  (currentUser) => {
-      const usuario = currentUser.uid;
-      setUser(currentUser);
-      setUidUsuario(usuario);
-      if (currentUser) {
-         setDoc(doc(db, 'usuarios', currentUser.uid), {
-          Carrito: [],
-          Favoritos: [],
-        });
-      }
+    useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      setUser(user);
+    
     });
+
+    return () => unsubscribe();
   }, []);
 
-  const onAddProduct = async (producto) => {
-    if(user){
-      const userRef = doc(db, "usuarios", uidUsuario);
+
+  const onAddProduct = async (item) => {
+    if (user) {
+      const userRef = doc(db, "usuarios", user.uid);
       const userDoc = await getDoc(userRef);
       if (userDoc.exists()) {
         const userData = userDoc.data();
         const Carrito = userData.Carrito || [];
-  
+
         // agregarlo
-        const updatedCarrito = [...Carrito, { ...producto, cantidad: 1,}];
-          await setDoc(userRef, { Carrito: updatedCarrito }, { merge: true });
-          console.log("Producto agregado al carrito correctamente");
-        
-        }
-      
-
-    }
-      
-   
+        const updatedCarrito = [...Carrito, { ...item, cantidad: 1 }];
+        await setDoc(userRef, { Carrito: updatedCarrito }, { merge: true });
+        console.log("Producto agregado al carrito correctamente");
+      }
     
-  
     }
-
-  
-
- 
-
+  };
 
   const addToFavorites = async (productId) => {
-    if(
-      user
-    ){
-
-      const userRef = doc(db, "usuarios",user.uid);
-      const userDoc = await getDoc(userRef)
+    if (user) {
+      const userRef = doc(db, "usuarios", user.uid);
+      const userDoc = await getDoc(userRef);
       if (userDoc.exists()) {
         const userData = userDoc.data();
-        const favorites = userData.Favoritos || []
-          // El producto no está en favoritos, agregarlo
-          const updatedFavorites = [...favorites, productId];
-          await setDoc(userRef, { Favoritos: updatedFavorites},{merge:true})
-          console.log("producto agregado a favoritos" );
-        
-        
-      
-
-    }
-  
+        const favorites = userData.Favoritos || [];
+        // El producto no está en favoritos, agregarlo
+        const updatedFavorites = [...favorites, productId];
+        await setDoc(userRef, { Favoritos: updatedFavorites }, { merge: true });
+        console.log();
       }
-    
-  
     }
-   
-    const onDeleteFavort = async (productId)=>{
-      if (user) {     
-        // Obtener datos del usuario
-        const userRef = doc(db, "usuarios", user.uid);
-          await updateDoc(userRef, {
-     Favoritos: favorites.filter((product) => product.id !== productId),
-  });
-   setFavorites(favorites.filter((product) => product.id !== productId));
-  
-      } else {
-        // Usuario sin iniciar sesión
-      }
-   
-  return onDeleteFavort,favorites
-  }
+  };
 
+  const onDeleteFavort = async (productId) => {
+    if (user) {
+      // Obtener datos del usuario
+      const userRef = doc(db, "usuarios", user.uid);
+      await updateDoc(userRef, {
+        Favoritos: favorites.filter((product) => product.id !== productId),
+      });
+      setFavorites(favorites.filter((product) => product.id !== productId));
+    } else {
+      // Usuario sin iniciar sesión
+    }
 
-
-  // const onDeleteProduct = async (productId) => {
-  //   const productoEliminado = carrito.find((item) => item.id === productId);
-  //   const nuevoCarrito = carrito.filter(
-  //     (producto) => producto.id !== productId
-  //   );
-
-  //   setCarrito(nuevoCarrito);
-  //   setTotal(
-  //     total - productoEliminado.data.precio * productoEliminado.cantidad
-  //   );
-  //   setCountProducts(countProducts - productoEliminado.cantidad);
-  // };
-
-  // const onCleanCart = () => {
-  //   setCarrito([]);
-  //   setTotal(0);
-  //   setCountProducts(0);
-  // };
+    return onDeleteFavort, favorites;
+  };
 
   useEffect(() => {
     const obtenerProductos = async () => {
@@ -229,16 +207,12 @@ export function AuthProvider({ children }) {
     obtenerProductos();
   }, [db]);
 
-
-
-
-
   return (
     <AuthContext.Provider
       value={{
         productos,
         setProductos,
-    
+
         countProducts,
         setCountProducts,
         coleccion,
@@ -256,12 +230,12 @@ export function AuthProvider({ children }) {
         setCarrito,
         onAddProduct,
         uidUsuario,
-    carrito,
+        carrito,
         loaded,
         setLoaded,
-        favorites,setFavorites,
- onDeleteFavort,
-     
+        favorites,
+        setFavorites,
+        onDeleteFavort,
       }}
     >
       {children}

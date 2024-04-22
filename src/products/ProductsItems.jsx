@@ -33,10 +33,7 @@ import Modal from "react-modal";
 
 import { IoAddCircle } from "react-icons/io5";
 
-
 const customStyles = {
-
-    
   content: {
     top: "50%",
     left: "50%",
@@ -45,17 +42,13 @@ const customStyles = {
     marginRight: "-50%",
     transform: "translate(-50%, -50%)",
     width: "500px",
- 
-    
-   
-
   },
-}; 
+};
 
 export const ProductsItems = () => {
   const [modalIsOpen, setIsOpen] = useState(false);
   const [data, setData] = useState({});
- 
+
   let subtitle;
   const {
     productos,
@@ -73,7 +66,6 @@ export const ProductsItems = () => {
       doc(db, "productos", String(Math.floor(Math.random() * 1000))),
       data
     );
-    
   };
 
   function openModal() {
@@ -159,116 +151,116 @@ export const ProductsItems = () => {
           onRequestClose={closeModal}
           style={customStyles}
           contentLabel="Agregar Productos"
-        
         >
           <div className="">
-          <h2
-            className="text-center"
-            ref={(_subtitle) => (subtitle = _subtitle)}
-          >
-            Insertar Producto
-          </h2>
+            <h2
+              className="text-center"
+              ref={(_subtitle) => (subtitle = _subtitle)}
+            >
+              Insertar Producto
+            </h2>
 
-          <div className="flex flex-col justify-center items-center  mt-2">
-            <form className="mt-2">
-              <div>
-                <label className="flex flex-col mt-3 font-bold ">Nombre:</label>
-                <input
-                  className="border form-control "
-                  type="text"
-                  placeholder="name"
-                  onChange={(e) => {
-                    setData({ ...data, name: e.target.value });
-                  }}
-                />
-              </div>
-              <div>
-                <label className="flex flex-col mt-2  font-bold ">
-                  Imagen:
-                </label>
-                <input
-                  className="border form-control "
-                  type="text file"
-                  placeholder="Url"
-                  onChange={(e) => {
-                    setData({ ...data, imagen: e.target.value });
-                  }}
-                />
-              </div>
-              <div>
-                <label className="flex flex-col mt-2  font-bold ">
-                  {" "}
-                  Category:
-                </label>
-                <select
-                  className="border form-control "
-                  name="select"
-                  id="select"
-                  onChange={(e) => {
-                    setData({ ...data, category: e.target.value });
-                  }}
+            <div className="flex flex-col justify-center items-center  mt-2">
+              <form className="mt-2">
+                <div>
+                  <label className="flex flex-col mt-3 font-bold ">
+                    Nombre:
+                  </label>
+                  <input
+                    className="border form-control "
+                    type="text"
+                    placeholder="name"
+                    onChange={(e) => {
+                      setData({ ...data, name: e.target.value });
+                    }}
+                  />
+                </div>
+                <div>
+                  <label className="flex flex-col mt-2  font-bold ">
+                    Imagen:
+                  </label>
+                  <input
+                    className="border form-control "
+                    type="text file"
+                    placeholder="Url"
+                    onChange={(e) => {
+                      setData({ ...data, imagen: e.target.value });
+                    }}
+                  />
+                </div>
+                <div>
+                  <label className="flex flex-col mt-2  font-bold ">
+                    {" "}
+                    Category:
+                  </label>
+                  <select
+                    className="border form-control "
+                    name="select"
+                    id="select"
+                    onChange={(e) => {
+                      setData({ ...data, category: e.target.value });
+                    }}
+                  >
+                    <option value="">Seleccionar...</option>
+                    <option value="accesorios">Accesorios</option>
+                    <option value="hogar">Hogar</option>
+                    <option value="deporte">Deporte</option>
+                    <option value="electronica">Electronica</option>
+                    <option value="ropa">Ropa</option>
+                    <option value="tazas">Tazas</option>
+                    <option value="viaje">Viaje</option>
+                    <option value="novedades">Novedades</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="flex flex-col mt-2  font-bold ">
+                    Precio:
+                  </label>
+                  <input
+                    className="border form-control "
+                    type="number"
+                    placeholder="precio"
+                    onChange={(e) => {
+                      setData({ ...data, precio: e.target.value });
+                    }}
+                  />
+                </div>
+                <div className="flex flex-col mt-2">
+                  <label className="flex flex-col  font-bold ">
+                    descripcion:
+                  </label>
+                  <textarea
+                    className="border form-control "
+                    type="text"
+                    placeholder="descripcion"
+                    onChange={(e) => {
+                      setData({ ...data, descripcion: e.target.value });
+                    }}
+                  />
+                </div>
+              </form>
+              <div className="flex gap-8 mt-4">
+                <button
+                  className="bg-green-400 p-2 rounded-lg "
+                  onClick={enviarDatos}
                 >
-                  <option value="">Seleccionar...</option>
-                  <option value="accesorios">Accesorios</option>
-                  <option value="hogar">Hogar</option>
-                  <option value="deporte">Deporte</option>
-                  <option value="electronica">Electronica</option>
-                  <option value="ropa">Ropa</option>
-                  <option value="tazas">Tazas</option>
-                  <option value="viaje">Viaje</option>
-                  <option value="novedades">Novedades</option>
-                </select>
+                  Guardar
+                </button>
+                <button
+                  className="bg-red-400 p-2 rounded-lg"
+                  onClick={closeModal}
+                >
+                  Cerrar
+                </button>
               </div>
-              <div>
-                <label className="flex flex-col mt-2  font-bold ">
-                  Precio:
-                </label>
-                <input
-                  className="border form-control "
-                  type="number"
-                  placeholder="precio"
-                  onChange={(e) => {
-                    setData({ ...data, precio: e.target.value });
-                  }}
-                />
-              </div>
-              <div className="flex flex-col mt-2">
-                <label className="flex flex-col  font-bold ">
-                  descripcion:
-                </label>
-                <textarea
-                  className="border form-control "
-                  type="text"
-                  placeholder="descripcion"
-                  onChange={(e) => {
-                    setData({ ...data, descripcion: e.target.value });
-                  }}
-                />
-              </div>
-            </form>
-            <div className="flex gap-8 mt-4">
-              <button
-                className="bg-green-400 p-2 rounded-lg "
-                onClick={enviarDatos}
-              >
-                Guardar
-              </button>
-              <button
-                className="bg-red-400 p-2 rounded-lg"
-                onClick={closeModal}
-              >
-                Cerrar
-              </button>
             </div>
           </div>
-          </div>
-         
         </Modal>
       </div>
 
       <div className="md:hidden mb-16 mt-8 ">
         <Swiper
-        slidesPerView={1}
+          slidesPerView={1}
           spaceBetween={30}
           centeredSlides={true}
           autoplay={{
@@ -309,7 +301,7 @@ export const ProductsItems = () => {
                     </h6>
                     <div className="bg-slate-900 text-white flex items-center max-sm:col-4 max-sm:absolute max-sm:ms-60">
                       <div>
-                      <img className="w-5 h-5" src={estrella} alt="" />
+                        <img className="w-5 h-5" src={estrella} alt="" />
                       </div>{" "}
                       4.9
                     </div>
@@ -338,25 +330,22 @@ export const ProductsItems = () => {
 
                   <div className="flex items-center justify-center gap-3 border-sky-500 border rounded-full w-[150px] mt-3 p-2 mx-16 ">
                     <p className="text-cyan-500 font-bold flex gap-7 ">
-                     
-                    <Link>
-                            {" "}
-                            {favorites.find(
-                              (item) => item.id === producto.id
-                            ) ? (
-                              <FcLike
-                                FaBeer
-                                size={36}
-                                onClick={() => onDeleteFavort(producto.id)}
-                              />
-                            ) : (
-                              <IoMdHeartEmpty
-                                FaBeer
-                                size={36}
-                                onClick={() => addToFavorites(producto)}
-                              />
-                            )}
-                          </Link>
+                      <Link>
+                        {" "}
+                        {favorites.find((item) => item.id === producto.id) ? (
+                          <FcLike
+                            FaBeer
+                            size={36}
+                            onClick={() => onDeleteFavort(producto.id)}
+                          />
+                        ) : (
+                          <IoMdHeartEmpty
+                            FaBeer
+                            size={36}
+                            onClick={() => addToFavorites(producto)}
+                          />
+                        )}
+                      </Link>
                       <Link>
                         {" "}
                         <span
@@ -453,7 +442,7 @@ export const ProductsItems = () => {
                               <FcLike
                                 FaBeer
                                 size={36}
-                                onClick={() =>  onDeleteFavort(producto.id)}
+                                onClick={() => onDeleteFavort(producto.id)}
                               />
                             ) : (
                               <IoMdHeartEmpty
@@ -479,8 +468,6 @@ export const ProductsItems = () => {
                     ) : (
                       <div className="flex items-center justify-center gap-3 border-sky-500 border rounded-full w-[150px] mt-3 p-2 mx-16 ">
                         <p className="text-cyan-500 font-bold flex gap-7 ">
-                         
-                         
                           <Link>
                             {" "}
                             {favorites.find(
@@ -489,32 +476,36 @@ export const ProductsItems = () => {
                               <FcLike
                                 FaBeer
                                 size={36}
-                                onClick={() =>alert('debes iniciar sesion o crear una cuenta para agregar ala lista de deseos')}
+                                onClick={() =>
+                                  alert(
+                                    "debes iniciar sesion o crear una cuenta para agregar ala lista de deseos"
+                                  )
+                                }
                               />
                             ) : (
                               <IoMdHeartEmpty
                                 FaBeer
                                 size={36}
-                                onClick={() => alert('debes iniciar sesion o crear una cuenta para agregar ala lista de deseos')}
+                                onClick={() =>
+                                  alert(
+                                    "debes iniciar sesion o crear una cuenta para agregar ala lista de deseos"
+                                  )
+                                }
                               />
                             )}
-                          </Link>
-                          
-                          
-                          
-                          {" "}
+                          </Link>{" "}
                           <Link>
                             {" "}
                             <span
                               onClick={() => {
-                                alert('debes iniciar sesion o crear una cuenta para agregar el producto ala cesta');
+                                alert(
+                                  "debes iniciar sesion o crear una cuenta para agregar el producto ala cesta"
+                                );
                               }}
                             >
                               <GiShoppingCart FaBeer size={36} className="" />
                             </span>
                           </Link>{" "}
-
-
                         </p>
                         <img src={flecha} alt="" />
                       </div>

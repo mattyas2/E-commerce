@@ -10,7 +10,13 @@ import { onAuthStateChanged } from "firebase/auth";
 import { app, auth } from "../assets/config/firebase";
 import { Link } from "react-router-dom";
 import { useAuth } from "../auth/AuthProvider";
-import { doc, getDoc, getDocs, getFirestore, updateDoc } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  getDocs,
+  getFirestore,
+  updateDoc,
+} from "firebase/firestore";
 import { collection, query, where } from "firebase/firestore";
 import { GrLogout } from "react-icons/gr";
 import { IoMdArrowRoundBack } from "react-icons/io";
@@ -19,7 +25,7 @@ import { TiStarOutline } from "react-icons/ti";
 import { ImGift } from "react-icons/im";
 import { BsLightningCharge } from "react-icons/bs";
 import { LuBadgePercent } from "react-icons/lu";
-
+import { IoPersonOutline } from "react-icons/io5";
 
 // const auth = getAuth(app);
 
@@ -32,17 +38,15 @@ export const Navbar = () => {
   const [total, setTotal] = useState(0);
   const db = getFirestore(app);
 
-  const { logout, user,carrito, setCarrito } = useAuth();
-
+  const { logout, user, carrito, setCarrito } = useAuth();
 
   const Search = async () => {
     const q = query(collection(db, "productos"), where("name", ">=", input));
-   
+
     const newImpresion = [];
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
       newImpresion.push(doc.id, " => ", doc.data());
-
     });
     setBusqueda(newImpresion);
   };
@@ -51,16 +55,12 @@ export const Navbar = () => {
     setMostrarMenu(!mostrarMenu);
   };
 
-
-
   // const auth = getAuth();
 
   onAuthStateChanged(auth, async (user) => {
     if (user) {
-      const uid = user.uid;
-
       // Obtener datos del usuario
-      const userRef = doc(db, "usuarios", uid);
+      const userRef = doc(db, "usuarios", user.uid);
       const userDoc = await getDoc(userRef);
       if (userDoc.exists()) {
         const userData = userDoc.data();
@@ -85,38 +85,26 @@ export const Navbar = () => {
   }, [carrito]);
 
   const emptyCart = async () => {
-    if (user) {     
-      // Obtener datos del usuario
-      const userRef = doc(db, "usuarios", user.uid);
-        await updateDoc(userRef, {
-   Carrito: []
-});
- setCarrito([]);
+    // Obtener datos del usuario
+    const userRef = doc(db, "usuarios", user.uid);
+    await updateDoc(userRef, {
+      Carrito: [],
+    });
+    setCarrito([]);
 
-    } else {
-      // Usuario sin iniciar sesión
-    }
- 
-return emptyCart,carrito
-    
+    return emptyCart, carrito;
   };
 
-    const onDeleteProduct = async (productId)=>{
-        if (user) {     
-          // Obtener datos del usuario
-          const userRef = doc(db, "usuarios", user.uid);
-            await updateDoc(userRef, {
-       Carrito: carrito.filter((product) => product.id !== productId),
+  const onDeleteProduct = async (productId) => {
+    // Obtener datos del usuario
+    const userRef = doc(db, "usuarios", user.uid);
+    await updateDoc(userRef, {
+      Carrito: carrito.filter((product) => product.id !== productId),
     });
-     setCarrito(carrito.filter((product) => product.id !== productId));
-  
-        } else {
-          // Usuario sin iniciar sesión
-        }
-     
-   return onDeleteProduct,carrito
-    }
-  
+    setCarrito(carrito.filter((product) => product.id !== productId));
+
+    return onDeleteProduct, carrito;
+  };
 
   return (
     <>
@@ -140,11 +128,11 @@ return emptyCart,carrito
                 </button>
                 {mostrarMenu && (
                   <ul className="bg-cyan-700 justify-start items-center mt-[-10px] h-[700px] absolute w-[80%] text-sm flex flex-col gap-2 z-50 ">
-
                     <div className="mx-4 text-2xl mt-2 mb-2 flex items-start gap-10">
-                   <div className="mr-32" onClick={toggleMenu}>
-                   <IoMdArrowRoundBack size={38} /> 
-                    </div>  Menu
+                      <div className="mr-32" onClick={toggleMenu}>
+                        <IoMdArrowRoundBack size={38} />
+                      </div>{" "}
+                      Menu
                     </div>
                     <li className="py-2  bg-red-400 justify-center rounded-lg max-sm:flex w-52 text-2xl items-center">
                       <LuBadgePercent size={28} /> <Link to="/">Outlet</Link>
@@ -268,24 +256,38 @@ return emptyCart,carrito
           <div className="iconos flex justify-center gap-8 w-[25%] max-sm:flex  max-sm:w-[20%] max-sm:justify-end max-sm:gap-2 max-sm:mx-4 text-[12px]">
             {user ? (
               <div className="mt-2 max-sm:mt-4 flex justify-center  gap-3 max-sm:gap-0">
-               
-                <div className="mt-8 max-sm:mt-0 max-sm:me-4 cursor-pointer" onClick={() => setActived(!actived)}>
+                <div
+                  className="mt-8 max-sm:mt-0 max-sm:me-4 cursor-pointer"
+                  onClick={() => setActived(!actived)}
+                >
                   <IoPersonCircle size={48} />
                 </div>
-                <div className={!actived ? " " : "hidden-cart"}  id="container-cart-products3">
-                <h5 className=" mb-2 border w-32 p-2 text-primary" >
-                  {user.displayName || user.email}
-                </h5>
-                  <button
-                    onClick={() => {
-                      logout();
-                      window.location.reload();
-                    }}
-                    className="text-black text-decoration-none mt-0 border p-2 bg-green-300 rounded-lg hover:bg-green-500"
-                  >
-                    {" "}
-                    <h1 className="flex gap-2 max-sm:flex justify-center items-center max-sm:mx-0" > Cerrar Sesion <GrLogout size={20}/> </h1>
-                  </button>
+                <div
+                  className={!actived ? " " : "hidden-cart"}
+                  id="container-cart-products3"
+                >
+                  <div className="flex flex-col justify-center items-center">
+                    <div className="flex justify-center">
+                      <IoPersonOutline size={48} />
+                    </div>
+
+                    <h5 className=" mb-2 border w-40 p-2 text-primary text-center">
+                      {user.displayName || user.email}
+                    </h5>
+                    <button
+                      onClick={() => {
+                        logout();
+                        window.location.reload();
+                      }}
+                      className="text-black text-decoration-none mt-0 border text-center p-2 bg-green-300 rounded-lg hover:bg-green-500"
+                    >
+                      {" "}
+                      <h1 className="flex gap-2 max-sm:flex justify-center items-center max-sm:mx-0">
+                        {" "}
+                        Cerrar Sesion <GrLogout size={20} />{" "}
+                      </h1>
+                    </button>
+                  </div>
                 </div>
               </div>
             ) : (
@@ -293,7 +295,6 @@ return emptyCart,carrito
                 <Link className="text-black text-decoration-none " to="/Login">
                   {" "}
                   <IoPersonCircle size={48} />{" "}
-                 
                 </Link>
               </div>
             )}
@@ -356,7 +357,10 @@ return emptyCart,carrito
                                 <button></button>
                               </div>
                               <div className="">
-                                <button className="mr-8 " onClick={()=>onDeleteProduct(product.id)}>
+                                <button
+                                  className="mr-8 "
+                                  onClick={() => onDeleteProduct(product.id)}
+                                >
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     fill="none"

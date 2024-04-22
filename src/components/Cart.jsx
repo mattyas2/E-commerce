@@ -4,16 +4,7 @@
 
 import { Link } from "react-router-dom";
 import { Navbar } from "../pages/Navbar.jsx";
-import {
- 
-  doc,
-  getDoc,
-
-  getFirestore,
-
-  updateDoc,
- 
-} from "firebase/firestore";
+import { doc, getDoc, getFirestore, updateDoc } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { app } from "../assets/config/firebase.js";
 
@@ -22,21 +13,17 @@ import { useAuth } from "../auth/AuthProvider.jsx";
 import { IoMdArrowRoundBack } from "react-icons/io";
 
 export function Cart() {
-
-
   const [total, setTotal] = useState(0);
 
   const db = getFirestore(app);
   const auth = getAuth();
-  const {user,carrito, setCarrito} = useAuth()
+  const { user, carrito, setCarrito } = useAuth();
 
   useEffect(() => {
     onAuthStateChanged(auth, async (user) => {
       if (user) {
-        const uid = user.uid;
-
         // Obtener datos del usuario
-        const userRef = doc(db, "usuarios", uid);
+        const userRef = doc(db, "usuarios", user.uid);
         const userDoc = await getDoc(userRef);
         if (userDoc.exists()) {
           const userData = userDoc.data();
@@ -55,41 +42,30 @@ export function Cart() {
   }, []);
 
   const emptyCart = async () => {
-    if (user) {     
       // Obtener datos del usuario
       const userRef = doc(db, "usuarios", user.uid);
-        await updateDoc(userRef, {
-   Carrito: []
-});
- setCarrito([]);
+      await updateDoc(userRef, {
+        Carrito: [],
+      });
+      setCarrito([]);
+  
 
-    } else {
-      // Usuario sin iniciar sesión
-    }
- 
-return emptyCart,carrito
-    
+    return emptyCart, carrito;
   };
 
-    const onDeleteProduct = async (productId)=>{
-        if (user) {     
-          // Obtener datos del usuario
-          const userRef = doc(db, "usuarios", user.uid);
-            await updateDoc(userRef, {
-       Carrito: carrito.filter((product) => product.id !== productId),
-    });
-     setCarrito(carrito.filter((product) => product.id !== productId));
+  const onDeleteProduct = async (productId) => {
   
-        } else {
-          // Usuario sin iniciar sesión
-        }
-     
-   return onDeleteProduct,carrito
-    }
-  
+      // Obtener datos del usuario
+      const userRef = doc(db, "usuarios", user.uid);
+      await updateDoc(userRef, {
+        Carrito: carrito.filter((product) => product.id !== productId),
+      });
+      setCarrito(carrito.filter((product) => product.id !== productId));
+ 
 
-  
-  
+    return onDeleteProduct, carrito;
+  };
+
   useEffect(() => {
     let total = 0;
     carrito.forEach((producto) => {
@@ -98,31 +74,19 @@ return emptyCart,carrito
     setTotal(total);
   }, [carrito]);
 
-
-
-
-
-
-  
-  
-
   return (
     <>
       <Navbar />
       <div className="bg-teal-50 mt-[-40px]">
-      <div className="text-center font-bold text-2xl flex  justify-center gap-20 mb-10 max-sm:justify-start items-center max-sm:gap-16 max-sm:mx-4">
-<Link to="/">
-<IoMdArrowRoundBack size={38} /> 
-</Link>
+        <div className="text-center font-bold text-2xl flex  justify-center gap-20 mb-10 max-sm:justify-start items-center max-sm:gap-16 max-sm:mx-4">
+          <Link to="/">
+            <IoMdArrowRoundBack size={38} />
+          </Link>
 
-<div className="text-center mb-10 mt-10 text-2xl font-bold">
-          Productos: {carrito.length}
+          <div className="text-center mb-10 mt-10 text-2xl font-bold">
+            Productos: {carrito.length}
+          </div>
         </div>
-
-    </div>
-  
-      
-       
 
         <aside className="cart flex justify-center items-center w-full mt-10 ">
           <ul className="w-full ">
@@ -156,8 +120,7 @@ return emptyCart,carrito
                           <button></button>
                         </div>
                         <div>
-                              
-                          <button onClick={()=>onDeleteProduct(product.id)} >
+                          <button onClick={() => onDeleteProduct(product.id)}>
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
                               fill="none"

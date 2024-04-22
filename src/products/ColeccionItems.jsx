@@ -25,8 +25,6 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/scrollbar";
 
-
-
 export const ColeccionItems = () => {
   const {
     coleccion,
@@ -36,10 +34,9 @@ export const ColeccionItems = () => {
     addToFavorites,
     loaded,
     setLoaded,
-    onDeleteFavort,user
-   
+    onDeleteFavort,
+    user,
   } = useAuth();
-
 
   const db = getFirestore();
 
@@ -57,25 +54,19 @@ export const ColeccionItems = () => {
     obtenerProductos();
   }, []);
 
-
   const swiperRef = useRef(null);
 
-   
-      
-        
+  const handleNext = () => {
+    if (swiperRef.current && swiperRef.current.swiper) {
+      swiperRef.current.swiper.slideNext();
+    }
+  };
 
-  const handleNext = ()=> {
-     if (swiperRef.current && swiperRef.current.swiper) {
-       swiperRef.current.swiper.slideNext();
-     }
-   }
-   
-   const handlePrev = ()=> {
-     if (swiperRef.current && swiperRef.current.swiper) {
-       swiperRef.current.swiper.slidePrev();
-     }
-   }
-
+  const handlePrev = () => {
+    if (swiperRef.current && swiperRef.current.swiper) {
+      swiperRef.current.swiper.slidePrev();
+    }
+  };
 
   return (
     <>
@@ -94,7 +85,7 @@ export const ColeccionItems = () => {
             <button onClick={handleNext}>
               <LiaAngleLeftSolid size={30} />
             </button>
-            <button  onClick={handlePrev}>
+            <button onClick={handlePrev}>
               <LiaAngleRightSolid size={30} />
             </button>
           </p>
@@ -121,136 +112,133 @@ export const ColeccionItems = () => {
           {loaded &&
             coleccion.length > 0 &&
             coleccion.map((producto) => (
-              <div className="h-[100%]"
-               
-                key={producto.id}
-              >
+              <div className="h-[100%]" key={producto.id}>
                 <SwiperSlide className="slide1">
-                  <div  className="relative  mx-4 mt-2 mb-6 rounded-xl shadow-2xl w-[320px] flex flex-col justify-center  bg-purple-50  h-[535px]">
+                  <div className="relative  mx-4 mt-2 mb-6 rounded-xl shadow-2xl w-[320px] flex flex-col justify-center  bg-purple-50  h-[535px]">
+                    <Tilt>
+                      <div className="bg-red-500 w-fit px-2 text-white font-bold rounded-sm absolute top-3 left-6">
+                        <p>sale</p>
+                      </div>
+                      <Link to={`/ColeccionPage/${producto.id}`}>
+                        <img
+                          className="w-full h-[290px]"
+                          src={producto.data.imagen}
+                          alt=""
+                        />
+                      </Link>
+                    </Tilt>
+                    <div>
+                      <div className="col-10 flex items-center mt-3 justify-between  me-3 mx-6">
+                        <h6 className="text-cyan-500  font-bold">
+                          {producto.data.name}
+                        </h6>
+                        <div className="col-1 bg-slate-900 text-white flex items-center gap-2 w-14">
+                          <img className="w-5 h-5" src={estrella} alt="" />
+                          4.9
+                        </div>
+                      </div>
 
-                 
-                  <Tilt>
-                    <div className="bg-red-500 w-fit px-2 text-white font-bold rounded-sm absolute top-3 left-6">
-                      <p>sale</p>
+                      <div className="flex gap-5 my-2 mt-1 mx-4">
+                        <h3 className="text-green-700 font-bold">
+                          ${producto.data.precio}.000
+                        </h3>
+                      </div>
+                      <img className="mx-4" src={color} alt="" />
+                      <div className="flex gap-3 mt-2 mx-4">
+                        <div className="flex gap-1 items-center">
+                          <img src={reloj} alt="" />
+                          Pro...
+                        </div>
+                        <div className="flex  gap-1  items-center">
+                          <img src={vector} alt="" />
+                          64 Las...
+                        </div>
+                        <div className="flex  gap-1  items-center">
+                          <img src={reloj} alt="" />
+                          22 hr..
+                        </div>
+                      </div>
+
+                      {user ? (
+                        <div className="flex items-center justify-center gap-3 border-sky-500 border rounded-full w-[150px] mt-3 p-2 mb-6 mx-16 ">
+                          <p className="text-cyan-500 font-bold flex gap-7 ">
+                            <Link>
+                              {" "}
+                              {favorites.find(
+                                (item) => item.id === producto.id
+                              ) ? (
+                                <FcLike
+                                  FaBeer
+                                  size={36}
+                                  onClick={() => onDeleteFavort(producto.id)}
+                                />
+                              ) : (
+                                <IoMdHeartEmpty
+                                  FaBeer
+                                  size={36}
+                                  onClick={() => addToFavorites(producto)}
+                                />
+                              )}
+                            </Link>{" "}
+                            <Link>
+                              {" "}
+                              <span
+                                onClick={() => {
+                                  onAddProduct(producto);
+                                }}
+                              >
+                                <GiShoppingCart FaBeer size={36} className="" />
+                              </span>
+                            </Link>{" "}
+                          </p>
+                          <img src={flecha} alt="" />
+                        </div>
+                      ) : (
+                        <div className="flex items-center justify-center gap-3 border-sky-500 border rounded-full w-[150px] mt-3 p-2 mx-16 ">
+                          <p className="text-cyan-500 font-bold flex gap-7 ">
+                            <Link>
+                              {" "}
+                              {favorites.find(
+                                (item) => item.id === producto.id
+                              ) ? (
+                                <FcLike
+                                  FaBeer
+                                  size={36}
+                                  onClick={() =>
+                                    alert(
+                                      "debes iniciar sesion o crear una cuenta para agregar ala lista de deseos"
+                                    )
+                                  }
+                                />
+                              ) : (
+                                <IoMdHeartEmpty
+                                  FaBeer
+                                  size={36}
+                                  onClick={() =>
+                                    alert(
+                                      "debes iniciar sesion o crear una cuenta para agregar ala lista de deseos"
+                                    )
+                                  }
+                                />
+                              )}
+                            </Link>{" "}
+                            <Link>
+                              {" "}
+                              <span
+                                onClick={() => {
+                                  alert(
+                                    "debes iniciar sesion o crear una cuenta para agregar el producto ala cesta"
+                                  );
+                                }}
+                              >
+                                <GiShoppingCart FaBeer size={36} className="" />
+                              </span>
+                            </Link>{" "}
+                          </p>
+                          <img src={flecha} alt="" />
+                        </div>
+                      )}
                     </div>
-                    <Link to={`/ColeccionPage/${producto.id}`}>
-                      <img
-                        className="w-full h-[290px]"
-                        src={producto.data.imagen}
-                        alt=""
-                      />
-                    </Link>
-                  </Tilt>
-                  <div>
-                    <div className="col-10 flex items-center mt-3 justify-between  me-3 mx-6">
-                      <h6 className="text-cyan-500  font-bold">
-                        {producto.data.name}
-                      </h6>
-                      <div className="col-1 bg-slate-900 text-white flex items-center gap-2 w-14">
-                        <img className="w-5 h-5" src={estrella} alt="" />
-                        4.9
-                      </div>
-                    </div>
-
-                    <div className="flex gap-5 my-2 mt-1 mx-4">
-                      <h3 className="text-green-700 font-bold">
-                      ${producto.data.precio}.000
-                      </h3>
-                    </div>
-                    <img className="mx-4" src={color} alt="" />
-                    <div className="flex gap-3 mt-2 mx-4">
-                      <div className="flex gap-1 items-center">
-                        <img src={reloj} alt="" />
-                        Pro...
-                      </div>
-                      <div className="flex  gap-1  items-center">
-                        <img src={vector} alt="" />
-                        64 Las...
-                      </div>
-                      <div className="flex  gap-1  items-center">
-                        <img src={reloj} alt="" />
-                        22 hr..
-                      </div>
-                    </div>
-
-                    {user ? (
-                      <div className="flex items-center justify-center gap-3 border-sky-500 border rounded-full w-[150px] mt-3 p-2 mb-6 mx-16 ">
-                        <p className="text-cyan-500 font-bold flex gap-7 ">
-                          <Link>
-                            {" "}
-                            {favorites.find(
-                              (item) => item.id === producto.id
-                            ) ? (
-                              <FcLike
-                                FaBeer
-                                size={36}
-                                onClick={() =>  onDeleteFavort(producto.id)}
-                              />
-                            ) : (
-                              <IoMdHeartEmpty
-                                FaBeer
-                                size={36}
-                                onClick={() => addToFavorites(producto)}
-                              />
-                            )}
-                          </Link>{" "}
-                          <Link>
-                            {" "}
-                            <span
-                              onClick={() => {
-                                onAddProduct(producto);
-                              }}
-                            >
-                              <GiShoppingCart FaBeer size={36} className="" />
-                            </span>
-                          </Link>{" "}
-                        </p>
-                        <img src={flecha} alt="" />
-                      </div>
-                    ) : (
-                      <div className="flex items-center justify-center gap-3 border-sky-500 border rounded-full w-[150px] mt-3 p-2 mx-16 ">
-                        <p className="text-cyan-500 font-bold flex gap-7 ">
-                         
-                         
-                          <Link>
-                            {" "}
-                            {favorites.find(
-                              (item) => item.id === producto.id
-                            ) ? (
-                              <FcLike
-                                FaBeer
-                                size={36}
-                                onClick={() =>alert('debes iniciar sesion o crear una cuenta para agregar ala lista de deseos')}
-                              />
-                            ) : (
-                              <IoMdHeartEmpty
-                                FaBeer
-                                size={36}
-                                onClick={() => alert('debes iniciar sesion o crear una cuenta para agregar ala lista de deseos')}
-                              />
-                            )}
-                          </Link>
-                          
-                          
-                          
-                          {" "}
-                          <Link>
-                            {" "}
-                            <span
-                              onClick={() => {
-                                alert('debes iniciar sesion o crear una cuenta para agregar el producto ala cesta');
-                              }}
-                            >
-                              <GiShoppingCart FaBeer size={36} className="" />
-                            </span>
-                          </Link>{" "}
-
-
-                        </p>
-                        <img src={flecha} alt="" />
-                      </div>
-                    )}
-                  </div>
                   </div>
                 </SwiperSlide>
               </div>
@@ -288,14 +276,12 @@ export const ColeccionItems = () => {
                     </div>
 
                     <Link to={`/ColeccionPage/${producto.id}`}>
-                     
-                     <img
-                       className="w-full h-[300px]"
-                       src={producto.data.imagen}
-                       alt=""
-                     />
-                 
-                   </Link>
+                      <img
+                        className="w-full h-[300px]"
+                        src={producto.data.imagen}
+                        alt=""
+                      />
+                    </Link>
                   </Tilt>
                   <div>
                     <div className="flex items-center mt-3 justify-between me-3 mx-6 gap-8 max-sm:col-6 ">
@@ -304,7 +290,7 @@ export const ColeccionItems = () => {
                       </h6>
                       <div className="bg-slate-900 text-white flex items-center gap-1 max-sm:col-4 max-sm:absolute max-sm:ms-60">
                         <div className="">
-                        <img className="w-5 h-5" src={estrella} alt="" />
+                          <img className="w-5 h-5" src={estrella} alt="" />
                         </div>{" "}
                         4.9
                       </div>
@@ -342,7 +328,7 @@ export const ColeccionItems = () => {
                               <FcLike
                                 FaBeer
                                 size={36}
-                                onClick={() =>  onDeleteFavort(producto.id)}
+                                onClick={() => onDeleteFavort(producto.id)}
                               />
                             ) : (
                               <IoMdHeartEmpty
@@ -368,8 +354,6 @@ export const ColeccionItems = () => {
                     ) : (
                       <div className="flex items-center justify-center gap-3 border-sky-500 border rounded-full w-[150px] mt-3 p-2 mx-16 ">
                         <p className="text-cyan-500 font-bold flex gap-7 ">
-                         
-                         
                           <Link>
                             {" "}
                             {favorites.find(
@@ -378,32 +362,36 @@ export const ColeccionItems = () => {
                               <FcLike
                                 FaBeer
                                 size={36}
-                                onClick={() =>alert('debes iniciar sesion o crear una cuenta para agregar ala lista de deseos')}
+                                onClick={() =>
+                                  alert(
+                                    "debes iniciar sesion o crear una cuenta para agregar ala lista de deseos"
+                                  )
+                                }
                               />
                             ) : (
                               <IoMdHeartEmpty
                                 FaBeer
                                 size={36}
-                                onClick={() => alert('debes iniciar sesion o crear una cuenta para agregar ala lista de deseos')}
+                                onClick={() =>
+                                  alert(
+                                    "debes iniciar sesion o crear una cuenta para agregar ala lista de deseos"
+                                  )
+                                }
                               />
                             )}
-                          </Link>
-                          
-                          
-                          
-                          {" "}
+                          </Link>{" "}
                           <Link>
                             {" "}
                             <span
                               onClick={() => {
-                                alert('debes iniciar sesion o crear una cuenta para agregar el producto ala cesta');
+                                alert(
+                                  "debes iniciar sesion o crear una cuenta para agregar el producto ala cesta"
+                                );
                               }}
                             >
                               <GiShoppingCart FaBeer size={36} className="" />
                             </span>
                           </Link>{" "}
-
-
                         </p>
                         <img src={flecha} alt="" />
                       </div>
