@@ -175,7 +175,7 @@ export const Checkout = () => {
 
       {compraExitosa ? (
         <div className="h-[500px] flex justify-center items-center m-auto bg-teal-50">
-          <h2 className="text-7xl">¡Gracias por tu compra! ....</h2>
+          <h2 className="text-7xl max-sm:text-3xl">¡Gracias por tu compra! ....</h2>
           {/* Aquí podrías mostrar información adicional sobre la compra */}
         </div>
       ) : (

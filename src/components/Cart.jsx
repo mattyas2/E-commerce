@@ -7,11 +7,13 @@ import { Navbar } from "../pages/Navbar.jsx";
 import { doc, getDoc, getFirestore, updateDoc } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { app } from "../assets/config/firebase.js";
+import { MdDelete } from "react-icons/md";
 
 import { useEffect, useState } from "react";
 import { useAuth } from "../auth/AuthProvider.jsx";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { CgProductHunt } from "react-icons/cg";
+import { BsChevronDown, BsChevronUp } from "react-icons/bs";
 
 export function Cart() {
   const [total, setTotal] = useState(0);
@@ -95,160 +97,107 @@ useEffect(()=>{
   return (
     <>
       <Navbar />
-      <div className="bg-teal-50 mt-[-40px]">
+      <div className="bg-teal-50  flex flex-col justify-center items-center w-full h-[100%] w-full">
         <div className="text-center font-bold text-2xl flex  justify-center gap-20 mb-10 max-sm:justify-start items-center max-sm:gap-16 max-sm:mx-4">
           <Link to="/">
             <IoMdArrowRoundBack size={38} />
           </Link>
+          <h1 className="text-2xl font-semibold ">Shopping Cart</h1>
 
-          <div className="text-center mb-10 mt-10 text-2xl font-bold">
-            Productos: {totalQuantity1}
-          </div>
         </div>
 
-        <aside className="cart flex justify-center items-center w-full mt-10 ">
-          <ul className="w-full ">
-            <>
-              <div className="row-product w-[90%] ">
-                {carrito &&
+
+      <div className="bg-teal-50 h-[100%]">
+<div className="container mx-auto px-4">
+  
+<div className="text-center mb-10 mt-10 text-2xl font-bold">
+            Productos: {totalQuantity1}
+          </div>
+    <div className="flex flex-col md:flex-row gap-4  ">
+        <div className="md:w-[900px]  max-sm:flex max-sm:flex-col ">
+            <div className="bg-teal-100 rounded-lg shadow-md max-sm:p-1 mb-4 p-4 max-sm:w-[102%]  ">
+                <table className="w-[100%]  ">
+                    <thead className="  ">
+                        <tr className=" ">
+                            <th className=" font-semibold">Product</th>
+                            <th className=" font-semibold">Precio</th>
+                            <th className=" font-semibold ">Cantidad</th>
+                           
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {carrito &&
                   carrito.map((product) => (
-                    <>
-                      <div
-                        className="cart-produc mb-2 flex w-[100%] justify-center "
-                        key={product.id}
-                      >
-                        <div className="info-cart-produc w-[70%] flex justify-evenly items-center col-12 ">
-                          <span className="cantidad-producto-carrito col-1">
-                          
-                          </span>
+                        <tr key={product.id}>
+                            <td className="py-2  max-sm:flex max-sm:flex-col  ">
+                                <div className="flex items-center  max-sm:flex max-sm:flex-col ">
+                                    <img className="h-24 w-24 mr-4" src={product.data.imagen} alt="Product image"/>
+                                    <span className="font-semibold max-sm:text-center">{product.data.name}</span>
+                                </div>
+                            </td>
+                            <td className="py-4 max-sm:px-2">${product.data.precio}.000</td>
+                            <td className="py-4">
 
-                          <span className="col-2">
-                            <img
-                              className="w-20"
-                              src={product.data.imagen}
-                              alt={product.name}
-                            />
-                          </span>
+                              <div className="md:hidden flex flex-col mx-4 justify-center items-center">
+                                <button className="cursor-pointer hover:text-cyan-300"  onClick={() => increaseQuantity(product.id)} ><BsChevronUp size={20} /> </button>
+                                <span>{product.cantidad}</span>
+                                <button className="cursor-pointer hover:text-cyan-300" onClick={() => decreaseQuantity(product.id)}><BsChevronDown size={20}/></button>
+                              </div>
 
-                          <p className="titulo-producto-carrito col-4">
-                            {product.data.name}
-                          </p>
-                          <span className="precio-producto-carrito">
-                            ${product.data.precio}.000
-                          </span>
-                          <button></button>
-                        </div>
-                        <div className="flex gap-4 justify-center items-center mx-10">
-                          <div>
-                          <button className="text-3xl border w-16 hover:bg-red-400 bg-red-200" onClick={() => decreaseQuantity(product.id)}>
-                            -
-                          </button>
-                          </div>
-                          {product.cantidad}
-                          <div>
-                          <button className="text-3xl border w-16  hover:bg-green-400 bg-green-200" onClick={() => increaseQuantity(product.id)}>
-                            +
-                          </button>
-                          </div>
-                         
-                        </div>
-                        <div>
-                          <button onClick={() => onDeleteProduct(product.id)}>
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              strokeWidth="1.5"
-                              stroke="currentColor"
-                              className=" mt-2 w-16 max-sm:w-10 hover:stroke-red-500 cursor-pointer"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M6 18L18 6M6 6l12 12"
-                              />
-                            </svg>
-                          </button>
-                        </div>
-                      </div>
-                    </>
-                  ))}
-              </div>
-              <div className="cart-total">
-                <h3>Total: ${total}.000</h3>
-                <span className="total-pagar"></span>
-              </div>
-
-              <div className="flex justify-center items-center gap-10 mb-10">
+                                <div className="flex items-center  max-sm:hidden ">
+                                    <button onClick={() => decreaseQuantity(product.id)} className="border rounded-md py-2 px-4  mr-2 hover:bg-cyan-400">-</button>
+                                    <span className="text-center w-8">{product.cantidad}</span>
+                                    <button  onClick={() => increaseQuantity(product.id)} className="border rounded-md py-2 px-4 ml-2  hover:bg-cyan-400">+</button>
+                                </div>
+                            </td>
+                            <td onClick={() => onDeleteProduct(product.id)} className="py-4 hover:text-red-400  cursor-pointer"><MdDelete size={38}/></td>
+                        </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div className="md:w-1/4 mb-20">
+            <div className="bg-teal-100 rounded-lg shadow-md p-6">
+                <h2 className="text-lg font-semibold mb-4">Summary</h2>
+                <div className="flex justify-between mb-2">
+                    <span>Subtotal</span>
+                    <span> ${total}.000</span>
+                </div>
+                <div className="flex justify-between mb-2">
+                    <span>Taxes</span>
+                    <span>$0.00</span>
+                </div>
+                <div className="flex justify-between mb-2">
+                    <span>Shipping</span>
+                    <span>$0.00</span>
+                </div>
+                <hr className="my-2"/>
+                <div className="flex justify-between mb-2">
+                    <span className="font-semibold">Total</span>
+                    <span className="font-semibold"> ${total}.000</span>
+                </div>
                 <button
-                  className="btn-clear-all rounded-2xl "
+                  className="bg-blue-500 hover:bg-blue-300 text-white py-2 px-4 rounded-lg mt-4 w-full"
                   onClick={emptyCart}
                 >
                   Vaciar Carrito
                 </button>
+                <button className="bg-blue-500 hover:bg-blue-300 text-white py-2 px-4 rounded-lg mt-4 w-full"> <Link to="/Checkout">Checkout </Link></button>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
 
-                <button className="btn-clear-all rounded-2xl  ">
-                  <Link to="/Checkout"> Comprar</Link>
-                </button>
-              </div>
-            </>
-          </ul>
-        </aside>
-      </div>
+
+
+
+</div>
+      
     </>
   );
 }
 
-// import { useState } from 'react';
-// import { collection, doc, getDoc, getFirestore, updateDoc } from 'firebase/firestore';
-// // Suponiendo que tienes un hook personalizado para manejar la autenticación
-// import { app } from '../assets/config/firebase';
-// import { useAuth } from '../auth/AuthProvider';
 
-// export const Cart = () => {
-//   const { user, productos} = useAuth(); // Obtén el usuario logueado desde tu hook personalizado de autenticación
-//   const [cantidad, setCantidad] = useState(1);
-//   const db = getFirestore(app);
-//   const onAddProduct = async () => {
 
-//     // Obtén el documento del usuario logueado
-//     const usuarioRef = doc(collection(db, 'usuarios'), user.uid);
-//     const usuarioDoc = await getDoc(usuarioRef);
-
-//     // Obtén el carrito de compras del usuario
-//     const carrito = usuarioDoc.data().Carrito || [];
-
-//     // Verifica si el producto ya está en el carrito
-//     const productoEnCarrito = carrito.find((item) => item.id === productos.id);
-
-//     if (productoEnCarrito) {
-//       // Si el producto ya está en el carrito, actualiza la cantidad
-//       productoEnCarrito.cantidad += cantidad;
-//     } else {
-//       // Si el producto no está en el carrito, agrégalo
-//       carrito.push({
-//         id: productos.id,
-//         name: productos.name,
-//         precio: productos.precio,
-//         cantidad: cantidad,
-//       });
-//     }
-
-//     // Actualiza el carrito en la base de datos
-//     await updateDoc(usuarioRef, { carrito });
-
-//     // Reinicia la cantidad a 1
-//     setCantidad(1);
-//   };
-
-//   return (
-//     <div>
-//       <h2>{productos.name}</h2>
-//       <p>Precio: {productos.precio}</p>
-//       <p>Cantidad: {cantidad}</p>
-//       <button onClick={onAddProduct}>Agregar al carrito</button>
-//       <button onClick={() => setCantidad(cantidad + 1)}>+</button>
-//       <button onClick={() => setCantidad(cantidad - 1)}>-</button>
-//     </div>
-//   );
-// };

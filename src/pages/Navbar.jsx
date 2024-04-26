@@ -296,7 +296,7 @@ export const Navbar = () => {
 
                 {carrito && carrito.length > 0 ? (
                   <>
-                    <div className="row-product w-[50%]  ">
+                    <div className="row-product w-[50%]   ">
                       {carrito &&
                         carrito.map((producto) => (
                           <>
