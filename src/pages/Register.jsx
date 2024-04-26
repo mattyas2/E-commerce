@@ -47,6 +47,7 @@ export const Register = () => {
     <Navbar/>
   
       <div className="bg-teal-50 h-[540px] max-sm:h-[600px] ">
+
        <div className="flex justify-center w-full max-sm:flex max-sm:w-full max-sm:justify-center max-sm:flex-col ">
         
         <div className="w-[40%] mt-32 ms-28 text-5xl  max-sm:mt-4 max-sm:text-2xl max-sm:ms-0 max-sm:w-[100%] ">
@@ -159,6 +160,7 @@ export const Register = () => {
         </footer>
       </div>
       </div>
+      
       </div>
    
     

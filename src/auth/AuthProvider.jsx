@@ -22,6 +22,7 @@ import {
   signInWithPopup,
   sendPasswordResetEmail,
   FacebookAuthProvider,
+  signInWithCustomToken,
 } from "firebase/auth";
 import { app, auth } from "../assets/config/firebase";
 import {
@@ -34,6 +35,7 @@ import {
   setDoc,
   updateDoc,
 } from "firebase/firestore";
+import Cookies from 'js-cookie'
 
 const AuthContext = createContext();
 
@@ -46,9 +48,8 @@ export function AuthProvider({ children }) {
   const [email, setEmail] = useState("");
   const [carrito, setCarrito] = useState([]);
   const [user, setUser] = useState();
-  const [uidUsuario, setUidUsuario] = useState("");
-  const [cantidad, setCantidad] = useState(0);
   const [loaded, setLoaded] = useState(false);
+  const [totalQuantity, setTotalQuantity] = useState(0);
 
   const signup = (email, password) => {
     createUserWithEmailAndPassword(auth, email, password)
@@ -134,30 +135,79 @@ export function AuthProvider({ children }) {
   const resetPassword = async (email) => sendPasswordResetEmail(auth, email);
   const db = getFirestore(app);
 
+
+
+
+  
+
     useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      setUser(user);
-    
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      if (currentUser) {
+        setUser(currentUser);
+        currentUser.getIdToken().then((token) => {
+          Cookies.set('authToken', token, { expires: 7, secure: true });
+          console.log(Cookies)
+        });
+      } else {
+        setUser(null);
+        Cookies.remove('authToken');
+        
+      }
     });
+
+  
+    
+    
 
     return () => unsubscribe();
   }, []);
 
+  
 
-  const onAddProduct = async (item) => {
+
+  const onAddProduct = async (product) => {
     if (user) {
       const userRef = doc(db, "usuarios", user.uid);
       const userDoc = await getDoc(userRef);
+  
       if (userDoc.exists()) {
         const userData = userDoc.data();
-        const Carrito = userData.Carrito || [];
+        const carrito = userData.Carrito || [];
+  
+        // Verificar si el producto ya está en el carrito
+        const existingItem = carrito.find(item => item.id === product.id);
+  
+        if (existingItem) {
+          // Si el producto existe, aumentar la cantidad
+          const updatedCartItems = carrito.map(item => {
+            if (item.id === product.id) {
+              return { ...item, cantidad: item.cantidad + 1 };
+            }
+            return item;
+          });
+  
+          await updateDoc(userRef, { Carrito: updatedCartItems });
+          setCarrito(updatedCartItems)
+          console.log("Cantidad del producto aumentada en el carrito.");
 
-        // agregarlo
-        const updatedCarrito = [...Carrito, { ...item, cantidad: 1 }];
-        await setDoc(userRef, { Carrito: updatedCarrito }, { merge: true });
-        console.log("Producto agregado al carrito correctamente");
+          const total = updatedCartItems.reduce((acc, item) => acc + item.cantidad, 0);
+          setTotalQuantity(total);
+        } else {
+          // Si el producto no existe, agregarlo al carrito
+          
+          const updatedCarrito = [...carrito, {...product,cantidad: 1}];
+          await setDoc(userRef, { Carrito: updatedCarrito }, { merge: true });
+          setCarrito(updatedCarrito)
+          const total = updatedCarrito.reduce((acc, item) => acc + item.cantidad, 0);
+          setTotalQuantity(total);
+          console.log("Producto agregado al carrito correctamente.");
+         
+        }
+      } else {
+        console.log("El documento de usuario no existe.");
       }
-    
+    } else {
+      console.log("Usuario no autenticado.");
     }
   };
 
@@ -207,6 +257,64 @@ export function AuthProvider({ children }) {
     obtenerProductos();
   }, [db]);
 
+  
+  useEffect(() => {
+    const fetchCartItems = async () => {
+      if (!user) return; // No hay usuario logeado
+
+      const userRef = doc(db, "usuarios", user.uid);
+      const userDoc = await getDoc(userRef);
+
+      if (userDoc.exists) {
+        const items = userDoc.data().Carrito || [];
+        setCarrito(items);
+        // Calcular la cantidad total al cargar los items
+        const total = items.reduce((acc, item) => acc + item.cantidad, 0);
+        setTotalQuantity(total);
+      }
+    };
+
+    fetchCartItems();
+  }, [user]);
+
+  const increaseQuantity = async (productId) => {
+    const userRef = doc(db, "usuarios", user.uid);
+
+    // Incrementar la cantidad del producto en el carrito
+    const updatedCartItems = carrito.map(item => {
+      if (item.id === productId) {
+        return { ...item, cantidad: item.cantidad + 1 };
+      }
+      return item;
+    });
+
+    // Actualizar el documento del carrito en Firestore
+    await updateDoc(userRef,{ Carrito: updatedCartItems });
+    setCarrito(updatedCartItems);
+
+    // Actualizar la cantidad total
+    const total = updatedCartItems.reduce((acc, item) => acc + item.cantidad, 0);
+    setTotalQuantity(total);
+  };
+
+  const decreaseQuantity = async (productId) => {
+    const userRef = doc(db, "usuarios", user.uid);
+    const updatedCartItems = carrito.map(item => {
+      if (item.id === productId) {
+        const newQuantity = item.cantidad - 1;
+        return   { ...item, cantidad: newQuantity >= 0 ? newQuantity : 0 };
+      }
+      return item;
+    });
+
+    await updateDoc(userRef,{ Carrito: updatedCartItems });
+    setCarrito(updatedCartItems);
+
+    // Actualizar la cantidad total
+    const total = updatedCartItems.reduce((acc, item) => acc + item.cantidad, 0);
+    setTotalQuantity(total);
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -229,13 +337,12 @@ export function AuthProvider({ children }) {
         addToFavorites,
         setCarrito,
         onAddProduct,
-        uidUsuario,
         carrito,
         loaded,
         setLoaded,
         favorites,
         setFavorites,
-        onDeleteFavort,
+        onDeleteFavort,increaseQuantity ,decreaseQuantity,totalQuantity, setTotalQuantity
       }}
     >
       {children}

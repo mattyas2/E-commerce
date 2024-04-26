@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 *{
-    font-family: cursive           ;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif          ;
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -125,7 +125,7 @@ margin-right: 30px;
 		 width: 150px;
 		 box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 		 border-radius: 10px;
-		 height: 100px;
+		 height: 150px;
 	 }
 
 	}

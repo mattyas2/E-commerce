@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useAuth } from "../auth/AuthProvider";
 import estrella from "../assets/img/estrella.png";
 import reloj from "../assets/img/reloj.png";
@@ -33,6 +34,7 @@ import Modal from "react-modal";
 
 import { IoAddCircle } from "react-icons/io5";
 
+
 const customStyles = {
   content: {
     top: "50%",
@@ -45,9 +47,10 @@ const customStyles = {
   },
 };
 
-export const ProductsItems = () => {
+export const ProductsItems = ({ agregarAlCarrito, agregarAFavoritos }) => {
   const [modalIsOpen, setIsOpen] = useState(false);
   const [data, setData] = useState({});
+
 
   let subtitle;
   const {
@@ -94,6 +97,15 @@ export const ProductsItems = () => {
     }
   };
 
+  const handleClickCarrito = () => {
+    agregarAlCarrito(); // Llama a la función agregarAlCarrito desde props
+  };
+
+  const handleClickFavoritos = () => {
+    agregarAFavoritos(); // Llama a la función agregarAFavoritos desde props
+  };
+
+ 
   return (
     <>
       <div className="flex justify-between mx-4 mt-5 mb-4 max-sm:hidden">
@@ -263,6 +275,7 @@ export const ProductsItems = () => {
           slidesPerView={1}
           spaceBetween={30}
           centeredSlides={true}
+          key={4}
           autoplay={{
             delay: 3500,
             disableOnInteraction: false,
@@ -275,10 +288,10 @@ export const ProductsItems = () => {
           direction={"vertical"}
           className="mySwiper"
         >
-          {productos.map((producto) => (
+          {productos.map((product) => (
             <div
               className="relative  mx-4 mt-2 rounded-xl shadow-2xl w-[300px] flex flex-col justify-center  bg-purple-50 mb-8 h-[300px]"
-              key={producto.id}
+              key={product.id}
             >
               <SwiperSlide>
                 <Tilt>
@@ -286,10 +299,10 @@ export const ProductsItems = () => {
                     <p>sale</p>
                   </div>
 
-                  <Link to={`/ProductsPage/${producto.id}`}>
+                  <Link to={`/ProductsPage/${product.id}`}>
                     <img
                       className="w-full h-[300px]"
-                      src={producto.data.imagen}
+                      src={product.data.imagen}
                       alt=""
                     />
                   </Link>
@@ -297,7 +310,7 @@ export const ProductsItems = () => {
                 <div>
                   <div className="flex items-center mt-3 justify-between me-3 mx-6">
                     <h6 className="text-cyan-500  font-bold max-sm:mr-16">
-                      {producto.data.name}
+                      {product.data.name}
                     </h6>
                     <div className="bg-slate-900 text-white flex items-center max-sm:col-4 max-sm:absolute max-sm:ms-60">
                       <div>
@@ -309,7 +322,7 @@ export const ProductsItems = () => {
 
                   <div className="flex gap-5 my-2 mt-1 mx-4">
                     <h3 className="text-green-700 font-bold">
-                      ${producto.data.precio}.000
+                      ${product.data.precio}.000
                     </h3>
                   </div>
                   <img className="mx-4" src={color} alt="" />
@@ -328,37 +341,77 @@ export const ProductsItems = () => {
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-center gap-3 border-sky-500 border rounded-full w-[150px] mt-3 p-2 mx-16 ">
-                    <p className="text-cyan-500 font-bold flex gap-7 ">
-                      <Link>
-                        {" "}
-                        {favorites.find((item) => item.id === producto.id) ? (
-                          <FcLike
-                            FaBeer
-                            size={36}
-                            onClick={() => onDeleteFavort(producto.id)}
-                          />
-                        ) : (
-                          <IoMdHeartEmpty
-                            FaBeer
-                            size={36}
-                            onClick={() => addToFavorites(producto)}
-                          />
-                        )}
-                      </Link>
-                      <Link>
-                        {" "}
-                        <span
-                          onClick={() => {
-                            onAddProduct(producto);
-                          }}
-                        >
-                          <GiShoppingCart FaBeer size={36} className="" />
-                        </span>
-                      </Link>{" "}
-                    </p>
-                    <img src={flecha} alt="" />
-                  </div>
+
+                  {user ? (
+                      <div className="flex items-center justify-center gap-3 border-sky-500 border rounded-full w-[150px] mt-3 p-2 mb-6 mx-16 ">
+                        <p className="text-cyan-500 font-bold flex gap-7 ">
+                          <Link>
+                            {" "}
+                            {favorites.find(
+                              (item) => item.id === product.id
+                            ) ? (
+                              <FcLike
+                                FaBeer
+                                size={36}
+                                onClick={() => onDeleteFavort(product.id)}
+                              />
+                            ) : (
+                              <IoMdHeartEmpty
+                                FaBeer
+                                size={36}
+                                onClick={() => addToFavorites(product)}
+                              />
+                            )}
+                          </Link>{" "}
+                          <Link>
+                            {" "}
+                            <span
+                              onClick={() => {
+                                onAddProduct(product);
+                              }}
+                            >
+                              <GiShoppingCart FaBeer size={36} className="" />
+                            </span>
+                          </Link>{" "}
+                        </p>
+                        <img src={flecha} alt="" />
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-center gap-3 border-sky-500 border rounded-full w-[150px] mt-3 p-2 mx-16 ">
+                        <p className="text-cyan-500 font-bold flex gap-7 ">
+                          <Link>
+                            {" "}
+                            {favorites.find(
+                              (item) => item.id === product.id
+                            ) ? (
+                              <FcLike
+                                FaBeer
+                                size={36}
+                                onClick={handleClickFavoritos}
+                             
+                              />
+                            ) : (
+                              <IoMdHeartEmpty
+                                FaBeer
+                                size={36}
+                                onClick={handleClickFavoritos}
+                              />
+                            )}
+                          </Link>{" "}
+                          <Link>
+                            {" "}
+                            <span
+                            onClick={handleClickCarrito}
+                            >
+                              <GiShoppingCart FaBeer size={36} className="" />
+                            </span>
+                          </Link>{" "}
+                        </p>
+                        <img src={flecha} alt="" />
+                      </div>
+                    )}
+
+
                 </div>
               </SwiperSlide>
             </div>
@@ -369,13 +422,14 @@ export const ProductsItems = () => {
         <Swiper
           modules={[Navigation]}
           slidesPerView={3.7}
-          loop
+          loop = {true}
           ref={swiperRef}
           freeMode={true}
           spaceBetween={48}
           pagination={{
             dynamicBullets: true,
           }}
+          key={5}
           autoplay={{
             delay: 2500,
             disableOnInteraction: false,
@@ -431,6 +485,9 @@ export const ProductsItems = () => {
                         22 hr..
                       </div>
                     </div>
+
+
+
                     {user ? (
                       <div className="flex items-center justify-center gap-3 border-sky-500 border rounded-full w-[150px] mt-3 p-2 mb-6 mx-16 ">
                         <p className="text-cyan-500 font-bold flex gap-7 ">
@@ -476,32 +533,21 @@ export const ProductsItems = () => {
                               <FcLike
                                 FaBeer
                                 size={36}
-                                onClick={() =>
-                                  alert(
-                                    "debes iniciar sesion o crear una cuenta para agregar ala lista de deseos"
-                                  )
-                                }
+                                onClick={handleClickFavoritos}
+                             
                               />
                             ) : (
                               <IoMdHeartEmpty
                                 FaBeer
                                 size={36}
-                                onClick={() =>
-                                  alert(
-                                    "debes iniciar sesion o crear una cuenta para agregar ala lista de deseos"
-                                  )
-                                }
+                                onClick={handleClickFavoritos}
                               />
                             )}
                           </Link>{" "}
                           <Link>
                             {" "}
                             <span
-                              onClick={() => {
-                                alert(
-                                  "debes iniciar sesion o crear una cuenta para agregar el producto ala cesta"
-                                );
-                              }}
+                            onClick={handleClickCarrito}
                             >
                               <GiShoppingCart FaBeer size={36} className="" />
                             </span>
@@ -510,9 +556,15 @@ export const ProductsItems = () => {
                         <img src={flecha} alt="" />
                       </div>
                     )}
+
+
                   </div>
                 </div>
+
+
+
               </SwiperSlide>
+              
             </div>
           ))}
         </Swiper>

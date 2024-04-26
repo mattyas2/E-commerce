@@ -26,6 +26,8 @@ import { ImGift } from "react-icons/im";
 import { BsLightningCharge } from "react-icons/bs";
 import { LuBadgePercent } from "react-icons/lu";
 import { IoPersonOutline } from "react-icons/io5";
+import Avatar from '../assets/img/avatar.png'
+import { SearchComponent } from "../components/Search";
 
 // const auth = getAuth(app);
 
@@ -36,20 +38,12 @@ export const Navbar = () => {
   const [mostrarMenu, setMostrarMenu] = useState(false);
   const [busqueda, setBusqueda] = useState("");
   const [total, setTotal] = useState(0);
+  const [totalQuantity1, setTotalQuantity1] = useState(0);
   const db = getFirestore(app);
 
-  const { logout, user, carrito, setCarrito } = useAuth();
+  const { logout, user, carrito, setCarrito,increaseQuantity ,decreaseQuantity,totalQuantity } = useAuth();
 
-  const Search = async () => {
-    const q = query(collection(db, "productos"), where("name", ">=", input));
-
-    const newImpresion = [];
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((doc) => {
-      newImpresion.push(doc.id, " => ", doc.data());
-    });
-    setBusqueda(newImpresion);
-  };
+ 
 
   const toggleMenu = () => {
     setMostrarMenu(!mostrarMenu);
@@ -79,7 +73,7 @@ export const Navbar = () => {
   useEffect(() => {
     let total = 0;
     carrito.forEach((producto) => {
-      total += parseFloat(producto.data.precio);
+      total += parseFloat(producto.data.precio) * producto.cantidad
     });
     setTotal(total);
   }, [carrito]);
@@ -106,6 +100,11 @@ export const Navbar = () => {
     return onDeleteProduct, carrito;
   };
 
+  useEffect(()=>{
+    const totel = carrito.reduce((acc,item)=>acc + item.cantidad,0)
+   setTotalQuantity1(totel)
+  
+  },[carrito])
   return (
     <>
       <Carousel wrapAround withoutControls slidesToShow={1} autoplay>
@@ -208,50 +207,7 @@ export const Navbar = () => {
               />
             </Link>
           </div>
-
-          <div className="buscar mt-10 text-xs flex max-sm: max-sm:flex max-sm:ms-4  max-sm:mt-5 max-sm:justify-end">
-            <div className="max-sm:flex max-sm:justify-center">
-              <input
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                type="text"
-                className="md:w-[20rem] md:h-8 md:border max-sm:hidden border-teal-300  drop-shadow-2xl  md:p-2 md:shadow-2xl max-sm:w-[8rem] max-sm:shadow-2xl max-sm:h-6  "
-                placeholder="Buscar...."
-              />
-              <div className="absolute z-50 w-[320px] max-sm:w-[150px] bg-gray-200 bg-opacity-60 max-sm:mt-8">
-                <div className="relative z-50  w-full">
-                  {busqueda &&
-                    busqueda.map((result) => (
-                      <div key={result.id}>
-                        <Link className="flex justify-center items-center gap-7 max-sm:gap-2">
-                          <img
-                            className="w-16 max-sm:w-8"
-                            src={result.imagen}
-                            alt=""
-                          />
-                          <div> {result.name}</div>
-                          <div>{result.precio}</div>
-                        </Link>
-                      </div>
-                    ))}
-                </div>
-              </div>
-            </div>{" "}
-            <button
-              onClick={Search}
-              className="text-black max-sm:mt-4 max-sm:ms-2 mx-sm:flex max-sm:justify-center max-sm:items-center max-sm:hidden "
-            >
-              <VscSearch
-                style={{
-                  marginTop: -26,
-                  position: "relative",
-                  fontSize: "20px",
-                  marginLeft: -30,
-                  marginBottom: 0,
-                }}
-              />
-            </button>
-          </div>
+          <SearchComponent/>
 
           <div className="iconos flex justify-center gap-8 w-[25%] max-sm:flex  max-sm:w-[20%] max-sm:justify-end max-sm:gap-2 max-sm:mx-4 text-[12px]">
             {user ? (
@@ -260,16 +216,21 @@ export const Navbar = () => {
                   className="mt-8 max-sm:mt-0 max-sm:me-4 cursor-pointer"
                   onClick={() => setActived(!actived)}
                 >
-                  <IoPersonCircle size={48} />
+                  <div className="flex justify-center rounded-full w-16">
+                    <img className="rounded-full w-12 max-sm:w-12 " src={  user.photoURL || Avatar } alt="" />
+                    </div>
                 </div>
                 <div
                   className={!actived ? " " : "hidden-cart"}
                   id="container-cart-products3"
                 >
                   <div className="flex flex-col justify-center items-center">
-                    <div className="flex justify-center">
-                      <IoPersonOutline size={48} />
+                    <Link to="/Profile">
+                    <div className="text-sm mb-1 hover:text-slate-400">
+                      Visita tu perfil
                     </div>
+                    </Link>
+                
 
                     <h5 className=" mb-2 border w-40 p-2 text-primary text-center">
                       {user.displayName || user.email}
@@ -308,7 +269,7 @@ export const Navbar = () => {
 
               <div className="count-products max-sm:ms-[24px] max-sm:mt-[-35px]  max-sm:w-6  max-sm:h-6">
                 <span className=" " id="contador-productos">
-                  {carrito.length}
+                  {totalQuantity1}
                 </span>
               </div>
               <div
@@ -321,7 +282,7 @@ export const Navbar = () => {
                       Productos:
                     </span>
                     <span className="badge bg-primary rounded-pill text-xl">
-                      {carrito.length}
+                      {totalQuantity1}
                     </span>
                   </h4>
                   <div className="mx-2 mb-2 max-sm:mx-4">
@@ -337,29 +298,29 @@ export const Navbar = () => {
                   <>
                     <div className="row-product w-[50%]  ">
                       {carrito &&
-                        carrito.map((product) => (
+                        carrito.map((producto) => (
                           <>
                             <div
                               className="border w-[380px] mb-2 flex max-sm:w-[290px] justify-center mx-2 mr-6 "
-                              key={product.id}
+                              key={producto.id}
                             >
                               <div className="info-cart-produc w-[100%] flex justify-center items-center col-12 ">
                                 <span className=" col-1 ">
-                                  {product.cantidad}
+                                  {producto.cantidad}
                                 </span>
                                 <span className="col-6 text-lg mx-2">
-                                  {product.data.name}
+                                  {producto.data.name || producto.name}
                                 </span>
 
                                 <span className="text-lg">
-                                  ${product.data.precio}.000
+                                  ${producto.data.precio || producto.precio }.000
                                 </span>
                                 <button></button>
                               </div>
                               <div className="">
                                 <button
                                   className="mr-8 "
-                                  onClick={() => onDeleteProduct(product.id)}
+                                  onClick={() => onDeleteProduct(producto.id)}
                                 >
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -386,21 +347,19 @@ export const Navbar = () => {
                       <h3>Total:</h3>
                       <span className="total-pagar">${total}.000</span>
                     </div>
-                    <div className="flex  justify-center items-center gap-2 mx-4">
+                    <div className="flex  justify-center items-center gap-2 mx-4 mb-4">
                       <button
                         onClick={emptyCart}
-                        className="btn-clear-all rounded-2xl"
+                        className="btn-clear-all rounded-2xl mb-2"
                       >
                         Vaciar Carrito
                       </button>
 
-                      <button className="btn-clear-all rounded-2xl ">
-                        <Link to="/Checkout"> Comprar</Link>
-                      </button>
-                    </div>
-                    <button className="btn-clear-all rounded-2xl mx-32 mb-2 max-sm:mx-20">
+                      <button className="btn-clear-all rounded-2xl  mb-2 ">
                       <Link to="/Carrito"> Ver Carrito</Link>
                     </button>
+                    </div>
+                  
                   </>
                 ) : (
                   <div className=" flex justify-between p-4 items-center  bg-purple-50 rounded-lg">

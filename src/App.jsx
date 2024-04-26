@@ -13,7 +13,7 @@ import { Deporte } from "./components/Deporte.jsx";
 import { Electronica } from "./components/Electronica.jsx";
 import { Favoritos } from "./components/Favoritos.jsx";
 import {Hogar } from "./components/Hogar.jsx";
-import {Ropa } from "./components/Ropa.jsx";
+import { Tazas } from "./components/Ropa.jsx";
 import { Todos } from "./components/todos.jsx";
 import { AccesoriosDeViajes } from "./components/Accesoriosdeviaje.jsx";
 import { Novedades } from "./components/Novedades.jsx";
@@ -22,8 +22,9 @@ import { Cart }  from './components/Cart.jsx'
 
 import { ProductsPage } from "./products/ProductsPage.jsx";
 import { ColeccionPage } from "./products/ColeccionPage.jsx";
-import { Search } from "./components/filter.jsx";
 import { Footer } from "./components/Footer.jsx";
+import { Profile } from "./pages/Profile.jsx";
+import { SearchComponent } from "./components/Search.jsx";
 
 
 
@@ -51,19 +52,24 @@ function App() {
       <Route path="/Login" element={<Login/>} />
       <Route path="/Reset" element={<ResetPassword/>} />
       <Route path="/Accesorios" element={<Accesorios/>} />
+      <Route path="/Search" element={<SearchComponent/>}/>
       <Route path="/Hogar" element={<Hogar/>} />
       <Route path="/Deporte" element={<Deporte/>} />
       <Route path="/Electronica" element={<Electronica/>} />
       <Route path="/Favoritos" element={<Favoritos/>} />
-      <Route path="/Ropa" element={<Ropa/>} />
+      <Route path="/Ropa" element={<Tazas/>} />
       <Route path="/Todos" element={<Todos/>} />
       <Route path="/Viajes" element={<AccesoriosDeViajes/>} />
-      <Route path="/Novedades" element={<Novedades/>} />
-      <Route path="/Checkout" element={<Checkout/>} />
-      <Route path="/Carrito" element={<Cart/>}/>
       <Route path="/ProductsPage/:productoId" element={<ProductsPage/>}/>
       <Route path="/ColeccionPage/:productoId" element={<ColeccionPage/>}/>
-      <Route path="/Filters" element={<Search/>}/>
+      <Route path="/Novedades" element={<Novedades/>} />
+
+
+      <Route path="/Profile" element={<Profile/>}/>
+      <Route path="/Checkout" element={<Checkout/>} />
+      <Route path="/Carrito" element={<Cart/>}/>
+    
+
     
    
 

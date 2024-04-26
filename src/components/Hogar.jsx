@@ -15,7 +15,8 @@ import reloj from "../assets/img/reloj.png";
 import vector from "../assets/img/vect.png";
 import flecha from "../assets/img/flecha.png";
 import color from "../assets/img/colors.png";
-
+import Alert from "./Alert";
+import { useNavigate } from "react-router-dom";
 
 
 export const Hogar = ()=>{
@@ -25,7 +26,7 @@ export const Hogar = ()=>{
 
     const {
       productos, setProductos,
-      coleccion,setColeccion,favorites,onAddProduct,onDeleteFavort,addToFavorites
+      coleccion,setColeccion,favorites,onAddProduct,onDeleteFavort,addToFavorites, user
     } = useAuth();
     
   useEffect(() => {
@@ -73,6 +74,37 @@ useEffect(() => {
 
 
 
+const navigate = useNavigate(); // Usa useNavigate para la navegación
+const [showAlert, setShowAlert] = useState(false); // Estado para mostrar la alerta
+const [alertMessage, setAlertMessage] = useState(""); // Mensaje de la alerta
+
+const mostrarAlerta = (message) => {
+  setAlertMessage(message);
+  setShowAlert(true);
+
+  // Ocultar la alerta después de 5 segundos (5000 milisegundos)
+  setTimeout(() => {
+    setShowAlert(false);
+    // Navegar a la página de inicio de sesión después de ocultar la alerta
+    navigate('/Login');
+  }, 3000);
+};
+
+const agregarAlCarrito = () => {
+  if (!user) {
+    mostrarAlerta("Debes iniciar sesión o registrarte para agregar productos ala cesta.");
+  } else {
+    // Lógica para agregar al carrito
+  }
+};
+
+const agregarAFavoritos = () => {
+  if (!user) {
+    mostrarAlerta("Debes iniciar sesión o registrarte para agregar productos a tu lista de deseos.");
+  } else {
+    // Lógica para agregar a favoritos
+  }
+};
  
   
 
@@ -83,6 +115,8 @@ return(
 
     <>
       <Navbar/>
+
+      {showAlert && <Alert message={alertMessage} />}
       <div className="text-center font-bold text-2xl flex justify-center gap-20 mb-10 max-sm:justify-start items-center max-sm:gap-16 max-sm:mx-4">
 <Link to="/">
 <IoMdArrowRoundBack size={38} /> 
@@ -146,37 +180,77 @@ Hogar
                 </div>
               </div>
 
-              <div className="flex items-center justify-center gap-3 border-sky-500 border rounded-full w-[150px] mt-3 p-2 mx-16 ">
-                <p className="text-cyan-500 font-bold flex gap-7 ">
-                  <Link>
-                    {" "}
-                    {favorites.find((item) => item.id === producto.id) ? (
-                      <FcLike
-                        FaBeer
-                        size={36}
-                        onClick={() => onDeleteFavort(producto.id)}
-                      />
+              {user ? (
+                      <div className="flex items-center justify-center gap-3 border-sky-500 border rounded-full w-[150px] mt-3 p-2 mb-6 mx-16 ">
+                        <p className="text-cyan-500 font-bold flex gap-7 ">
+                          <Link>
+                            {" "}
+                            {favorites.find(
+                              (item) => item.id === producto.id
+                            ) ? (
+                              <FcLike
+                                FaBeer
+                                size={36}
+                                onClick={() => onDeleteFavort(producto.id)}
+                              />
+                            ) : (
+                              <IoMdHeartEmpty
+                                FaBeer
+                                size={36}
+                                onClick={() => addToFavorites(producto)}
+                              />
+                            )}
+                          </Link>{" "}
+                          <Link>
+                            {" "}
+                            <span
+                              onClick={() => {
+                                onAddProduct(producto);
+                              }}
+                            >
+                              <GiShoppingCart FaBeer size={36} className="" />
+                            </span>
+                          </Link>{" "}
+                        </p>
+                        <img src={flecha} alt="" />
+                      </div>
                     ) : (
-                      <IoMdHeartEmpty
-                        FaBeer
-                        size={36}
-                        onClick={() => addToFavorites(producto)}
-                      />
+                      <div className="flex items-center justify-center gap-3 border-sky-500 border rounded-full w-[150px] mt-3 p-2 mx-16 ">
+                        <p className="text-cyan-500 font-bold flex gap-7 ">
+                          <Link>
+                            {" "}
+                            {favorites.find(
+                              (item) => item.id === producto.id
+                            ) ? (
+                              <FcLike
+                                FaBeer
+                                size={36}
+                                onClick={agregarAFavoritos }
+                             
+                              />
+                            ) : (
+                              <IoMdHeartEmpty
+                                FaBeer
+                                size={36}
+                                onClick={agregarAFavoritos }
+                              />
+                            )}
+                          </Link>{" "}
+                          <Link>
+                            {" "}
+                            <span
+                            onClick={agregarAlCarrito }
+                            >
+                              <GiShoppingCart FaBeer size={36} className="" />
+                            </span>
+                          </Link>{" "}
+                        </p>
+                        <img src={flecha} alt="" />
+                      </div>
                     )}
-                  </Link>{" "}
-                  <Link>
-                    {" "}
-                    <span
-                      onClick={() => {
-                        onAddProduct(producto);
-                      }}
-                    >
-                      <GiShoppingCart FaBeer size={36} className="" />
-                    </span>
-                  </Link>{" "}
-                </p>
-                <img src={flecha} alt="" />
-              </div>
+
+
+
             </div>
           </div>
           ))}
@@ -234,38 +308,77 @@ Hogar
                 </div>
               </div>
 
-              <div className="flex items-center mb-2 justify-center gap-3 border-sky-500 border rounded-full w-[150px] mt-3 p-2 mx-16 ">
-                <p className="text-cyan-500 font-bold flex gap-7 ">
-                  <Link>
-                    {" "}
-                    {favorites.find((item) => item.id === producto.id) ? (
-                      <button  onClick={() => onDeleteFavort(producto.id)}><FcLike
-                      size={36}
-                     
-                    /></button>
-                      
+              {user ? (
+                      <div className="flex items-center justify-center gap-3 border-sky-500 border rounded-full w-[150px] mt-3 p-2 mb-6 mx-16 ">
+                        <p className="text-cyan-500 font-bold flex gap-7 ">
+                          <Link>
+                            {" "}
+                            {favorites.find(
+                              (item) => item.id === producto.id
+                            ) ? (
+                              <FcLike
+                                FaBeer
+                                size={36}
+                                onClick={() => onDeleteFavort(producto.id)}
+                              />
+                            ) : (
+                              <IoMdHeartEmpty
+                                FaBeer
+                                size={36}
+                                onClick={() => addToFavorites(producto)}
+                              />
+                            )}
+                          </Link>{" "}
+                          <Link>
+                            {" "}
+                            <span
+                              onClick={() => {
+                                onAddProduct(producto);
+                              }}
+                            >
+                              <GiShoppingCart FaBeer size={36} className="" />
+                            </span>
+                          </Link>{" "}
+                        </p>
+                        <img src={flecha} alt="" />
+                      </div>
                     ) : (
-                      <button  onClick={() => addToFavorites(producto)}> 
-                      <IoMdHeartEmpty
-                      size={36}
-                     
-                    /></button>
-                     
+                      <div className="flex items-center justify-center gap-3 border-sky-500 border rounded-full w-[150px] mt-3 p-2 mx-16 ">
+                        <p className="text-cyan-500 font-bold flex gap-7 ">
+                          <Link>
+                            {" "}
+                            {favorites.find(
+                              (item) => item.id === producto.id
+                            ) ? (
+                              <FcLike
+                                FaBeer
+                                size={36}
+                                onClick={agregarAFavoritos }
+                             
+                              />
+                            ) : (
+                              <IoMdHeartEmpty
+                                FaBeer
+                                size={36}
+                                onClick={agregarAFavoritos }
+                              />
+                            )}
+                          </Link>{" "}
+                          <Link>
+                            {" "}
+                            <span
+                            onClick={agregarAlCarrito }
+                            >
+                              <GiShoppingCart FaBeer size={36} className="" />
+                            </span>
+                          </Link>{" "}
+                        </p>
+                        <img src={flecha} alt="" />
+                      </div>
                     )}
-                  </Link>{" "}
-                  <Link>
-                    {" "}
-                    <span
-                      onClick={() => {
-                        onAddProduct(producto);
-                      }}
-                    >
-                      <GiShoppingCart FaBeer size={36} className="" />
-                    </span>
-                  </Link>{" "}
-                </p>
-                <img src={flecha} alt="" />
-              </div>
+
+
+
             </div>
             </div>
           ))}

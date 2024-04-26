@@ -11,13 +11,21 @@ import { app } from "../assets/config/firebase.js";
 import { useEffect, useState } from "react";
 import { useAuth } from "../auth/AuthProvider.jsx";
 import { IoMdArrowRoundBack } from "react-icons/io";
+import { CgProductHunt } from "react-icons/cg";
 
 export function Cart() {
   const [total, setTotal] = useState(0);
-
+const [totalQuantity1, setTotalQuantity1] = useState(0)
   const db = getFirestore(app);
   const auth = getAuth();
-  const { user, carrito, setCarrito } = useAuth();
+  const {
+    user,
+    carrito,
+    setCarrito,
+    increaseQuantity,
+    decreaseQuantity,
+ totalQuantity, setTotalQuantity
+  } = useAuth();
 
   useEffect(() => {
     onAuthStateChanged(auth, async (user) => {
@@ -32,6 +40,7 @@ export function Cart() {
           if (userData.Carrito) {
             userData.Carrito.forEach((productId) => {
               setCarrito(userData.Carrito || []);
+            
             });
           }
         }
@@ -42,37 +51,46 @@ export function Cart() {
   }, []);
 
   const emptyCart = async () => {
-      // Obtener datos del usuario
-      const userRef = doc(db, "usuarios", user.uid);
-      await updateDoc(userRef, {
-        Carrito: [],
-      });
-      setCarrito([]);
+    // Obtener datos del usuario
+    const userRef = doc(db, "usuarios", user.uid);
+    await updateDoc(userRef, {
+      Carrito: [],
+    });
+    setCarrito([]);
   
 
     return emptyCart, carrito;
   };
 
   const onDeleteProduct = async (productId) => {
-  
-      // Obtener datos del usuario
-      const userRef = doc(db, "usuarios", user.uid);
-      await updateDoc(userRef, {
-        Carrito: carrito.filter((product) => product.id !== productId),
-      });
-      setCarrito(carrito.filter((product) => product.id !== productId));
- 
-
+    // Obtener datos del usuario
+    const userRef = doc(db, "usuarios", user.uid);
+    await updateDoc(userRef, {
+      Carrito: carrito.filter((product) => product.id !== productId),
+    });
+    setCarrito(carrito.filter((product) => product.id !== productId));
+   
     return onDeleteProduct, carrito;
+
+    
   };
 
   useEffect(() => {
     let total = 0;
     carrito.forEach((producto) => {
-      total += parseFloat(producto.data.precio);
+      total += parseFloat(producto.data.precio) * producto.cantidad;
     });
     setTotal(total);
   }, [carrito]);
+
+useEffect(()=>{
+  const totel = carrito.reduce((acc,item)=>acc + item.cantidad,0)
+ setTotalQuantity1(totel)
+
+},[carrito])
+
+
+ 
 
   return (
     <>
@@ -84,7 +102,7 @@ export function Cart() {
           </Link>
 
           <div className="text-center mb-10 mt-10 text-2xl font-bold">
-            Productos: {carrito.length}
+            Productos: {totalQuantity1}
           </div>
         </div>
 
@@ -99,10 +117,11 @@ export function Cart() {
                         className="cart-produc mb-2 flex w-[100%] justify-center "
                         key={product.id}
                       >
-                        <div className="info-cart-produc w-[100%] flex justify-evenly items-center col-12 ">
+                        <div className="info-cart-produc w-[70%] flex justify-evenly items-center col-12 ">
                           <span className="cantidad-producto-carrito col-1">
-                            {product.cantidad}
+                          
                           </span>
+
                           <span className="col-2">
                             <img
                               className="w-20"
@@ -118,6 +137,20 @@ export function Cart() {
                             ${product.data.precio}.000
                           </span>
                           <button></button>
+                        </div>
+                        <div className="flex gap-4 justify-center items-center mx-10">
+                          <div>
+                          <button className="text-3xl border w-16 hover:bg-red-400 bg-red-200" onClick={() => decreaseQuantity(product.id)}>
+                            -
+                          </button>
+                          </div>
+                          {product.cantidad}
+                          <div>
+                          <button className="text-3xl border w-16  hover:bg-green-400 bg-green-200" onClick={() => increaseQuantity(product.id)}>
+                            +
+                          </button>
+                          </div>
+                         
                         </div>
                         <div>
                           <button onClick={() => onDeleteProduct(product.id)}>

@@ -3,7 +3,15 @@
 import { useEffect, useState } from "react";
 import { Navbar } from "../pages/Navbar";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { doc, getDoc, getFirestore, updateDoc } from "firebase/firestore";
+import {
+  Timestamp,
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  getFirestore,
+  updateDoc,
+} from "firebase/firestore";
 import { app } from "../assets/config/firebase";
 import { useAuth } from "../auth/AuthProvider";
 import { IoMdArrowRoundBack } from "react-icons/io";
@@ -13,7 +21,9 @@ export const Checkout = () => {
   const [total, setTotal] = useState(0);
   const db = getFirestore(app);
   const auth = getAuth();
-  const { user, carrito, setCarrito } = useAuth();
+
+  const { user, carrito, setCarrito, totalQuantity, setTotalQuantity } =
+    useAuth();
 
   useEffect(() => {
     onAuthStateChanged(auth, async (user) => {
@@ -61,9 +71,115 @@ export const Checkout = () => {
     return onDeleteProduct, carrito;
   };
 
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    email: "",
+    nombre: "",
+    direccion: "",
+    telefono: "",
+    observaciones: "",
+    
+  });
+  const [formErrors, setFormErrors] = useState({});
+  const [compraExitosa, setCompraExitosa] = useState(false); // Nuevo estado
+  const realizarCompra = async (formData) => {
+    try {
+      setLoading(true);
+  
+      // Obtener la referencia de la colección de pedidos
+      const pedidosRef = collection(db, "pedidos");
+  
+      // Crear un nuevo documento de pedido
+      const newPedidoRef = await addDoc(pedidosRef, {
+        total:total,
+        userId: user.uid,
+        items: carrito,
+        totalQuantity: totalQuantity,
+        timestamp: Timestamp.now(),
+        // Datos del formulario
+        email: formData.email,
+        nombre: formData.nombre,
+        direccion: formData.direccion,
+        telefono: formData.telefono,
+        observaciones: formData.observaciones,
+      
+      });
+  
+      // Limpiar el carrito después de la compra
+      await updateDoc(doc(db, "usuarios", user.uid), { Carrito: [] });
+      setCarrito([]); // Actualizar estado local del carrito
+      setTotalQuantity(0); // Resetear la cantidad total
+
+
+      setCompraExitosa(true);
+    // Limpiar el formulario después de la compra
+    limpiarFormulario();
+
+  
+      console.log("Pedido realizado con éxito:", newPedidoRef.id);
+      // Mostrar mensaje de confirmación al usuario
+     
+    } catch (error) {
+      console.error("Error al realizar la compra:", error);
+      // Manejar errores, como mostrar un mensaje al usuario
+      alert("Hubo un error al procesar tu compra. Por favor, intenta de nuevo más tarde.");
+    } finally {
+      setLoading(false);
+    }
+  };
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+    setFormErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: "", // Limpiar el error al cambiar el valor
+    }));
+  };
+
+  const handleCheckout = () => {
+    const errors = {};
+    // Validar que todos los campos estén llenos
+    for (const key in formData) {
+      if (formData[key].trim() === "") {
+        errors[key] = "Este campo es requerido";
+      }
+    }
+    // Si hay errores, mostrarlos y no realizar la compra
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      return; // Detener la ejecución si hay errores
+    }
+    // No hay errores, realizar la compra
+    realizarCompra(formData);
+  };
+
+  const limpiarFormulario = () => {
+    setFormData({
+      email: "",
+      nombre: "",
+      direccion: "",
+      telefono: "",
+      observaciones: "",
+      username: "",
+    });
+    setFormErrors({}); // Limpiar también los errores del formulario
+  };
   return (
     <>
       <Navbar />
+<div>
+
+
+      {compraExitosa ? (
+        <div className="h-[500px] flex justify-center items-center m-auto bg-teal-50">
+          <h2 className="text-7xl">¡Gracias por tu compra! ....</h2>
+          {/* Aquí podrías mostrar información adicional sobre la compra */}
+        </div>
+      ) : (
+
       <div className="flex justify-center max-sm:flex max-sm:flex-wrap max-sm:justify-center bg-teal-50">
         <div className="col-md-4 col-lg-4 flex flex-col justify-center mx-10 items-center mb-10 ">
           <div className="text-center font-bold text-2xl flex  justify-center gap-20 mb-10 max-sm:justify-start items-center max-sm:gap-16 max-sm:mx-4">
@@ -149,8 +265,7 @@ export const Checkout = () => {
               </aside>
             </ul>
           </div>
-          <div className="max-sm:w-[80%] max-sm:mb-10">
-            <form className="card p-2 col-lg-6">
+          <form className="card p-2 col-lg-6">
               <div className="input-group">
                 <input
                   type="text"
@@ -165,290 +280,121 @@ export const Checkout = () => {
                 </button>
               </div>
             </form>
+           
+          <div className="max-sm:w-[80%] max-sm:mb-10">
             <form className="needs-validation">
+
               <div className="row g-3">
                 <div className="col-sm-6">
                   <label htmlFor="firstName" className="form-label">
                     First name
                   </label>
                   <input
-                    type="text"
                     className="form-control"
-                    id="firstName"
+                    id="FirstName"
                     placeholder=""
-                    value=""
-                    required=""
+                    type="text"
+                    name="nombre"
+                    value={formData.nombre}
+                    onChange={handleInputChange}
                   />
-                  <div className="invalid-feedback">
-                    Valid first name is required.
-                  </div>
+                  {formErrors.nombre && (
+                    <span className="error">{formErrors.nombre}</span>
+                  )}
                 </div>
 
                 <div className="col-sm-6">
                   <label htmlFor="lastName" className="form-label">
-                    Last name
+                    Telefono:
                   </label>
                   <input
-                    type="text"
+                    type="tel"
+                    name="telefono"
+                    value={formData.telefono}
+                    onChange={handleInputChange}
                     className="form-control"
                     id="lastName"
                     placeholder=""
-                    value=""
-                    required=""
+                    required
                   />
-                  <div className="invalid-feedback">
-                    Valid last name is required.
-                  </div>
+                  {formErrors.telefono && (
+                    <span className="error">{formErrors.telefono}</span>
+                  )}
                 </div>
 
-                <div className="col-12">
-                  <label htmlFor="username" className="form-label">
-                    Username
-                  </label>
-                  <div className="input-group has-validation">
-                    <span className="input-group-text">@</span>
-                    <input
-                      type="text"
-                      className="form-control"
-                      id="username"
-                      placeholder="Username"
-                      required=""
-                    />
-                    <div className="invalid-feedback">
-                      Your username is required.
-                    </div>
-                  </div>
-                </div>
-
+            
                 <div className="col-12">
                   <label htmlFor="email" className="form-label">
-                    Email <span className="text-muted">(Optional)</span>
+                    Email
                   </label>
                   <input
                     type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
                     className="form-control"
                     id="email"
                     placeholder="you@example.com"
                   />
-                  <div className="invalid-feedback">
-                    Please enter a valid email address htmlFor shipping updates.
-                  </div>
+                  {formErrors.email && (
+                    <span className="error">{formErrors.email}</span>
+                  )}
                 </div>
 
                 <div className="col-12">
-                  <label htmlFor="address" className="form-label">
+                  <label htmlFor="direccion" className="form-label">
                     Address
                   </label>
                   <input
+                    name="direccion"
+                    value={formData.direccion}
+                    onChange={handleInputChange}
                     type="text"
                     className="form-control"
-                    id="address"
+                    id="direccion"
                     placeholder="1234 Main St"
                     required=""
                   />
-                  <div className="invalid-feedback">
-                    Please enter your shipping address.
-                  </div>
-                </div>
-
-                <div className="col-12">
-                  <label htmlFor="address2" className="form-label">
-                    Address 2 <span className="text-muted">(Optional)</span>
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="address2"
-                    placeholder="Apartment or suite"
-                  />
-                </div>
-
-                <div className="col-md-5">
-                  <label htmlFor="country" className="form-label">
-                    Country
-                  </label>
-                  <select className="form-select" id="country" required="">
-                    <option value="">Choose...</option>
-                    <option>United States</option>
-                  </select>
-                  <div className="invalid-feedback">
-                    Please select a valid country.
-                  </div>
-                </div>
-
-                <div className="col-md-4">
-                  <label htmlFor="state" className="form-label">
-                    State
-                  </label>
-                  <select className="form-select" id="state" required="">
-                    <option value="">Choose...</option>
-                    <option>California</option>
-                  </select>
-                  <div className="invalid-feedback">
-                    Please provide a valid state.
-                  </div>
-                </div>
-
-                <div className="col-md-3">
-                  <label htmlFor="zip" className="form-label">
-                    Zip
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="zip"
-                    placeholder=""
-                    required=""
-                  />
-                  <div className="invalid-feedback">Zip code required.</div>
+                  {formErrors.direccion && (
+                    <span className="error">{formErrors.direccion}</span>
+                  )}
                 </div>
               </div>
 
               <hr className="my-4" />
 
-              <div className="form-check">
-                <input
-                  type="checkbox"
-                  className="form-check-input"
-                  id="same-address"
-                />
-                <label className="form-check-label" htmlFor="same-address">
-                  Shipping address is the same as my billing address
+              <div className="col-12">
+                <label htmlFor="observaciones" className="form-label">
+                  Observaciones:
                 </label>
-              </div>
-
-              <div className="form-check">
-                <input
-                  type="checkbox"
-                  className="form-check-input"
-                  id="save-info"
+                <textarea
+                  name="observaciones"
+                  className="form-control"
+                  value={formData.observaciones}
+                  onChange={handleInputChange}
                 />
-                <label className="form-check-label" htmlFor="save-info">
-                  Save this information htmlFor next time
-                </label>
-              </div>
-
-              <hr className="my-4" />
-
-              <h4 className="mb-3">Payment</h4>
-
-              <div className="my-3">
-                <div className="form-check">
-                  <input
-                    id="credit"
-                    name="paymentMethod"
-                    type="radio"
-                    className="form-check-input"
-                    checked=""
-                    required=""
-                  />
-                  <label className="form-check-label" htmlFor="credit">
-                    Credit card
-                  </label>
-                </div>
-                <div className="form-check">
-                  <input
-                    id="debit"
-                    name="paymentMethod"
-                    type="radio"
-                    className="form-check-input"
-                    required=""
-                  />
-                  <label className="form-check-label" htmlFor="debit">
-                    Debit card
-                  </label>
-                </div>
-                <div className="form-check">
-                  <input
-                    id="paypal"
-                    name="paymentMethod"
-                    type="radio"
-                    className="form-check-input"
-                    required=""
-                  />
-                  <label className="form-check-label" htmlFor="paypal">
-                    PayPal
-                  </label>
-                </div>
-              </div>
-
-              <div className="row gy-3">
-                <div className="col-md-6">
-                  <label htmlFor="cc-name" className="form-label">
-                    Name on card
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="cc-name"
-                    placeholder=""
-                    required=""
-                  />
-                  <small className="text-muted">
-                    Full name as displayed on card
-                  </small>
-                  <div className="invalid-feedback">
-                    Name on card is required
-                  </div>
-                </div>
-
-                <div className="col-md-6">
-                  <label htmlFor="cc-number" className="form-label">
-                    Credit card number
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="cc-number"
-                    placeholder=""
-                    required=""
-                  />
-                  <div className="invalid-feedback">
-                    Credit card number is required
-                  </div>
-                </div>
-
-                <div className="col-md-3">
-                  <label htmlFor="cc-expiration" className="form-label">
-                    Expiration
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="cc-expiration"
-                    placeholder=""
-                    required=""
-                  />
-                  <div className="invalid-feedback">
-                    Expiration date required
-                  </div>
-                </div>
-
-                <div className="col-md-3">
-                  <label htmlFor="cc-cvv" className="form-label">
-                    CVV
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="cc-cvv"
-                    placeholder=""
-                    required=""
-                  />
-                  <div className="invalid-feedback">Security code required</div>
-                </div>
+                {formErrors.observaciones && (
+                  <span className="error">{formErrors.observaciones}</span>
+                )}
               </div>
 
               <hr className="my-4" />
 
               <button
                 className="w-100 btn btn-primary btn-lg bg-teal-400"
-                type="submit"
+                onClick={handleCheckout}
+                disabled={loading}
               >
                 Continue to checkout
               </button>
-            </form>
+              {loading && <p>Procesando la compra...</p>}
+            </form> 
           </div>
+
+
+
+
+
         </div>
 
         <ul className="list-group mb-10 w-[30%] mx-10 mt-10 max-sm:w-[100%] max-sm:hidden ">
@@ -524,6 +470,8 @@ export const Checkout = () => {
             </ul>
           </aside>
         </ul>
+      </div>
+      )}
       </div>
     </>
   );

@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { GiShoppingCart } from "react-icons/gi";
 
 import estrella from "../assets/img/estrella.png";
@@ -25,7 +26,7 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/scrollbar";
 
-export const ColeccionItems = () => {
+export const ColeccionItems = ({ agregarAlCarrito, agregarAFavoritos }) => {
   const {
     coleccion,
     setColeccion,
@@ -68,6 +69,14 @@ export const ColeccionItems = () => {
     }
   };
 
+  const handleClickCarrito = () => {
+    agregarAlCarrito(); // Llama a la función agregarAlCarrito desde props
+  };
+
+  const handleClickFavoritos = () => {
+    agregarAFavoritos(); // Llama a la función agregarAFavoritos desde props
+  };
+
   return (
     <>
       <div className="flex justify-between">
@@ -96,13 +105,14 @@ export const ColeccionItems = () => {
         <Swiper
           modules={[Navigation]}
           slidesPerView={3.7}
-          loop
+          loop={true}
           ref={swiperRef}
           freeMode={true}
           spaceBetween={48}
           pagination={{
             dynamicBullets: true,
           }}
+          key={2}
           autoplay={{
             delay: 2500,
             disableOnInteraction: false,
@@ -160,84 +170,76 @@ export const ColeccionItems = () => {
                       </div>
 
                       {user ? (
-                        <div className="flex items-center justify-center gap-3 border-sky-500 border rounded-full w-[150px] mt-3 p-2 mb-6 mx-16 ">
-                          <p className="text-cyan-500 font-bold flex gap-7 ">
-                            <Link>
-                              {" "}
-                              {favorites.find(
-                                (item) => item.id === producto.id
-                              ) ? (
-                                <FcLike
-                                  FaBeer
-                                  size={36}
-                                  onClick={() => onDeleteFavort(producto.id)}
-                                />
-                              ) : (
-                                <IoMdHeartEmpty
-                                  FaBeer
-                                  size={36}
-                                  onClick={() => addToFavorites(producto)}
-                                />
-                              )}
-                            </Link>{" "}
-                            <Link>
-                              {" "}
-                              <span
-                                onClick={() => {
-                                  onAddProduct(producto);
-                                }}
-                              >
-                                <GiShoppingCart FaBeer size={36} className="" />
-                              </span>
-                            </Link>{" "}
-                          </p>
-                          <img src={flecha} alt="" />
-                        </div>
-                      ) : (
-                        <div className="flex items-center justify-center gap-3 border-sky-500 border rounded-full w-[150px] mt-3 p-2 mx-16 ">
-                          <p className="text-cyan-500 font-bold flex gap-7 ">
-                            <Link>
-                              {" "}
-                              {favorites.find(
-                                (item) => item.id === producto.id
-                              ) ? (
-                                <FcLike
-                                  FaBeer
-                                  size={36}
-                                  onClick={() =>
-                                    alert(
-                                      "debes iniciar sesion o crear una cuenta para agregar ala lista de deseos"
-                                    )
-                                  }
-                                />
-                              ) : (
-                                <IoMdHeartEmpty
-                                  FaBeer
-                                  size={36}
-                                  onClick={() =>
-                                    alert(
-                                      "debes iniciar sesion o crear una cuenta para agregar ala lista de deseos"
-                                    )
-                                  }
-                                />
-                              )}
-                            </Link>{" "}
-                            <Link>
-                              {" "}
-                              <span
-                                onClick={() => {
-                                  alert(
-                                    "debes iniciar sesion o crear una cuenta para agregar el producto ala cesta"
-                                  );
-                                }}
-                              >
-                                <GiShoppingCart FaBeer size={36} className="" />
-                              </span>
-                            </Link>{" "}
-                          </p>
-                          <img src={flecha} alt="" />
-                        </div>
-                      )}
+                      <div className="flex items-center justify-center gap-3 border-sky-500 border rounded-full w-[150px] mt-3 p-2 mb-6 mx-16 ">
+                        <p className="text-cyan-500 font-bold flex gap-7 ">
+                          <Link>
+                            {" "}
+                            {favorites.find(
+                              (item) => item.id === producto.id
+                            ) ? (
+                              <FcLike
+                                FaBeer
+                                size={36}
+                                onClick={() => onDeleteFavort(producto.id)}
+                              />
+                            ) : (
+                              <IoMdHeartEmpty
+                                FaBeer
+                                size={36}
+                                onClick={() => addToFavorites(producto)}
+                              />
+                            )}
+                          </Link>{" "}
+                          <Link>
+                            {" "}
+                            <span
+                              onClick={() => {
+                                onAddProduct(producto);
+                              }}
+                            >
+                              <GiShoppingCart FaBeer size={36} className="" />
+                            </span>
+                          </Link>{" "}
+                        </p>
+                        <img src={flecha} alt="" />
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-center gap-3 border-sky-500 border rounded-full w-[150px] mt-3 p-2 mx-16 ">
+                        <p className="text-cyan-500 font-bold flex gap-7 ">
+                          <Link>
+                            {" "}
+                            {favorites.find(
+                              (item) => item.id === producto.id
+                            ) ? (
+                              <FcLike
+                                FaBeer
+                                size={36}
+                                onClick={handleClickFavoritos}
+                             
+                              />
+                            ) : (
+                              <IoMdHeartEmpty
+                                FaBeer
+                                size={36}
+                                onClick={handleClickFavoritos}
+                              />
+                            )}
+                          </Link>{" "}
+                          <Link>
+                            {" "}
+                            <span
+                            onClick={handleClickCarrito}
+                            >
+                              <GiShoppingCart FaBeer size={36} className="" />
+                            </span>
+                          </Link>{" "}
+                        </p>
+                        <img src={flecha} alt="" />
+                      </div>
+                    )}
+
+
+
                     </div>
                   </div>
                 </SwiperSlide>
@@ -260,6 +262,7 @@ export const ColeccionItems = () => {
           loop={true}
           modules={[Autoplay, Navigation]}
           direction={"vertical"}
+          key={1}
           className="mySwiper"
         >
           {loaded &&
@@ -362,32 +365,21 @@ export const ColeccionItems = () => {
                               <FcLike
                                 FaBeer
                                 size={36}
-                                onClick={() =>
-                                  alert(
-                                    "debes iniciar sesion o crear una cuenta para agregar ala lista de deseos"
-                                  )
-                                }
+                                onClick={handleClickFavoritos}
+                             
                               />
                             ) : (
                               <IoMdHeartEmpty
                                 FaBeer
                                 size={36}
-                                onClick={() =>
-                                  alert(
-                                    "debes iniciar sesion o crear una cuenta para agregar ala lista de deseos"
-                                  )
-                                }
+                                onClick={handleClickFavoritos}
                               />
                             )}
                           </Link>{" "}
                           <Link>
                             {" "}
                             <span
-                              onClick={() => {
-                                alert(
-                                  "debes iniciar sesion o crear una cuenta para agregar el producto ala cesta"
-                                );
-                              }}
+                            onClick={handleClickCarrito}
                             >
                               <GiShoppingCart FaBeer size={36} className="" />
                             </span>

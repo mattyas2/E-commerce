@@ -1,25 +1,28 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
-import {  useState } from "react";
-
+import { useState } from "react";
 
 import { Link, useNavigate } from "react-router-dom";
-
 
 import { useAuth } from "../auth/AuthProvider";
 import { Navbar } from "./Navbar";
 
 import "firebase/auth";
-
+import { Button } from "@material-tailwind/react";
 
 export const Login = () => {
   const [user, setUser] = useState({
     email: "",
     password: "",
   });
-  const { login, loginWithGoogle, resetPassword, loginWithFacebook, uidUsuario } =
-    useAuth();
+  const {
+    login,
+    loginWithGoogle,
+    resetPassword,
+    loginWithFacebook,
+    uidUsuario,
+  } = useAuth();
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
@@ -29,7 +32,6 @@ export const Login = () => {
     try {
       await login(user.email, user.password);
       navigate("/");
-    
     } catch (error) {
       setError(error.message);
       console.log("error");
@@ -70,119 +72,135 @@ export const Login = () => {
   return (
     <>
       <Navbar />
-      <div className="bg-[url(https://th.bing.com/th/id/R.88f09f198d34fa9bc6d646de6bf95498?rik=U%2fJtP2ewwiNptg&pid=ImgRaw&r=0)] bg-cover h-[534px]">
-        <div className="max-sm:flex max-sm:flex-col max-sm:justify-center max-sm:items-center">
-          <div className="relative flex flex-1 flex-col items-center justify-center pb-16 pt-12 text-black ">
-         
-            <form onSubmit={funcionAutenticacion} className="w-full max-w-sm ">
-              <div className="mb-6 hidden">
-                <label
-                  type="text"
-                  className="block text-sm font-semibold leading-6 text-gray-900"
-                  id="displayName"
-                >
-                  Email address
-                </label>
-                <input
-                  type="text"
-                  name="displayName"
-                  id="displayName"
-                  onChange={handleChange}
-                  className="mt-2 appearance-none text-slate-900 bg-white rounded-md block w-full px-3 h-10 shadow-sm sm:text-sm focus:outline-none placeholder:text-slate-400 focus:ring-2 focus:ring-sky-500 ring-1 ring-slate-200"
-                  required=""
-                  autoComplete="off"
-                />
-              </div>
+      <div className="bg-teal-50 h-[700px]">
+        <h1 className="text-center text-3xl font-bold mb-6 p-4">Entrar / Salir</h1>
+        <div className=" flex gap-8 col-12 justify-center max-sm:flex max-sm:flex-col  max-sm:justify-center max-sm:items-center">
 
-              <div className="mb-6">
+<div className="flex flex-col gap-4 col-5 max-sm:flex max-sm:flex-col max-sm:w-[90%]">
+  <span className="text-2xl font-bold">
+  ¿Ya estás registrado?
+  </span>
+
+<span>
+Si tiene una cuenta, inicia sesión con su dirección de correo electrónico.
+</span>
+
+<div className="w-56 h-12 bg-white flex justify-start items-center ">
+  <span className="h-full w-16 flex items-center justify-center border">
+  <img
+                src={`https://www.material-tailwind.com/logos/logo-google.png`}
+                alt="google"
+                className="h-6 w-6  bg-white"
+                
+     
+     />{" "}
+  </span>
+
+  <button className="bg-cyan-400 h-full w-full hover:bg-cyan-500"  onClick={handleGoogleSignin}>
+  Login with google
+  </button>
+</div>
+
+
+
+
+
+<div className="">
+            <form onSubmit={funcionAutenticacion} className="">
+             
+
+              <div className="mb-6 flex flex-col">
                 <label
                   type="text"
-                  className="block text-sm font-semibold leading-6 text-gray-900"
+                  className="flex items-center justify-start"
                   id="email"
                 >
-                  Email address
+                  Email <p className="text-red-600">*</p>
                 </label>
                 <input
                   type="email"
                   name="email"
                   id="email"
                   onChange={handleChange}
-                  className="mt-2 appearance-none text-slate-900 bg-white rounded-md block w-full px-3 h-10 shadow-sm sm:text-sm focus:outline-none placeholder:text-slate-400 focus:ring-2 focus:ring-sky-500 ring-1 ring-slate-200"
+                  className="border h-12"
                   required=""
                   autoComplete="off"
                 />
               </div>
-              <div className="mb-6">
+              <div className="mb-2 flex flex-col">
+             
                 <label
                   tabIndex="password"
-                  className="block text-sm font-semibold leading-7 text-gray-900"
+                  className=" flex"
                 >
-                  Password
+                  Password<p className="text-red-600">*</p>
                 </label>
                 <input
                   onChange={handleChange}
                   type="password"
                   name="password"
                   id="password"
-                  className="mt-2 appearance-none text-slate-900 bg-white rounded-md block w-full max-sm:w-full px-3 h-9 shadow-sm max-sm:text-sm focus:outline-none placeholder:text-slate-400 focus:ring-2 focus:ring-sky-500 ring-1 ring-slate-200"
+                  className="border h-12"
                   required=""
                 />
               </div>
-              <button
-                type="submit"
-                className="inline-flex justify-center rounded-lg text-sm font-semibold py-2.5 px-4 bg-slate-900 text-white hover:bg-slate-700 w-full"
-              >
-                <span>Sign in to account</span>
-              </button>
-              <input type="hidden" name="remember" value="true" />
-              <p className="mt-8 text-center">
-                <a className="text-sm hover:underline cursor-pointer font-bold text-white">
-                  <button className="text-black">
+
+              <div className="flex justify-between items-center">
+                <p className="text-red-500 text-xs max-sm:text-[10px]">* Campos obligatorios</p>
+              <button className="hover:text-cyan-400 text-sm max-sm:text-[11px]">
                     <Link
-                      to={"/Reset"}
-                      onClick={handleResetPassword}
-                      className="text-black text-decoration-none"
+                      to="/Reset"
+                      className="text-decoration-none"
                     >
                       {" "}
-                      Forgot password?
+                      ¿Has olvidado tu contraseña?
                     </Link>
                   </button>
-                </a>
-              </p>
-            </form>
-            <button
-              onClick={handleGoogleSignin}
-              className="bg-red-100 hover:bg-green-200 text-black max-sm:w-[90%] shadow rounded border-2 border-gray-300 mt-4 py-2 px-4 w-[20%]"
-            >
-              Google login
-            </button>
-            <div className="flex justify-center items-center w-full gap-4">
+              </div>
+              <p className="text-xs mt-2 mb-2">Este sitio está protegido por reCAPTCHA y se aplican la Política de Privacidad y Terminos de Servicio de Google.</p>
+             
+             
+             
               <button
-                onClick={handleFacebookSignin}
-                className="bg-slate-50 hidden hover:bg-slate-200 text-black  shadow rounded border-2 border-gray-300 mt-4 py-2 px-4 w-[20%]"
+                type="submit"
+                className=" border p-2.5 mt-3 bg-cyan-400 hover:bg-cyan-500 text-white font-bold max-sm:w-full"
               >
-                Facebook login{" "}
-                <p className="flex justify-center items-center mt-3">OR</p>
+                <span>Iniciar Sesion</span>
+              </button>
+
+             
+                 
+              
+          
+            </form>
+
+         
+          </div>
+</div>
+
+          
+
+          <div className="relative shrink-0 flex flex-col col-5 max-sm:flex max-sm:flex-col  max-sm:w-[90%] ">
+            <div className=" text-sm text-gray-900 max-sm:flex max-sm:flex-col max-sm:w-full  max-sm:justify-center max-sm:mb-12 max-sm:gap-2">
+              <span className="font-bold text-2xl ">Nuevo cliente</span>
+              <br /> <br />
+              <span className="">
+                Crear una cuenta tiene muchos beneficios:
+                 Pago más rápido,
+                guardar más de una dirección, seguimiento de pedidos y mucho
+                más.
+              </span>
+              <br />
+              <button className="bg-cyan-400 p-2.5  hover:bg-cyan-500 mt-4 max-sm:w-full">
+                <Link
+                  className="text-decoration-none text-white font-bold "
+                  to={"/Register"}
+                >
+                  Crea una Cuenta{" "}
+                </Link>
               </button>
             </div>
           </div>
-
-          <footer className="relative shrink-0 shadow flex justify-center ">
-            <div className=" text-sm text-gray-900 max-sm:flex max-sm:items-center max-sm:justify-center max-sm:mb-12 max-sm:gap-2">
-              <span>¿ No Tienes Una Cuenta ?</span>
-              <button className="bg-slate-900 p-2 rounded-xl">
-                <Link
-                  className="text-decoration-none text-white "
-                  to={"/Register"}
-                >
-                  Crear Cuenta{" "}
-                </Link>
-                <span className="text-white" aria-hidden="true">
-                  →
-                </span>
-              </button>
-            </div>
-          </footer>
         </div>
       </div>
     </>
