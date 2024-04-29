@@ -22,6 +22,8 @@ import { Link } from "react-router-dom";
 import { GiShoppingCart } from "react-icons/gi";
 import { IoMdArrowRoundBack } from "react-icons/io";
 
+import { Breadcrumbs } from "./RutasActual";
+import Alert from "./Alert";
 
 
 export const Favoritos = () => {
@@ -29,7 +31,7 @@ export const Favoritos = () => {
 
 
 const {
- user,onAddProduct, favorites,setFavorites} = useAuth()
+ user,onAddProduct, favorites,setFavorites,alertMessages, alertType, showAlerta, handleShowAlert } = useAuth()
  
 
   
@@ -74,7 +76,8 @@ const {
    Favoritos: favorites.filter((product) => product.id !== productId),
 });
  setFavorites(favorites.filter((product) => product.id !== productId));
-
+ handleShowAlert("¡producto eliminado de la lista de deseos!");
+    
     } else {
       // Usuario sin iniciar sesión
     }
@@ -86,6 +89,10 @@ return onDeleteProduct,favorites
   return (
     <>
       <Navbar />
+      { showAlerta && (
+        <Alert message={alertMessages}  type={alertType}/>
+      )}
+      <Breadcrumbs/>
     <div className=" bg-teal-50 h-[100%]">
     <div className="text-center font-bold text-2xl flex justify-center gap-20 mb-10 max-sm:justify-start items-center max-sm:gap-16 max-sm:mx-4">
 <Link to="/">

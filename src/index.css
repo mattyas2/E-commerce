@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+
+
 *{
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif          ;
     margin: 0;
@@ -291,11 +293,10 @@ gap: 8px;
 }
 #container-cart-products1 {
 	position: absolute;
-	top: 105px;
+	top: 40px;
 	margin-left: -5px;
-    height: 200px;
-	background:red;
-	width: 370px;
+    height: 100px;
+	width: 310px;
 	z-index: 1;
 	border-color: #000;
 
@@ -303,11 +304,11 @@ gap: 8px;
 }
 #container-cart-products12 {
 	position: absolute;
-	top: 370px;
-	margin-left: -7px;
+	top: 160px;
+	margin-left: -27px;
     height: 200px;
-	background: red;
-	width: 370px;
+	
+	width: 310px;
 	z-index: 1;
 	
 	
@@ -368,3 +369,13 @@ gap: 8px;
 
   }
   
+  .alert-success {
+	color: #047857; /* Color de texto verde oscuro */
+	background-color: #d1fae5; /* Color de fondo verde claro */
+  }
+  
+  /* Estilos para alertas de error */
+  .alert-error {
+	color: #dc2626; /* Color de texto rojo */
+	background-color: #fee2e2; /* Color de fondo rojo claro */
+  }

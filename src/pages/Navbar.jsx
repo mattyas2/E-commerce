@@ -26,8 +26,9 @@ import { ImGift } from "react-icons/im";
 import { BsLightningCharge } from "react-icons/bs";
 import { LuBadgePercent } from "react-icons/lu";
 import { IoPersonOutline } from "react-icons/io5";
-import Avatar from '../assets/img/avatar.png'
+import Avatar from "../assets/img/avatar.png";
 import { SearchComponent } from "../components/Search";
+import Alert from "../components/Alert";
 
 // const auth = getAuth(app);
 
@@ -37,13 +38,23 @@ export const Navbar = () => {
   const [actived, setActived] = useState(true);
   const [mostrarMenu, setMostrarMenu] = useState(false);
   const [busqueda, setBusqueda] = useState("");
-  const [total, setTotal] = useState(0);
-  const [totalQuantity1, setTotalQuantity1] = useState(0);
+
   const db = getFirestore(app);
 
-  const { logout, user, carrito, setCarrito,increaseQuantity ,decreaseQuantity,totalQuantity } = useAuth();
-
- 
+  const {
+    logout,
+    user,
+    carrito,
+    setCarrito,
+    increaseQuantity,
+    decreaseQuantity,
+    totalQuantity1,
+    total,
+    alertMessages,
+    alertType,
+    showAlerta,
+    handleShowAlert,
+  } = useAuth();
 
   const toggleMenu = () => {
     setMostrarMenu(!mostrarMenu);
@@ -70,13 +81,6 @@ export const Navbar = () => {
       // Usuario sin iniciar sesión
     }
   });
-  useEffect(() => {
-    let total = 0;
-    carrito.forEach((producto) => {
-      total += parseFloat(producto.data.precio) * producto.cantidad
-    });
-    setTotal(total);
-  }, [carrito]);
 
   const emptyCart = async () => {
     // Obtener datos del usuario
@@ -85,7 +89,7 @@ export const Navbar = () => {
       Carrito: [],
     });
     setCarrito([]);
-
+    handleShowAlert("haz Vaciado la cesta exitosamente!", "error");
     return emptyCart, carrito;
   };
 
@@ -96,17 +100,13 @@ export const Navbar = () => {
       Carrito: carrito.filter((product) => product.id !== productId),
     });
     setCarrito(carrito.filter((product) => product.id !== productId));
-
+    handleShowAlert("Producto eliminado de la cesta exitosamente!", "error");
     return onDeleteProduct, carrito;
   };
 
-  useEffect(()=>{
-    const totel = carrito.reduce((acc,item)=>acc + item.cantidad,0)
-   setTotalQuantity1(totel)
-  
-  },[carrito])
   return (
     <>
+      {showAlerta && <Alert message={alertMessages} type={alertType} />}
       <Carousel wrapAround withoutControls slidesToShow={1} autoplay>
         <div className="bg-teal-200 w-full text-center text-sm">
           Imprescindibles para tus vacaciones
@@ -207,7 +207,7 @@ export const Navbar = () => {
               />
             </Link>
           </div>
-          <SearchComponent/>
+          <SearchComponent />
 
           <div className="iconos flex justify-center gap-8 w-[25%] max-sm:flex  max-sm:w-[20%] max-sm:justify-end max-sm:gap-2 max-sm:mx-4 text-[12px]">
             {user ? (
@@ -217,8 +217,12 @@ export const Navbar = () => {
                   onClick={() => setActived(!actived)}
                 >
                   <div className="flex justify-center rounded-full w-16">
-                    <img className="rounded-full w-12 max-sm:w-12 " src={  user.photoURL || Avatar } alt="" />
-                    </div>
+                    <img
+                      className="rounded-full w-12 max-sm:w-12  "
+                      src={  user.photoURL || Avatar }
+                      alt=""
+                    />
+                  </div>
                 </div>
                 <div
                   className={!actived ? " " : "hidden-cart"}
@@ -226,11 +230,10 @@ export const Navbar = () => {
                 >
                   <div className="flex flex-col justify-center items-center">
                     <Link to="/Profile">
-                    <div className="text-sm mb-1 hover:text-slate-400">
-                      Visita tu perfil
-                    </div>
+                      <div className="text-sm mb-1 hover:text-slate-400">
+                        Visita tu perfil
+                      </div>
                     </Link>
-                
 
                     <h5 className=" mb-2 border w-40 p-2 text-primary text-center">
                       {user.displayName || user.email}
@@ -313,7 +316,7 @@ export const Navbar = () => {
                                 </span>
 
                                 <span className="text-lg">
-                                  ${producto.data.precio || producto.precio }.000
+                                  ${producto.data.precio || producto.precio}.000
                                 </span>
                                 <button></button>
                               </div>
@@ -356,10 +359,9 @@ export const Navbar = () => {
                       </button>
 
                       <button className="btn-clear-all rounded-2xl  mb-2 ">
-                      <Link to="/Carrito"> Ver Carrito</Link>
-                    </button>
+                        <Link to="/Carrito"> Ver Carrito</Link>
+                      </button>
                     </div>
-                  
                   </>
                 ) : (
                   <div className=" flex justify-between p-4 items-center  bg-purple-50 rounded-lg">

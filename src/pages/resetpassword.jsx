@@ -1,142 +1,72 @@
-import { getAuth, sendPasswordResetEmail } from "firebase/auth";
-import { app } from "../assets/config/firebase"
-import { useAuth } from "../auth/AuthProvider";
+// ResetPassword.js
 
-// export const ResetPassword = ()=>{
-//     const {email} = useAuth()
-//     const auth = getAuth(app);
-// sendPasswordResetEmail(auth, email)
-//   .then(() => {
-//     // Password reset email sent!
-//     // ..
-//   })
-//   .catch(() => {
-//     console.error();
-//     // ..
-//   });
-//     return(
-//       <>
-//       <h1>hola</h1>
-//       </>
-//     )
-// }
-import { useState } from "react";
-import { Button, Input, Typography } from "@material-tailwind/react";
+import { useState } from 'react';
+import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
+import { app } from "../assets/config/firebase";
+import { Navbar } from './Navbar';
 
+export const ResetPassword = () => {
+  const [email, setEmail] = useState('');
+  const [resetSent, setResetSent] = useState(false);
+  const [error, setError] = useState('');
 
-// import { Typography, Input, Button } from "@material-tailwind/react";
-// import { EyeSlashIcon, EyeIcon } from "@heroicons/react/24/solid";
+  const auth = getAuth(app);
 
-export const ResetPassword = ()=>{
-  const [passwordShown, setPasswordShown] = useState(false);
-  const togglePasswordVisiblity = () => setPasswordShown((cur) => !cur);
-  const {email} = useAuth()
-      const auth = getAuth(app);
-  sendPasswordResetEmail(auth, email)
-    .then(() => {
-      // Password reset email sent!
-      // ..
-    })
-    .catch(() => {
-      console.error();
-      // ..
-    });
+  const handleResetPassword = () => {
+    sendPasswordResetEmail(auth, email)
+      .then(() => {
+        setResetSent(true);
+      })
+      .catch((error) => {
+        setError(error.message);
+      });
+  };
 
   return (
-    <section className="grid text-center h-screen items-center p-8">
-      <div>
-        <Typography variant="h3" color="blue-gray" className="mb-2">
-          Sign In
-        </Typography>
-        <Typography className="mb-16 text-gray-600 font-normal text-[18px]">
-          Enter your email and password to sign in
-        </Typography>
-        <form action="#" className="mx-auto max-w-[24rem] text-left">
-          <div className="mb-6">
-            <label htmlFor="email">
-              <Typography
-                variant="small"
-                className="mb-2 block font-medium text-gray-900"
-              >
-                Your Email
-              </Typography>
-            </label>
-            <Input
-              id="email"
-              color="gray"
-              size="lg"
-              type="email"
-              name="email"
-              placeholder="name@mail.com"
-              className="w-full placeholder:opacity-100 focus:border-t-primary border-t-blue-gray-200"
-              labelProps={{
-                className: "hidden",
-              }}
-            />
-          </div>
-          <div className="mb-6">
-            <label htmlFor="password">
-              <Typography
-                variant="small"
-                className="mb-2 block font-medium text-gray-900"
-              >
-                Password
-              </Typography>
-            </label>
-            <Input
-              size="xl"
-              placeholder="********"
-              labelProps={{
-                className: "hidden",
-              }}
-              className="w-full flex  placeholder:opacity-100 focus:border-t-primary border-t-blue-gray-200"
-              type={passwordShown ? "text" : "password"}
-              icon={
-                <i onClick={togglePasswordVisiblity}>
-                </i>
-              }
-            />
-          </div>
-          <Button color="gray" size="lg" className="mt-6" fullWidth>
-            sign in
-          </Button>
-          <div className="mt-4 flex justify-end">
-            <Typography
-              as="a"
-              href="#"
-              color="blue-gray"
-              variant="small"
-              className="font-medium"
-            >
-              Forgot password
-            </Typography>
-          </div>
-          <Button
-            variant="outlined"
-            size="lg"
-            className="mt-6 flex h-12 items-center justify-center gap-2"
-            fullWidth
-          >
-            <img
-              src={`https://www.material-tailwind.com/logos/logo-google.png`}
-              alt="google"
-              className="h-6 w-6"
-            />{" "}
-            sign in with google
-          </Button>
-          <Typography
-            variant="small"
-            color="gray"
-            className="mt-4 text-center font-normal"
-          >
-            Not registered?{" "}
-            <a href="#" className="font-medium text-gray-900">
-              Create account
-            </a>
-          </Typography>
-        </form>
-      </div>
-    </section>
+<>
+
+<Navbar/>
+    <div className=' flex justify-start bg-teal-50 items-center flex-col  h-screen'>
+      <h1 className='text-center text-2xl font-bold mt-5 mb-5'>¿Has olvidado tu contraseña?</h1>
+
+      <h4 className='text-start col-5 max-sm:w-[90%] max-sm:mx-4 text-sm'>Por favor introduce tu dirección de correo electrónico para recibir un enlace de restablecimiento de contraseña.</h4>
+      {resetSent ? (
+        <p className='mt-12 text-md font-bold'>Se ha enviado un email de restablecimiento de contraseña a <span className='text-red-300'> {email}.</span></p>
+      ) : (
+        <>
+         <div className="mb-6 flex  flex-col mt-4 max-sm:w-[90%] max-sm:mx-4">
+                <label
+                  type="text"
+                  className="flex items-center justify-start"
+                  id="email"
+                >
+                  Email <p className="text-red-600">*</p>
+                </label>
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Correo Electrónico"
+                 value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                  className="border h-12 w-[570px] max-sm:w-[270px]"
+                  required=""
+                  autoComplete="off"
+                />
+
+                
+              </div>
+          <h2 className='text-sm col-5 text-start mb-4 max-sm:w-[90%] max-sm:mx-4'>Este sitio está protegido por reCAPTCHA y se aplican la Política de Privacidad y Terminos de Servicio de Google.</h2>
+         <h4 className='text-red-400 text-sm col-5 text-start max-sm:w-[90%] max-sm:mx-4'>* Campos obligatorios</h4>
+         <div className='col-5 flex justify-start mt-4 max-sm:w-[90%] max-sm:mx-4'> 
+         <button className='border p-3 bg-cyan-300 text-sm hover:bg-cyan-500 text-white font-bold max-sm:w-full ' onClick={handleResetPassword}>Restablecer mi contraseña</button>
+         </div>
+         
+          {error && <p>Error: {error}</p>}
+        </>
+      )}
+    </div>
+    </>
   );
-}
+};
+
 

@@ -1,33 +1,44 @@
-import { onAuthStateChanged } from "firebase/auth";
-import { useEffect, useState } from "react";
-import { auth } from "../assets/config/firebase";
+
 import { Navbar } from "./Navbar";
 import Avatar from '../assets/img/avatar.png'
 
 
+import { Breadcrumbs } from "../components/RutasActual";
+import { useEffect, useState } from "react";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../assets/config/firebase";
+
+
+
 export const Profile = ()=>{
-    const [user,setUser] = useState([])
-   
+    const [user,setUser] =useState([])
+const [photo,setPhoto] = useState([])
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, async (user) => {
-          setUser(user);
-        
+        const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+          if (currentUser) {
+            setPhoto(currentUser.photoURL);
+             setUser(currentUser)
+          } else {
+            setPhoto(null);
+            
+          }
         });
     
         return () => unsubscribe();
       }, []);
-console.log(user.displayName)
+    
     return (
     <>
     <Navbar/>
-    <div className="flex justify-center items-center mb-10">
+    <Breadcrumbs/>
+    <div className="flex justify-center items-center mb-10 max-sm:flex max-sm:flex-col bg-teal-50">
     <div
-    className="max-w-2xl mx-4 sm:max-w-sm md:max-w-sm lg:max-w-sm xl:max-w-sm sm:mx-auto md:mx-auto lg:mx-auto xl:mx-auto mt-16 bg-white shadow-xl rounded-lg text-gray-900">
+    className="max-w-2xl mx-4 sm:max-w-sm md:max-w-sm lg:max-w-sm xl:max-w-sm sm:mx-auto md:mx-auto lg:mx-auto xl:mx-auto mt-2 bg-white shadow-xl rounded-lg text-gray-900">
     <div   className="rounded-t-lg h-32 overflow-hidden">
         <img   className="object-cover object-top w-full" src='https://images.unsplash.com/photo-1549880338-65ddcdfd017b?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&fit=max&ixid=eyJhcHBfaWQiOjE0NTg5fQ' alt='Mountain'/>
     </div>
     <div   className="mx-auto w-32 h-32 relative -mt-16 border-4 border-white rounded-full overflow-hidden">
-        <img   className="object-cover object-center h-32" src={   user.photoURL || Avatar }  alt='Woman looking front'/>
+        <img   className="object-cover object-center h-32" src={  photo || Avatar }  alt='Woman looking front'/>
     </div>
     <div   className="text-center mt-2">
         <h2   className="font-semibold">{user.displayName}</h2>
@@ -62,14 +73,12 @@ console.log(user.displayName)
    
     <div   className="p-4 border-t mx-8 mt-2">
       
-        <button   className="block mx-auto rounded-full bg-gray-900 hover:shadow-lg font-semibold text-white px-6 py-2">
-          Cerrar Sesion
-        </button>
+       
     </div>
 </div>
 <div className="flex justify-center">
-    <div className="my-10 lg:w-[600px] lg:h-[390px] md:h-[14rem] xs:w-full xs:h-[10rem] ">
-    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d16258064.903562967!2d-85.03484505958286!3d5.819740540153444!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e15a43aae1594a3%3A0x9a0d9a04eff2a340!2sColombia!5e0!3m2!1ses-419!2sco!4v1713928385693!5m2!1ses-419!2sco" width="700" height="450"  allowfullscreen="" loading="lazy" referrerPolicy="no-referrer-when-downgrade" ></iframe>
+    <div className="my-10 lg:w-[600px] lg:h-[390px] md:h-[14rem] max-sm:hidden xs:h-[10rem] ">
+    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d16258064.903562967!2d-85.03484505958286!3d5.819740540153444!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e15a43aae1594a3%3A0x9a0d9a04eff2a340!2sColombia!5e0!3m2!1ses-419!2sco!4v1713928385693!5m2!1ses-419!2sco" width="500" height="400"  allowfullscreen="" loading="lazy" referrerPolicy="no-referrer-when-downgrade" ></iframe>
 
      </div>
     </div>

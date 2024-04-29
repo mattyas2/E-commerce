@@ -18,13 +18,14 @@ import flecha from "../assets/img/flecha.png";
 import color from "../assets/img/colors.png";
 import Alert from "./Alert";
 import { useNavigate } from "react-router-dom";
+import { Breadcrumbs } from "./RutasActual";
 
 export const Tazas = ()=>{
  
     const [loaded, setLoaded] = useState(false);
     const {
       productos, setProductos,
-      coleccion,setColeccion,onAddProduct,favorites,onDeleteFavort,addToFavorites, user
+      coleccion,setColeccion,onAddProduct,favorites,onDeleteFavort,addToFavorites, user,alertMessages, alertType, showAlerta, 
     } = useAuth();
     
   useEffect(() => {
@@ -113,8 +114,11 @@ return(
 
     <>
       <Navbar/>
+      { showAlerta && (
+        <Alert message={alertMessages}  type={alertType}/>
+      )}
       {showAlert && <Alert message={alertMessage} />}
-    
+      <Breadcrumbs/>
 <div className="flex flex-col gap-10  bg-teal-50 h-[100%]">
 <div className="text-center font-bold text-2xl flex  justify-center gap-20 mb-10 max-sm:justify-start items-center max-sm:gap-16 max-sm:mx-4">
 <Link to="/">

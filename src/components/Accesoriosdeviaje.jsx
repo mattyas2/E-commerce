@@ -18,6 +18,7 @@ import { Navbar } from "../pages/Navbar";
 
 import Alert from "./Alert";
 import { useNavigate } from "react-router-dom";
+import { Breadcrumbs } from "./RutasActual";
 
 
 
@@ -26,7 +27,7 @@ export const AccesoriosDeViajes = ()=>{
   
     
     const {
-      productos, setProductos,coleccion,setColeccion,favorites,onAddProduct,onDeleteFavort,addToFavorites, user
+      productos, setProductos,coleccion,setColeccion,favorites,onAddProduct,onDeleteFavort,addToFavorites, user,alertMessages, alertType, showAlerta, 
                         
     } = useAuth();
   useEffect(() => {
@@ -115,8 +116,14 @@ return(
 
     <>
     <Navbar/>
+    { showAlerta && (
+        <Alert message={alertMessages}  type={alertType}/>
+      )}
     {showAlert && <Alert message={alertMessage} />}
+
+    <Breadcrumbs/>
 <div className="bg-teal-50 h-[100%]">
+
 <div className="text-center font-bold text-2xl flex justify-center gap-20 mb-10 max-sm:justify-start  items-center max-sm:gap-16 max-sm:mx-4">
 <Link to="/">
 <IoMdArrowRoundBack size={38} /> 

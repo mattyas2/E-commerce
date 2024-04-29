@@ -16,13 +16,14 @@ import { app } from "../assets/config/firebase";
 import { useAuth } from "../auth/AuthProvider";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { Link } from "react-router-dom";
+import { Breadcrumbs } from "./RutasActual";
 
 export const Checkout = () => {
-  const [total, setTotal] = useState(0);
+ 
   const db = getFirestore(app);
   const auth = getAuth();
 
-  const { user, carrito, setCarrito, totalQuantity, setTotalQuantity } =
+  const { user, carrito, setCarrito, totalQuantity1, setTotalQuantity,total } =
     useAuth();
 
   useEffect(() => {
@@ -48,13 +49,6 @@ export const Checkout = () => {
     });
   }, []);
 
-  useEffect(() => {
-    let total = 0;
-    carrito.forEach((producto) => {
-      total += parseFloat(producto.data.precio);
-    });
-    setTotal(total);
-  }, [carrito]);
 
   const onDeleteProduct = async (productId) => {
     if (user) {
@@ -94,7 +88,7 @@ export const Checkout = () => {
         total:total,
         userId: user.uid,
         items: carrito,
-        totalQuantity: totalQuantity,
+        totalQuantity: totalQuantity1,
         timestamp: Timestamp.now(),
         // Datos del formulario
         email: formData.email,
@@ -170,6 +164,8 @@ export const Checkout = () => {
   return (
     <>
       <Navbar />
+
+      <Breadcrumbs/>
 <div>
 
 
@@ -401,7 +397,7 @@ export const Checkout = () => {
           <h4 className="flex justify-content-center gap-10 align-items-center mb-3">
             <span className="text-primary text-2xl">Your cart</span>
             <span className="badge bg-primary rounded-pill text-xl">
-              {carrito.length}
+              {totalQuantity1}
             </span>
           </h4>
           <li className="list-group-item d-flex justify-content-between  bg-teal-50 ">

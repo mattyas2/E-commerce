@@ -46,7 +46,7 @@ export const Register = () => {
     <>
     <Navbar/>
   
-      <div className="bg-teal-50 h-[540px] max-sm:h-[600px] ">
+      <div className="bg-teal-50 h-screen max-sm:h-[120vh]">
 
        <div className="flex justify-center w-full max-sm:flex max-sm:w-full max-sm:justify-center max-sm:flex-col ">
         
@@ -60,7 +60,7 @@ export const Register = () => {
      
           <form onSubmit={ handleSubmit} className="w-full max-w-sm ">
 
-          <div className="mb-6 max-sm:mb-3">
+          <div className="mb-4 max-sm:mb-3">
               
               <label
                 type="text"
@@ -68,56 +68,57 @@ export const Register = () => {
                 id="usuario"
                 >
                   
-                Usuario:
+                Username <span className="text-red-500">*</span>
               </label>
               <input
              name="displayName"
                 onChange={(e) => setUser({ ...user, displayName: e.target.value })}
                 type="text"
                 id="displayName"
-                className="mt-1 appearance-none text-slate-900 bg-white rounded-md block w-full px-2 h-10 shadow-sm max-sm:text-sm focus:outline-none placeholder:text-slate-400 focus:ring-2 focus:ring-sky-500 ring-1 ring-slate-200"
+                className="border h-12 w-[400px]  max-sm:w-[270px]"
                 required="" autoComplete="off"
               />
             </div>
-            <div className="mb-6">
+            <div className="mb-4">
               
               <label
                 type="text"
                 className="block text-sm font-semibold leading-6 text-gray-900"
                 id="email">
-                Email address
+                Email <span className="text-red-500">*</span>
               </label>
               <input
                 name="email"
                 onChange={(e) => setUser({ ...user, email: e.target.value })}
                 type="email"
                 id="email"
-                className="mt-1 appearance-none text-slate-900 bg-white rounded-md block w-full px-3 h-10 shadow-sm sm:text-sm focus:outline-none placeholder:text-slate-400 focus:ring-2 focus:ring-sky-500 ring-1 ring-slate-200"
-                required="" autoComplete="off"
+                className="border h-12 w-[400px] max-sm:w-[270px]"
+                required
+                 autoComplete="off"
               />
             </div>
-            <div className="mb-6">
+            <div className="mb-4">
               <label
                 tabIndex="password"
                 className="block text-sm font-semibold leading-7 text-gray-900"
               >
-                Password
+                Password <span className="text-red-500">*</span>
               </label>
               <input
              name="password"
              onChange={(e) => setUser({ ...user, password: e.target.value })}
                 type="password"
                 id="password"
-                className="mt-1 appearance-none text-slate-900 bg-white rounded-md block w-full px-3 h-9 shadow-sm sm:text-sm focus:outline-none placeholder:text-slate-400 focus:ring-2 focus:ring-sky-500 ring-1 ring-slate-200"
-                required=""
+                className="border h-12 w-[400px] max-sm:w-[270px]"
+                required
               />
             </div>
-            <div className="mb-6">
+            <div className="mb-4">
               <label
                 tabIndex="repeatPaswword"
                 className="block text-sm font-semibold leading-7 text-gray-900"
               >
-               Repeat Password
+               Repeat Password <span className="text-red-500">*</span>
               </label>
               <input
               
@@ -125,9 +126,11 @@ export const Register = () => {
                 type="password"
                 id="password"
                 name="repeatPaswword"
-                className="mt-1 appearance-none text-slate-900 bg-white rounded-md block w-full px-3 h-9 shadow-sm sm:text-sm focus:outline-none placeholder:text-slate-400 focus:ring-2 focus:ring-sky-500 ring-1 ring-slate-200"
-                required=""
+                className="border h-12 w-[400px] max-sm:w-[270px]" 
+                required
               />
+<p className="text-red-500 text-xs">* Campos obligatorios</p>
+
             </div>
 
 
@@ -135,7 +138,7 @@ export const Register = () => {
             <button
             
               type="submit"
-              className="inline-flex justify-center rounded-lg text-sm font-semibold py-2.5 px-4 bg-slate-900 text-white hover:bg-slate-700 w-full"
+              className='border p-3 bg-cyan-300 text-sm hover:bg-cyan-500 w-[200px] text-white font-bold max-sm:w-full '
             >
               <span> Register</span>
             </button>
@@ -145,13 +148,13 @@ export const Register = () => {
             </p>
           </form>
           </div>
-        <footer className="mb-6 max-sm-mb-10 ">
-          <div className="space-y-2 text-sm text-gray-900 sm:flex sm:items-center sm:justify-center sm:space-x-4 sm:space-y-0 ">
+        <footer className="mt-12 max-sm:mt-0 col-12  ">
+          <div className=" flex justify-center gap-4 max-sm:flex-col max-sm:mb-6">
       
-            <span className="max-sm:mx-4">¿Ya Tienes Una Cuenta?</span>
-                <button className="bg-slate-900 text-white p-2 rounded-lg " >
-                  <Link to={"/Login"} className="text-white text-decoration-none">Iniciar Sesion </Link>
-                  <span aria-hidden="true">→</span>
+            <span className="max-sm:mx-4 flex justify-center items-center">¿Ya Tienes Una Cuenta?</span>
+                <button className='border p-2.5 bg-cyan-300 text-sm hover:bg-cyan-500 text-white font-bold max-sm:w-[86%] max-sm:mx-6  gap-2 flex justify-center items-center w-[200px] '>
+                  <Link className="max-sm:w-full" to={"/Login"} >Iniciar Sesion </Link>
+                  <span className="text-2xl flex justify-center items-center" aria-hidden="true">→</span>
                   </button>
                 
              

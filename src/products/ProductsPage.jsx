@@ -6,29 +6,44 @@ import { FaAngleUp } from "react-icons/fa";
 import { FaAngleDown } from "react-icons/fa";
 
 import { Link, useParams } from "react-router-dom";
-import { collection, doc, getDoc, getDocs, getFirestore, setDoc } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, getFirestore, setDoc, updateDoc } from "firebase/firestore";
 import { useAuth } from "../auth/AuthProvider";
 import { Navbar } from "../pages/Navbar";
 import { IoMdArrowRoundBack } from "react-icons/io";
+import { Breadcrumbs } from "../components/RutasActual";
+import { GiShoppingCart } from "react-icons/gi";
+import Alert from "../components/Alert";
 
 export const ProductsPage = () => {
 
 
-const { user }=useAuth()
+const { user,alertMessages, alertType, showAlerta,handleShowAlert  }=useAuth()
 const { productoId } = useParams();
 const [producto, setProducto] = useState([]);
+
 const db = getFirestore()
 useEffect(() => {
   const obtenerDetallesProducto = async () => {
-    const productoRef = doc(collection(db, "productos"), productoId);
-
     try {
+      // Consulta para obtener el producto de la colección "productos"
+      const productoRef = doc(collection(db, "productos"), productoId);
       const productoSnapshot = await getDoc(productoRef);
+
       if (productoSnapshot.exists()) {
         const productoData = productoSnapshot.data();
         setProducto(productoData);
       } else {
-        console.log("El producto no existe");
+        console.log("El producto no existe en la colección 'productos'");
+        // Si el producto no se encuentra en "productos", buscar en la colección "Coleccion"
+        const coleccionRef = doc(collection(db, "Coleccion"), productoId);
+        const coleccionSnapshot = await getDoc(coleccionRef);
+        if (coleccionSnapshot.exists()) {
+          const productoData = coleccionSnapshot.data();
+          setProducto(productoData);
+        
+        } else {
+          console.log("El producto no existe en la colección 'Coleccion'");
+        }
       }
     } catch (error) {
       console.error("Error al obtener los detalles del producto:", error);
@@ -36,7 +51,11 @@ useEffect(() => {
   };
 
   obtenerDetallesProducto();
-}, [productoId]);
+}, [db, productoId]);
+
+if (!producto) {
+  return <p>Cargando producto...</p>;
+}
 
   console.log(productoId)
 
@@ -46,6 +65,8 @@ useEffect(() => {
   // const toggleModale = () => {
   //   setShowModale(!showModal1e);
   // };
+
+
   const onAddProduct = async (product) => {
     if (!user || !user.uid) {
       console.error('Usuario no autenticado o UID no disponible');
@@ -55,32 +76,104 @@ useEffect(() => {
     const userDoc = await getDoc(userRef);
     if (userDoc.exists()) {
       const userData = userDoc.data();
-      const Carrito = userData.Carrito || [];
+      const carrito = userData.Carrito || [];
+      const existingItem = carrito.find((item) => item.id === product.id);
+
+      if (existingItem) {
+        // Si el producto existe, aumentar la cantidad
+        const updatedCartItems = carrito.map((item) => {
+          if (item.id === product.id) {
+            return { ...item, cantidad: item.cantidad + 1 };
+          }
+          return item;
+        });
+
+        await updateDoc(userRef, { Carrito: updatedCartItems });
+        console.log("Cantidad del producto aumentada en el carrito.");
 
       // agregarlo
-      const updatedCarrito = [...Carrito,{ data:{
-        producto:productoId,
+     
+      }else{
+
+        const updatedCarrito = [...carrito,{ data:{
+          producto:productoId,
+          name: producto.name,
+          precio: producto.precio,
+          imagen: producto.imagen,
+         
+          
+        },cantidad:1
+         
+         
+  
+        
+        }];
+        await setDoc(userRef, { Carrito: updatedCarrito }, { merge: true });
+        const total = updatedCarrito.reduce(
+          (acc, item) => acc + item.cantidad,
+          0
+        );
+       
+        handleShowAlert("Producto agregado al carrito correctamente","success");
+  
+      }
+      }
+     
+
+
+  }
+
+
+  const onAddFavorites = async (product) => {
+    if (!user || !user.uid) {
+      console.error('Usuario no autenticado o UID no disponible');
+      return;
+    }
+    const userRef = doc(db, "usuarios", user.uid);
+    const userDoc = await getDoc(userRef);
+    if (userDoc.exists()) {
+      const userData = userDoc.data();
+      const Favorites = userData.Favoritos || [];
+
+      // agregarlo
+      const updatedCarrito = [...Favorites,{ data:{
+        id:productoId,
         name: producto.name,
         precio: producto.precio,
         imagen: producto.imagen,
-        cantidad: 1
+        imagen2: producto.imagen2,
+        imagen3: producto.imagen3,
+        imagen4: producto.imagen4,
+        category:producto.category,
+        descripcion:producto.descripcion
+       
+        
       }
        
        
 
       
       }];
-      await setDoc(userRef, { Carrito: updatedCarrito }, { merge: true });
-      console.log("Producto agregado al carrito correctamente");
+      await setDoc(userRef, { Favoritos: updatedCarrito }, { merge: true });
+      handleShowAlert("Producto agregado a la lista de deseos correctamente","success");
 
     }
+
+
   }
+
+
+
   
 
   
   return (
     <>
   <Navbar/>
+  { showAlerta && (
+        <Alert message={alertMessages}  type={alertType}/>
+      )}
+  <Breadcrumbs/>
     <div className="col-12 max-sm:w-full bg-teal-50 max-sm:mb-6">
     <div className="text-center font-bold text-2xl flex  justify-center gap-20 mb-10 max-sm:justify-start items-center max-sm:gap-16 max-sm:mx-4">
 <Link to="/">
@@ -101,15 +194,15 @@ inicio
              <div className="grid gap-4 lg:grid-cols-5">
                <div className="-order-last flex gap-8 lg:order-none lg:flex-col">
                  <div className="overflow-hidden rounded-lg bg-gray-100">
-                   <img src={producto?.imagen2} loading="lazy" alt="Photo by Himanshu Dewangan" className="h-full w-full object-cover object-center" />
+                   <img src={producto?.imagen2} loading="lazy" alt="" className="h-full w-full object-cover object-center" />
                  </div>
        
                  <div className="overflow-hidden rounded-lg bg-gray-100">
-                   <img  src={producto.imagen3} loading="lazy" alt="Photo by Himanshu Dewangan" className="h-full w-full object-cover object-center" />
+                   <img  src={producto.imagen3} loading="lazy" alt="" className="h-full w-full object-cover object-center" />
                  </div>
        
                  <div className="overflow-hidden rounded-lg bg-gray-100">
-                   <img src={producto.imagen4} loading="lazy" alt="Photo by Himanshu Dewangan" className="h-full w-full object-cover object-center" />
+                   <img src={producto.imagen4}  loading="lazy" alt="" className="h-full w-full object-cover object-center" />
                  </div>
                </div>
        
@@ -118,7 +211,7 @@ inicio
        
                  <span className="absolute left-0 top-0 rounded-br-lg bg-red-500 px-3 py-1.5 text-sm uppercase tracking-wider text-white">sale</span>
        
-                 <span className="absolute right-4 top-4 inline-block rounded-lg border bg-white px-3.5 py-3 text-center text-sm font-semibold text-gray-500 outline-none ring-indigo-300 transition duration-100 hover:bg-gray-100 focus-visible:ring active:text-gray-700 md:text-base">
+                 <span onClick={onAddFavorites} className="absolute right-4 top-4 inline-block rounded-lg border  hover:bg-cyan-400 cursor-pointer bg-cyan-100  px-3.5 py-3 text-center text-sm font-semibold text-gray-500 outline-none ring-indigo-300 transition duration-100 focus-visible:ring active:text-cyan-400 md:text-base">
                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                    </svg>
@@ -128,13 +221,13 @@ inicio
            
        
           
-             <div className="md:py-4 col-12">
+             <div className="md:py-1 col-12">
             
-               <div className="mb-2 md:mb-3">
+               <div className="mb-3 md:mb-3">
                  <h2 className="text-2xl font-bold text-gray-800 lg:text-3xl">{producto.name}</h2>
                </div>
               
-               <div className="mb-6 flex items-center md:mb-10">
+               <div className="mb-2 flex items-center md:mb-10">
                  <div className="-ml-1 flex gap-0.5">
                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
@@ -162,11 +255,7 @@ inicio
                  <span className="ml-4 text-sm font-semibold text-indigo-500 transition duration-100 hover:text-indigo-600 active:text-indigo-700">view all 47 reviews</span>
                </div>
             
-            
-       
-           
-            
-               
+
                <div className="mb-4">
                  <div className="flex items-end gap-2">
                    <span className="text-xl font-bold text-gray-800 md:text-2xl">${producto.precio}.000</span>
@@ -190,17 +279,24 @@ inicio
        
              
                <div className="flex gap-2">
-                 <button onClick={onAddProduct} className="inline-block flex-1 rounded-lg bg-indigo-500 px-8 py-3 text-center text-sm font-semibold text-white outline-none ring-indigo-300 transition duration-100 hover:bg-indigo-600 focus-visible:ring active:bg-indigo-700 sm:flex-none md:text-base">Add to cart</button>
+                 <button onClick={onAddProduct} className="gap-4 flex-1 flex justify-center rounded-lg bg-indigo-500 px-8 py-2 text-center text-sm font-semibold text-white outline-none ring-indigo-300 transition duration-100 hover:bg-indigo-600 focus-visible:ring active:bg-indigo-700 sm:flex-none md:text-base"> <GiShoppingCart  size={36} className="" /></button>
                </div>
        
-               <div className="mt-8 md:mt-8 lg:mt-10 w-[95%]">
+               <div className="mt-4 md:mt-8 lg:mt-10 w-[95%]">
                  <div className="mb-3 text-lg font-semibold text-gray-800">Description</div>
        
                  <p className="text-gray-500">
                    {producto.descripcion}
-                 <br /><br />
-       
+                 <br />
                   {producto.descripcion2}
+                  <br /><br />
+                  <p className=" text-gray-800 text-lg font-semibold">
+                  {producto.caracteristicas1}
+                  </p>
+               {producto.caracteristicas}
+               <br/>
+               {producto.caracteristicas2}
+
                  </p>
                </div>
              </div>

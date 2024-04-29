@@ -21,10 +21,14 @@ import { Checkout } from "./components/Checkout.jsx";
 import { Cart }  from './components/Cart.jsx'
 
 import { ProductsPage } from "./products/ProductsPage.jsx";
-import { ColeccionPage } from "./products/ColeccionPage.jsx";
+
 import { Footer } from "./components/Footer.jsx";
 import { Profile } from "./pages/Profile.jsx";
 import { SearchComponent } from "./components/Search.jsx";
+
+
+
+
 
 
 
@@ -42,11 +46,12 @@ function App() {
     <>
   
 
-    
+
     
      <BrowserRouter>    
-     <Routes>
 
+     <Routes>
+    
       <Route path="/" element={<Home/>} />      
       <Route path="/Register" element={<Register/>} />
       <Route path="/Login" element={<Login/>} />
@@ -61,10 +66,7 @@ function App() {
       <Route path="/Todos" element={<Todos/>} />
       <Route path="/Viajes" element={<AccesoriosDeViajes/>} />
       <Route path="/ProductsPage/:productoId" element={<ProductsPage/>}/>
-      <Route path="/ColeccionPage/:productoId" element={<ColeccionPage/>}/>
       <Route path="/Novedades" element={<Novedades/>} />
-
-
       <Route path="/Profile" element={<Profile/>}/>
       <Route path="/Checkout" element={<Checkout/>} />
       <Route path="/Carrito" element={<Cart/>}/>
@@ -75,7 +77,7 @@ function App() {
 
 
      </Routes>
-     <Footer/>
+     <Footer  />
  
      </BrowserRouter>
    

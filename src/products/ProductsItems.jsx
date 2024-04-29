@@ -288,10 +288,10 @@ export const ProductsItems = ({ agregarAlCarrito, agregarAFavoritos }) => {
           direction={"vertical"}
           className="mySwiper"
         >
-          {productos.map((product) => (
+          {productos.map((producto) => (
             <div
               className="relative  mx-4 mt-2 rounded-xl shadow-2xl w-[300px] flex flex-col justify-center  bg-purple-50 mb-8 h-[300px]"
-              key={product.id}
+              key={producto.id}
             >
               <SwiperSlide>
                 <Tilt>
@@ -299,10 +299,10 @@ export const ProductsItems = ({ agregarAlCarrito, agregarAFavoritos }) => {
                     <p>sale</p>
                   </div>
 
-                  <Link to={`/ProductsPage/${product.id}`}>
+                  <Link to={`/ProductsPage/${producto.id}`}>
                     <img
                       className="w-full h-[300px]"
-                      src={product.data.imagen}
+                      src={producto.data.imagen}
                       alt=""
                     />
                   </Link>
@@ -310,7 +310,7 @@ export const ProductsItems = ({ agregarAlCarrito, agregarAFavoritos }) => {
                 <div>
                   <div className="flex items-center mt-3 justify-between me-3 mx-6">
                     <h6 className="text-cyan-500  font-bold max-sm:mr-16">
-                      {product.data.name}
+                      {producto.data.name}
                     </h6>
                     <div className="bg-slate-900 text-white flex items-center max-sm:col-4 max-sm:absolute max-sm:ms-60">
                       <div>
@@ -322,7 +322,7 @@ export const ProductsItems = ({ agregarAlCarrito, agregarAFavoritos }) => {
 
                   <div className="flex gap-5 my-2 mt-1 mx-4">
                     <h3 className="text-green-700 font-bold">
-                      ${product.data.precio}.000
+                      ${producto.data.precio}.000
                     </h3>
                   </div>
                   <img className="mx-4" src={color} alt="" />
@@ -344,33 +344,33 @@ export const ProductsItems = ({ agregarAlCarrito, agregarAFavoritos }) => {
 
                   {user ? (
                       <div className="flex items-center justify-center gap-3 border-sky-500 border rounded-full w-[150px] mt-3 p-2 mb-6 mx-16 ">
-                        <p className="text-cyan-500 font-bold flex gap-7 ">
+                        <p className="text-cyan-500 font-bold flex gap-7">
                           <Link>
                             {" "}
                             {favorites.find(
-                              (item) => item.id === product.id
+                              (item) => item.id === producto.id
                             ) ? (
                               <FcLike
-                                FaBeer
+                             
                                 size={36}
-                                onClick={() => onDeleteFavort(product.id)}
+                                onClick={() => onDeleteFavort(producto.id)}
                               />
                             ) : (
                               <IoMdHeartEmpty
-                                FaBeer
+                          
                                 size={36}
-                                onClick={() => addToFavorites(product)}
+                                onClick={() => addToFavorites(producto)}
                               />
                             )}
                           </Link>{" "}
-                          <Link>
+                          <Link   >
                             {" "}
                             <span
                               onClick={() => {
-                                onAddProduct(product);
+                                onAddProduct(producto);
                               }}
                             >
-                              <GiShoppingCart FaBeer size={36} className="" />
+                              <GiShoppingCart  size={36}  />
                             </span>
                           </Link>{" "}
                         </p>
@@ -382,17 +382,17 @@ export const ProductsItems = ({ agregarAlCarrito, agregarAFavoritos }) => {
                           <Link>
                             {" "}
                             {favorites.find(
-                              (item) => item.id === product.id
+                              (item) => item.id === producto.id
                             ) ? (
                               <FcLike
-                                FaBeer
+                              
                                 size={36}
                                 onClick={handleClickFavoritos}
                              
                               />
                             ) : (
                               <IoMdHeartEmpty
-                                FaBeer
+                              
                                 size={36}
                                 onClick={handleClickFavoritos}
                               />
@@ -403,7 +403,7 @@ export const ProductsItems = ({ agregarAlCarrito, agregarAFavoritos }) => {
                             <span
                             onClick={handleClickCarrito}
                             >
-                              <GiShoppingCart FaBeer size={36} className="" />
+                              <GiShoppingCart  size={36} className="" />
                             </span>
                           </Link>{" "}
                         </p>
@@ -497,13 +497,13 @@ export const ProductsItems = ({ agregarAlCarrito, agregarAFavoritos }) => {
                               (item) => item.id === producto.id
                             ) ? (
                               <FcLike
-                                FaBeer
+                                
                                 size={36}
                                 onClick={() => onDeleteFavort(producto.id)}
                               />
                             ) : (
                               <IoMdHeartEmpty
-                                FaBeer
+                              className="hover:text-cyan-800"
                                 size={36}
                                 onClick={() => addToFavorites(producto)}
                               />
@@ -511,12 +511,12 @@ export const ProductsItems = ({ agregarAlCarrito, agregarAFavoritos }) => {
                           </Link>{" "}
                           <Link>
                             {" "}
-                            <span
+                            <span className="hover:text-cyan-800"
                               onClick={() => {
                                 onAddProduct(producto);
                               }}
                             >
-                              <GiShoppingCart FaBeer size={36} className="" />
+                              <GiShoppingCart size={36} className="" />
                             </span>
                           </Link>{" "}
                         </p>
@@ -531,14 +531,14 @@ export const ProductsItems = ({ agregarAlCarrito, agregarAFavoritos }) => {
                               (item) => item.id === producto.id
                             ) ? (
                               <FcLike
-                                FaBeer
+                              
                                 size={36}
                                 onClick={handleClickFavoritos}
                              
                               />
                             ) : (
                               <IoMdHeartEmpty
-                                FaBeer
+                                
                                 size={36}
                                 onClick={handleClickFavoritos}
                               />
@@ -549,7 +549,7 @@ export const ProductsItems = ({ agregarAlCarrito, agregarAFavoritos }) => {
                             <span
                             onClick={handleClickCarrito}
                             >
-                              <GiShoppingCart FaBeer size={36} className="" />
+                              <GiShoppingCart  size={36} className="" />
                             </span>
                           </Link>{" "}
                         </p>

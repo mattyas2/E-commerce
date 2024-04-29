@@ -129,7 +129,7 @@ export const ColeccionItems = ({ agregarAlCarrito, agregarAFavoritos }) => {
                       <div className="bg-red-500 w-fit px-2 text-white font-bold rounded-sm absolute top-3 left-6">
                         <p>sale</p>
                       </div>
-                      <Link to={`/ColeccionPage/${producto.id}`}>
+                      <Link to={`/ProductsPage/${producto.id}`}>
                         <img
                           className="w-full h-[290px]"
                           src={producto.data.imagen}
@@ -178,13 +178,13 @@ export const ColeccionItems = ({ agregarAlCarrito, agregarAFavoritos }) => {
                               (item) => item.id === producto.id
                             ) ? (
                               <FcLike
-                                FaBeer
+                              
                                 size={36}
                                 onClick={() => onDeleteFavort(producto.id)}
                               />
                             ) : (
                               <IoMdHeartEmpty
-                                FaBeer
+                              className="hover:text-cyan-800"
                                 size={36}
                                 onClick={() => addToFavorites(producto)}
                               />
@@ -192,12 +192,12 @@ export const ColeccionItems = ({ agregarAlCarrito, agregarAFavoritos }) => {
                           </Link>{" "}
                           <Link>
                             {" "}
-                            <span
+                            <span  className="hover:text-cyan-800"
                               onClick={() => {
                                 onAddProduct(producto);
                               }}
                             >
-                              <GiShoppingCart FaBeer size={36} className="" />
+                              <GiShoppingCart  size={36} className="" />
                             </span>
                           </Link>{" "}
                         </p>
@@ -212,14 +212,14 @@ export const ColeccionItems = ({ agregarAlCarrito, agregarAFavoritos }) => {
                               (item) => item.id === producto.id
                             ) ? (
                               <FcLike
-                                FaBeer
+                              
                                 size={36}
                                 onClick={handleClickFavoritos}
                              
                               />
                             ) : (
                               <IoMdHeartEmpty
-                                FaBeer
+                                
                                 size={36}
                                 onClick={handleClickFavoritos}
                               />
@@ -230,7 +230,7 @@ export const ColeccionItems = ({ agregarAlCarrito, agregarAFavoritos }) => {
                             <span
                             onClick={handleClickCarrito}
                             >
-                              <GiShoppingCart FaBeer size={36} className="" />
+                              <GiShoppingCart size={36} className="" />
                             </span>
                           </Link>{" "}
                         </p>
@@ -329,13 +329,13 @@ export const ColeccionItems = ({ agregarAlCarrito, agregarAFavoritos }) => {
                               (item) => item.id === producto.id
                             ) ? (
                               <FcLike
-                                FaBeer
+                               
                                 size={36}
                                 onClick={() => onDeleteFavort(producto.id)}
                               />
                             ) : (
                               <IoMdHeartEmpty
-                                FaBeer
+                              
                                 size={36}
                                 onClick={() => addToFavorites(producto)}
                               />
@@ -348,7 +348,7 @@ export const ColeccionItems = ({ agregarAlCarrito, agregarAFavoritos }) => {
                                 onAddProduct(producto);
                               }}
                             >
-                              <GiShoppingCart FaBeer size={36} className="" />
+                              <GiShoppingCart size={36} className="" />
                             </span>
                           </Link>{" "}
                         </p>
@@ -363,14 +363,14 @@ export const ColeccionItems = ({ agregarAlCarrito, agregarAFavoritos }) => {
                               (item) => item.id === producto.id
                             ) ? (
                               <FcLike
-                                FaBeer
+                              
                                 size={36}
                                 onClick={handleClickFavoritos}
                              
                               />
                             ) : (
                               <IoMdHeartEmpty
-                                FaBeer
+                              
                                 size={36}
                                 onClick={handleClickFavoritos}
                               />
@@ -381,7 +381,7 @@ export const ColeccionItems = ({ agregarAlCarrito, agregarAFavoritos }) => {
                             <span
                             onClick={handleClickCarrito}
                             >
-                              <GiShoppingCart FaBeer size={36} className="" />
+                              <GiShoppingCart  size={36} className="" />
                             </span>
                           </Link>{" "}
                         </p>

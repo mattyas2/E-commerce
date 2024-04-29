@@ -2,8 +2,6 @@
 /* eslint-disable no-unused-vars */
 
 import {  useEffect, useState } from "react";
-import { FaAngleUp } from "react-icons/fa";
-import { FaAngleDown } from "react-icons/fa";
 
 import { Link, useParams } from "react-router-dom";
 import { collection, doc, getDoc, getDocs, getFirestore, setDoc } from "firebase/firestore";
@@ -15,10 +13,7 @@ export const ColeccionPage = () => {
 
 
 
-  // const [showModal, setShowModal] = useState(true);
-  // const [showModal1e, setShowModale] = useState(true);
-//   const [detalle, setDetalle] = useState([]);
-//   const [name,setName] = useState()
+
 
 const { user }=useAuth()
 
@@ -46,13 +41,6 @@ useEffect(() => {
 }, [productoId]);
 
   console.log(productoId)
-
-  // const toggleModal = () => {
-  //   setShowModal(!showModal);
-  // };
-  // const toggleModale = () => {
-  //   setShowModale(!showModal1e);
-  // };
 
 
  
@@ -223,79 +211,3 @@ inicio
     </>
   );
 };
-{/* <div> 
-
-  
-   
-<div className="flex flex-col">
-
-
-    <div className=" border w-[27%] mt-16 mx-16 text-2xl flex justify-center  flex-col">
-      <div>
-        {" "}
-        <p className="flex justify-between ">
-          Precio  <span>  {showModal ? ( <FaAngleDown onClick={toggleModal} />
-            ) : ( <FaAngleUp onClick={toggleModal} /> )}
-          </span>{" "}
-        </p>
-        <div
-          className={showModal ? " " : "hidden-cart "}
-          id="container-cart-products1"
-        >
-          <div className=" flex justify-between p-4 items-center ">
-            <p className="text-2xl mt-14">
-              <input className="w-[300px]" type="range" />
-            </p>
-          </div>
-        </div>
-
-
-
-      </div>
-    </div>
-
-
-
-
-</div>
-
-<div className="w-[100] flex flex-col gap-10 mt-56">
-    <div className=" border w-[27%]  mx-16 text-2xl flex justify-center  flex-col">
-      <div>
-        {" "}
-        <p className="flex justify-between items-center">
-          Category
-          <span>
-            {showModal1e ? (
-             <FaAngleUp onClick={toggleModale}  />
-            ) : (
-              <FaAngleDown onClick={toggleModale}   />
-            )}
-          </span>{" "}
-        </p>
-        <div
-          className={showModal1e ? " " : "hidden-cart "}
-          id="container-cart-products12"
-        >
-          <div className=" flex justify-between p-4 items-center ">
-            <p className="text-2xl">
-              <div></div>
-            </p>
-            <div>
-
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-
-
-<div>
-
-
-
-</div>
-
-</div> */}

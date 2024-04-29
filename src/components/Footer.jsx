@@ -2,6 +2,8 @@
 // import { FaFacebook, FaInstagramSquare, FaWhatsappSquare } from "react-icons/fa"
 // import { Link } from "react-router-dom"
 
+
+
 export const Footer =()=>{
 
     return(
@@ -65,7 +67,7 @@ export const Footer =()=>{
               <div></div>
             </div>
           </div> */}
-        
+      
           <footer className="text-gray-600 body-font  bg-black w-[100%] max-sm:h-[200px] max-sm:mt-2 max-sm:p-4  " _msthidden="2">
   <div className="container  justify-center  flex  items-center sm:flex-row flex-col" _msthidden="2">
     <div className="flex title-font font-medium items-center md:justify-start justify-center text-gray-900" _msthidden="1">

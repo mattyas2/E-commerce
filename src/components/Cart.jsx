@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable react/prop-types */
@@ -14,10 +15,12 @@ import { useAuth } from "../auth/AuthProvider.jsx";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { CgProductHunt } from "react-icons/cg";
 import { BsChevronDown, BsChevronUp } from "react-icons/bs";
+import { Breadcrumbs } from "./RutasActual";
+import Alert from "./Alert.jsx";
 
 export function Cart() {
-  const [total, setTotal] = useState(0);
-const [totalQuantity1, setTotalQuantity1] = useState(0)
+ 
+
   const db = getFirestore(app);
   const auth = getAuth();
   const {
@@ -26,7 +29,7 @@ const [totalQuantity1, setTotalQuantity1] = useState(0)
     setCarrito,
     increaseQuantity,
     decreaseQuantity,
- totalQuantity, setTotalQuantity
+ totalQuantity1,total,alertMessages, alertType, showAlerta, handleShowAlert
   } = useAuth();
 
   useEffect(() => {
@@ -59,7 +62,7 @@ const [totalQuantity1, setTotalQuantity1] = useState(0)
       Carrito: [],
     });
     setCarrito([]);
-  
+    handleShowAlert("haz vaciado la cesta exitosamente","error")
 
     return emptyCart, carrito;
   };
@@ -71,25 +74,14 @@ const [totalQuantity1, setTotalQuantity1] = useState(0)
       Carrito: carrito.filter((product) => product.id !== productId),
     });
     setCarrito(carrito.filter((product) => product.id !== productId));
-   
+    handleShowAlert("¡Producto eliminado de la cesta exitosamente!","error")
     return onDeleteProduct, carrito;
 
     
   };
 
-  useEffect(() => {
-    let total = 0;
-    carrito.forEach((producto) => {
-      total += parseFloat(producto.data.precio) * producto.cantidad;
-    });
-    setTotal(total);
-  }, [carrito]);
+ 
 
-useEffect(()=>{
-  const totel = carrito.reduce((acc,item)=>acc + item.cantidad,0)
- setTotalQuantity1(totel)
-
-},[carrito])
 
 
  
@@ -97,11 +89,16 @@ useEffect(()=>{
   return (
     <>
       <Navbar />
-      <div className="bg-teal-50  flex flex-col justify-center items-center w-full h-[100%] w-full">
+      { showAlerta && (
+        <Alert message={alertMessages}  type={alertType}/>
+      )}
+      <Breadcrumbs/>
+      <div className="bg-teal-50  flex flex-col justify-center items-center  h-[100%] w-full">
         <div className="text-center font-bold text-2xl flex  justify-center gap-20 mb-10 max-sm:justify-start items-center max-sm:gap-16 max-sm:mx-4">
           <Link to="/">
             <IoMdArrowRoundBack size={38} />
           </Link>
+         
           <h1 className="text-2xl font-semibold ">Shopping Cart</h1>
 
         </div>

@@ -25,35 +25,18 @@ import { register } from "swiper/element/bundle";
 import { ProductsItems } from "../products/ProductsItems";
 import { ColeccionItems } from "../products/ColeccionItems";
 import Alert from "../components/Alert";
+
 register();
 
 export const Home = () => {
-  const [data, setData] = useState({});
-  const [iconoSeleccionado, setIconoSeleccionado] = useState(null);
   const db = getFirestore(app);
-
-  const carouselRef = useRef(null);
-  const [slideIndex, setSlideIndex] = useState(0);
-  const [Suscríbete, setSuscribete] = useState("");
   const [email, setEmail] = useState("");
 
   const {
-    error,
-
     setColeccion,
-    loading,
     user,
-    addToFavorites,
-    loaded,
-    setLoaded,
-    removeFavorite,
-    removeFromCart,
-    onAddProduct,
-    carrito,
-    productos,
-    setProductos,
-    handleNext,
-    handlePrev,
+    setLoaded,alertMessages, alertType, showAlerta, handleShowAlert,
+    
   } = useAuth();
 
   useEffect(() => {
@@ -70,35 +53,7 @@ export const Home = () => {
     obtenerProductos();
   }, []);
 
-  const defaultOptions = {
-    reverse: true, // reverse the tilt direction
-    max: 15, // max tilt rotation (degrees)
-    perspective: 70, // Transform perspective, the lower the more extreme the tilt gets.
-    scale: 1.3, // 2 = 200%, 1.5 = 150%, etc..
-    speed: 100, // Speed of the enter/exit transition
-    transition: true, // Set a transition on enter/exit.
-    axis: null, // What axis should be disabled. Can be X or Y.
-    reset: true, // If the tilt effect has to be reset on exit.
-    easing: "cubic-bezier(.03,.98,.52,.99)", // Easing on enter/exit.
-  };
-  const defaultOptions2 = {
-    reverse: false, // reverse the tilt direction
-    max: 0, // max tilt rotation (degrees)
-    perspective: 50, // Transform perspective, the lower the more extreme the tilt gets.
-    scale: 1.2, // 2 = 200%, 1.5 = 150%, etc..
-    speed: 10, // Speed of the enter/exit transition
-    transition: false, // Set a transition on enter/exit.
-    axis: null, // What axis should be disabled. Can be X or Y.
-    reset: true, // If the tilt effect has to be reset on exit.
-    easing: "cubic-bezier(.05,.98,.52,.99)", // Easing on enter/exit.
-  };
-  const cambiarColor = (icono) => {
-    if (iconoSeleccionado === icono) {
-      setIconoSeleccionado(false);
-    } else {
-      setIconoSeleccionado(icono);
-    }
-  };
+
 
   //
   //
@@ -119,7 +74,7 @@ export const Home = () => {
 
         setEmail("");
 
-        console.log("Información enviada correctamente a Firebase");
+        handleShowAlert("¡Tu suscripcion a sido Exitosa!","success");
       } catch (error) {
         console.error("Error al enviar la información a Firebase", error);
       }
@@ -159,11 +114,18 @@ export const Home = () => {
   };
  
 
+
+
   return (
     <>
-      <div className="bg-teal-50  ">
+      <div className="bg-teal-50 ">
         <Navbar />
+        <div>
+        { showAlerta && (
+        <Alert message={alertMessages}  type={alertType}/>
+      )}
 
+        </div>
         {showAlert && <Alert message={alertMessage} />}
 
         <div className="carrusel duration-300">
@@ -467,7 +429,7 @@ export const Home = () => {
         <form    onSubmit={handleSubmit} className="mb-3 flex w-full max-w-md gap-2">
           <input  name="email"
                         type="email"
-                        placeholder="email"
+                        placeholder="Email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)} className="bg-gray-white w-full flex-1 rounded border border-gray-300 px-3 py-2 text-gray-800 placeholder-gray-400 outline-none ring-indigo-300 transition duration-100 focus:ring max-sm:w-[200px]" />
 
