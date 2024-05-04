@@ -5,7 +5,7 @@ import { app } from "../assets/config/firebase";
 import { Tilt } from "react-tilt";
 import { Link } from "react-router-dom";
 import { GiShoppingCart } from "react-icons/gi";
-import { IoMdArrowRoundBack, IoMdHeartEmpty } from "react-icons/io";
+import { IoMdHeartEmpty } from "react-icons/io";
 import { useEffect, useState } from "react";
 
 import { useAuth } from "../auth/AuthProvider";
@@ -116,10 +116,9 @@ return(
       )}
    {showAlert && <Alert message={alertMessage} />}
    <Breadcrumbs/>
-   <div className="text-center font-bold text-2xl flex  justify-center gap-20 mb-10 max-sm:justify-start items-center max-sm:gap-16 max-sm:mx-4">
-<Link to="/">
-<IoMdArrowRoundBack size={38} /> 
-</Link>
+   <div className="bg-teal-50">
+   <div className="text-center font-bold text-2xl flex  justify-center gap-20 mb-10 max-sm:justify-center items-center max-sm:gap-16 max-sm:mx-4">
+
 
   Deporte
 </div>
@@ -262,7 +261,7 @@ return(
                     <div className="bg-red-500 w-fit px-2 text-white font-bold rounded-sm absolute top-3 left-6">
                       <p>sale</p>
                     </div>
-                    <Link to={`/ColeccionPage/${producto.id}`}>
+                    <Link to={`/ProductsPage/${producto.id}`}>
                       <img
                         className="w-full h-[290px]"
                         src={producto.data.imagen}
@@ -380,6 +379,8 @@ return(
 
 </div>
     </div>
+   </div>
+  
     </>
 )
 

@@ -13,7 +13,6 @@ import {
   onAuthStateChanged,
   GoogleAuthProvider,
   signInWithPopup,
-
 } from "firebase/auth";
 import { app, auth } from "../assets/config/firebase";
 import {
@@ -26,7 +25,6 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import Cookies from "js-cookie";
-
 
 const AuthContext = createContext();
 
@@ -41,6 +39,9 @@ export function AuthProvider({ children }) {
   const [totalQuantity, setTotalQuantity] = useState(0);
   const [total, setTotal] = useState(0);
   const [totalQuantity1, setTotalQuantity1] = useState(0);
+  const [alertMessages, setAlertMessage] = useState("");
+  const [alertType, setAlertType] = useState("error");
+  const [showAlerta, setShowAlert] = useState(false);
   const db = getFirestore(app);
 
   const signup = (email, password) => {
@@ -76,7 +77,6 @@ export function AuthProvider({ children }) {
           Favoritos: [],
         });
         handleShowAlert("Haz Iniciado sesion exitosamente", "success");
-
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -121,9 +121,7 @@ export function AuthProvider({ children }) {
     if (user) {
       signOut(auth);
     }
-   
   };
-
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
@@ -183,7 +181,10 @@ export function AuthProvider({ children }) {
             0
           );
           setTotalQuantity(total);
-          handleShowAlert("¡Producto agregado a la cesta correctamente!", "success");
+          handleShowAlert(
+            "¡Producto agregado a la cesta correctamente!",
+            "success"
+          );
         }
       } else {
         console.log("El documento de usuario no existe.");
@@ -217,7 +218,6 @@ export function AuthProvider({ children }) {
       });
       setFavorites(favorites.filter((product) => product.id !== productId));
       handleShowAlert("¡producto eliminado de la lista de deseos!");
-    
     } else {
       // Usuario sin iniciar sesión
     }
@@ -304,12 +304,20 @@ export function AuthProvider({ children }) {
     setTotalQuantity(total);
   };
 
+  const formatNumber = (number) => {
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  };
   useEffect(() => {
     let total = 0;
     carrito.forEach((producto) => {
       total += parseFloat(producto.data.precio) * producto.cantidad;
     });
-    setTotal(total);
+    if (!isNaN(total)) {
+      const totalFormateado = formatNumber(total);
+      setTotal(totalFormateado);
+    } else {
+      console.error('El total no es un número válido.');
+    }
   }, [carrito]);
 
   useEffect(() => {
@@ -317,11 +325,7 @@ export function AuthProvider({ children }) {
     setTotalQuantity1(totel);
   }, [carrito]);
 
-  const [alertMessages, setAlertMessage] = useState('');
-  const [alertType, setAlertType] = useState('error');
-  const [showAlerta, setShowAlert] = useState(false);
-
-  const handleShowAlert = (message, type = 'error') => {
+  const handleShowAlert = (message, type = "error") => {
     setAlertMessage(message);
     setAlertType(type);
     setShowAlert(true);
@@ -358,7 +362,11 @@ export function AuthProvider({ children }) {
         decreaseQuantity,
         totalQuantity,
         setTotalQuantity,
-        totalQuantity1, alertMessages, alertType, showAlerta, handleShowAlert
+        totalQuantity1,
+        alertMessages,
+        alertType,
+        showAlerta,
+        handleShowAlert,
       }}
     >
       {children}

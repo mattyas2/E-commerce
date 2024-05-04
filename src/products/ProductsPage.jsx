@@ -5,7 +5,7 @@ import {  useEffect, useState } from "react";
 import { FaAngleUp } from "react-icons/fa";
 import { FaAngleDown } from "react-icons/fa";
 
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { collection, doc, getDoc, getDocs, getFirestore, setDoc, updateDoc } from "firebase/firestore";
 import { useAuth } from "../auth/AuthProvider";
 import { Navbar } from "../pages/Navbar";
@@ -13,9 +13,13 @@ import { IoMdArrowRoundBack } from "react-icons/io";
 import { Breadcrumbs } from "../components/RutasActual";
 import { GiShoppingCart } from "react-icons/gi";
 import Alert from "../components/Alert";
+import { VscChevronRight } from "react-icons/vsc";
 
 export const ProductsPage = () => {
 
+  const navigate = useNavigate(); // Usa useNavigate para la navegación
+  const [showAlert, setShowAlert] = useState(false); // Estado para mostrar la alerta
+  const [alertMessage, setAlertMessage] = useState(""); // Mensaje de la alerta
 
 const { user,alertMessages, alertType, showAlerta,handleShowAlert  }=useAuth()
 const { productoId } = useParams();
@@ -163,6 +167,25 @@ if (!producto) {
   }
 
 
+  const mostrarAlerta = (message) => {
+    setAlertMessage(message);
+    setShowAlert(true);
+
+    // Ocultar la alerta después de 5 segundos (5000 milisegundos)
+    setTimeout(() => {
+      setShowAlert(false);
+      // Navegar a la página de inicio de sesión después de ocultar la alerta
+      navigate('/Login');
+    }, 3000);
+  };
+
+  const agregarAlCarrito = () => {
+    if (!user) {
+      mostrarAlerta("Debes iniciar sesión o registrarte para agregar productos ala cesta.");
+    } else {
+      // Lógica para agregar al carrito
+    }
+  };
 
   
 
@@ -170,18 +193,18 @@ if (!producto) {
   return (
     <>
   <Navbar/>
+  {showAlert && <Alert message={alertMessage} />}
   { showAlerta && (
         <Alert message={alertMessages}  type={alertType}/>
       )}
-  <Breadcrumbs/>
-    <div className="col-12 max-sm:w-full bg-teal-50 max-sm:mb-6">
-    <div className="text-center font-bold text-2xl flex  justify-center gap-20 mb-10 max-sm:justify-start items-center max-sm:gap-16 max-sm:mx-4">
-<Link to="/">
-<IoMdArrowRoundBack size={38} /> 
-</Link>
+  <div className="text-xs bg-teal-50 flex items-center   ">
+        <div className="flex items-center max-sm:mb-6 mt-10">
+        <Link to="/" className=" flex items-center ms-10 me-2 ">Home </Link>  <VscChevronRight size={14}/> <p className="mx-2">{producto.name}</p>
 
-inicio
-</div>
+        </div>
+    </div>
+    <div className="col-12 max-sm:w-full bg-teal-50 max-sm:mb-6">
+ 
 
 <div>
   
@@ -279,7 +302,13 @@ inicio
        
              
                <div className="flex gap-2">
+                {user ? (
                  <button onClick={onAddProduct} className="gap-4 flex-1 flex justify-center rounded-lg bg-indigo-500 px-8 py-2 text-center text-sm font-semibold text-white outline-none ring-indigo-300 transition duration-100 hover:bg-indigo-600 focus-visible:ring active:bg-indigo-700 sm:flex-none md:text-base"> <GiShoppingCart  size={36} className="" /></button>
+
+                ):(
+                  <button onClick={agregarAlCarrito} className="gap-4 flex-1 flex justify-center rounded-lg bg-indigo-500 px-8 py-2 text-center text-sm font-semibold text-white outline-none ring-indigo-300 transition duration-100 hover:bg-indigo-600 focus-visible:ring active:bg-indigo-700 sm:flex-none md:text-base"> <GiShoppingCart  size={36} className="" /></button>
+
+                )}
                </div>
        
                <div className="mt-4 md:mt-8 lg:mt-10 w-[95%]">

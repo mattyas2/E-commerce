@@ -1,4 +1,5 @@
 import { Fragment, useEffect, useState } from "react";
+import { VscChevronRight } from "react-icons/vsc";
 import { Link, useLocation } from "react-router-dom";
 
 export const Breadcrumbs = () => {
@@ -48,14 +49,14 @@ export const Breadcrumbs = () => {
     return (
       <nav className="w-full rounded-md bg-teal-50 px-5 py-3 ">
         <ol className="list-reset flex">
-          <li>
+          <li className="flex items-center">
             <Link
               to="/"
               className="text-slate-600  hover:text-cyan-300 "
             >
               Home
             </Link>
-            <span className="mx-3"> / </span>
+            <span className="mx-3"> <VscChevronRight size={14}/> </span>
           </li>
        {pathElements}
         </ol>

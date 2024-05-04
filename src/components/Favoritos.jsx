@@ -94,17 +94,14 @@ return onDeleteProduct,favorites
       )}
       <Breadcrumbs/>
     <div className=" bg-teal-50 h-[100%]">
-    <div className="text-center font-bold text-2xl flex justify-center gap-20 mb-10 max-sm:justify-start items-center max-sm:gap-16 max-sm:mx-4">
-<Link to="/">
-<IoMdArrowRoundBack size={38} /> 
-</Link>
+    <div className="text-center font-bold text-2xl flex justify-center gap-20 mb-10 max-sm:justify-center items-center max-sm:gap-16 max-sm:mx-4">
 
 
   Favoritos</div>
     
     <div className="w-full flex max-sm:mb-20 bg-teal-50 mb-10 mt-10 ">
     
-     <div className="w-[100%] flex flex-wrap max-sm:flex max-sm:flex-wrap max-sm:w-[100%]   ">
+     <div className="w-[100%] flex justify-center flex-wrap max-sm:flex max-sm:flex-wrap max-sm:justify-center max-sm:w-[100%]   ">
        {
           favorites.map((producto) => (
             <div className="relative  mx-4 mt-2 rounded-xl shadow-2xl w-[320px] flex flex-col justify-center   bg-purple-50 mb-12 h-[500px]"  key={producto.id}>

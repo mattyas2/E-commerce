@@ -288,8 +288,8 @@ export const Home = () => {
               </h1>
 
               <p>
-                Las formas de pago aceptadas por Mr. Wonderful son PayPal,
-                tarjeta de crédito/débito y Apple Pay. Puede ocurrir que algún
+                Las formas de pago aceptadas por Mr. Mattyas son PayPal,
+                 Puede ocurrir que algún
                 método de pago esté desactivado momentáneamente por una
                 incidencia informática. Si es así, elige otro método de pago por
                 favor.{" "}
@@ -340,8 +340,8 @@ export const Home = () => {
             <div>
               <p>ENTREGA GRATUITA</p>
               <p>
-                Envío gratuito, en domicilio a partir de +25€ gratuito y en
-                puntos de conveniencia a partir de +15€
+                Envío gratuito, en domicilio a partir de $100.000 gratuito y en
+                puntos de conveniencia a partir de $70.000
               </p>
             </div>
           </div>

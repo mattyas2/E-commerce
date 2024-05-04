@@ -62,7 +62,7 @@ function App() {
       <Route path="/Deporte" element={<Deporte/>} />
       <Route path="/Electronica" element={<Electronica/>} />
       <Route path="/Favoritos" element={<Favoritos/>} />
-      <Route path="/Ropa" element={<Tazas/>} />
+      <Route path="/Tazas" element={<Tazas/>} />
       <Route path="/Todos" element={<Todos/>} />
       <Route path="/Viajes" element={<AccesoriosDeViajes/>} />
       <Route path="/ProductsPage/:productoId" element={<ProductsPage/>}/>

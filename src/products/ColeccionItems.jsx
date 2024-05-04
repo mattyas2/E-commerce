@@ -18,7 +18,7 @@ import { useAuth } from "../auth/AuthProvider";
 import { Swiper, SwiperSlide } from "swiper/react";
 
 // import required modules
-import { Autoplay, Navigation } from "swiper/modules";
+import { Autoplay, Keyboard, Mousewheel, Navigation } from "swiper/modules";
 import { LiaAngleRightSolid } from "react-icons/lia";
 import { LiaAngleLeftSolid } from "react-icons/lia";
 import "swiper/css";
@@ -248,7 +248,7 @@ export const ColeccionItems = ({ agregarAlCarrito, agregarAFavoritos }) => {
         </Swiper>
       </div>
 
-      <div className="h-[500px] mt-10 md:hidden ">
+      <div className="h-[520px] mt-10 md:hidden ">
         <Swiper
           spaceBetween={30}
           centeredSlides={true}
@@ -259,18 +259,21 @@ export const ColeccionItems = ({ agregarAlCarrito, agregarAFavoritos }) => {
           pagination={{
             dynamicBullets: true,
           }}
+          navigation={true}
+          mousewheel={true}
+          keyboard={true}
           loop={true}
-          modules={[Autoplay, Navigation]}
-          direction={"vertical"}
+          modules={[Autoplay, Navigation,Mousewheel, Keyboard]}
+          
           key={1}
           className="mySwiper"
         >
           {loaded &&
             coleccion.length > 0 &&
-            coleccion.map((producto) => (
+            coleccion.map((product) => (
               <div
-                className="relative  mx-4 mt-2 rounded-xl shadow-2xl w-[320px] flex flex-col justify-center  bg-purple-50 mb-9 h-[500px]"
-                key={producto.id}
+                className="relative  mx-4 mt-2 rounded-xl shadow-2xl w-[320px] flex flex-col justify-center  bg-purple-50 mb-9 h-[520px]"
+                key={product.id}
               >
                 <SwiperSlide>
                   <Tilt>
@@ -278,30 +281,32 @@ export const ColeccionItems = ({ agregarAlCarrito, agregarAFavoritos }) => {
                       <p>sale</p>
                     </div>
 
-                    <Link to={`/ColeccionPage/${producto.id}`}>
+                    <Link to={`/ColeccionPage/${product.id}`}>
                       <img
                         className="w-full h-[300px]"
-                        src={producto.data.imagen}
+                        src={product.data.imagen}
                         alt=""
                       />
                     </Link>
                   </Tilt>
                   <div>
-                    <div className="flex items-center mt-3 justify-between me-3 mx-6 gap-8 max-sm:col-6 ">
-                      <h6 className="text-cyan-500  font-bold max-sm:mr-16 ">
-                        {producto.data.name}
+                    <div className="flex items-start justify-start mt-3  mx-4  col-7 ">
+                      <h6 className="text-cyan-500  font-bold  ">
+                        {product.data.name}
                       </h6>
-                      <div className="bg-slate-900 text-white flex items-center gap-1 max-sm:col-4 max-sm:absolute max-sm:ms-60">
-                        <div className="">
-                          <img className="w-5 h-5" src={estrella} alt="" />
+                      <div className="bg-black text-white  flex items-center gap-1 col-2 absolute ms-[200px]">
+                        <div className="w-20 ">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="yellow" className="bi bi-star-fill" viewBox="0 0 16 16">
+  <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+</svg>
                         </div>{" "}
-                        4.9
+                       4.9
                       </div>
                     </div>
 
                     <div className="flex gap-5 my-2 mt-1 mx-4">
                       <h3 className="text-green-700 font-bold">
-                        ${producto.data.precio}.000
+                        ${product.data.precio}.000
                       </h3>
                     </div>
                     <img className="mx-4" src={color} alt="" />
@@ -326,18 +331,18 @@ export const ColeccionItems = ({ agregarAlCarrito, agregarAFavoritos }) => {
                           <Link>
                             {" "}
                             {favorites.find(
-                              (item) => item.id === producto.id
+                              (item) => item.id === product.id
                             ) ? (
                               <FcLike
                                
                                 size={36}
-                                onClick={() => onDeleteFavort(producto.id)}
+                                onClick={() => onDeleteFavort(product.id)}
                               />
                             ) : (
                               <IoMdHeartEmpty
                               
                                 size={36}
-                                onClick={() => addToFavorites(producto)}
+                                onClick={() => addToFavorites(product)}
                               />
                             )}
                           </Link>{" "}
@@ -345,7 +350,7 @@ export const ColeccionItems = ({ agregarAlCarrito, agregarAFavoritos }) => {
                             {" "}
                             <span
                               onClick={() => {
-                                onAddProduct(producto);
+                                onAddProduct(product);
                               }}
                             >
                               <GiShoppingCart size={36} className="" />
@@ -360,7 +365,7 @@ export const ColeccionItems = ({ agregarAlCarrito, agregarAFavoritos }) => {
                           <Link>
                             {" "}
                             {favorites.find(
-                              (item) => item.id === producto.id
+                              (item) => item.id === product.id
                             ) ? (
                               <FcLike
                               

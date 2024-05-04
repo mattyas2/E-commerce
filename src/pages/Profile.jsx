@@ -3,11 +3,11 @@ import { Navbar } from "./Navbar";
 import Avatar from '../assets/img/avatar.png'
 
 
-import { Breadcrumbs } from "../components/RutasActual";
 import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../assets/config/firebase";
-
+import { Link } from "react-router-dom";
+import { VscChevronRight } from "react-icons/vsc";
 
 
 export const Profile = ()=>{
@@ -30,7 +30,13 @@ const [photo,setPhoto] = useState([])
     return (
     <>
     <Navbar/>
-    <Breadcrumbs/>
+    <div className="text-xs bg-teal-50 flex items-center  ">
+        <div className="flex items-center max-sm:mb-6">
+        <Link to="/" className=" flex items-center ms-10 me-2 ">Home </Link>  <VscChevronRight size={14}/> <p className="mx-2">{user.displayName || user.email}</p>
+
+        </div>
+    </div>
+   
     <div className="flex justify-center items-center mb-10 max-sm:flex max-sm:flex-col bg-teal-50">
     <div
     className="max-w-2xl mx-4 sm:max-w-sm md:max-w-sm lg:max-w-sm xl:max-w-sm sm:mx-auto md:mx-auto lg:mx-auto xl:mx-auto mt-2 bg-white shadow-xl rounded-lg text-gray-900">

@@ -15,7 +15,7 @@ import { GiShoppingCart } from "react-icons/gi";
 import { Swiper, SwiperSlide } from "swiper/react";
 
 // import required modules
-import { Autoplay, Navigation } from "swiper/modules";
+import { Autoplay, Keyboard, Mousewheel, Navigation } from "swiper/modules";
 
 import { Tilt } from "@jdion/tilt-react";
 
@@ -135,14 +135,14 @@ export const ProductsItems = ({ agregarAlCarrito, agregarAFavoritos }) => {
           </div>
 
           <div className="border p-2 w-[90px] flex justify-center  hover:bg-sky-400  bg-purple-50 ">
-            <Link className=" text-decoration-none text-black" to="/Ropa">
+            <Link className=" text-decoration-none text-black" to="/Tazas">
               Tazas
             </Link>
           </div>
         </div>
 
         <div className="flex gap-4 max-sm:hidden">
-          <Link>
+          <Link className="hidden">
             <button className="mt-2" onClick={openModal}>
               <IoAddCircle size={26} />
             </button>
@@ -156,7 +156,7 @@ export const ProductsItems = ({ agregarAlCarrito, agregarAFavoritos }) => {
         </div>
       </div>
 
-      <div className="modall">
+      <div className="modall hidden">
         <Modal
           isOpen={modalIsOpen}
           onAfterOpen={afterOpenModal}
@@ -283,19 +283,22 @@ export const ProductsItems = ({ agregarAlCarrito, agregarAFavoritos }) => {
           pagination={{
             dynamicBullets: true,
           }}
+          navigation={true}
+          mousewheel={true}
+          keyboard={true}
           loop={true}
-          modules={[Autoplay, Navigation]}
-          direction={"vertical"}
+          modules={[Autoplay, Navigation,Mousewheel, Keyboard]}
+         
           className="mySwiper"
         >
-          {productos.map((producto) => (
+          {productos.map((producto,index) => (
             <div
-              className="relative  mx-4 mt-2 rounded-xl shadow-2xl w-[300px] flex flex-col justify-center  bg-purple-50 mb-8 h-[300px]"
-              key={producto.id}
+              className="relative  mx-4 mt-2 rounded-xl shadow-2xl w-[300px] flex flex-col justify-center  bg-purple-50 mb-8 h-[350px]"
+              key={producto.id || index}
             >
               <SwiperSlide>
                 <Tilt>
-                  <div className="bg-red-500 w-fit px-2 text-white font-bold rounded-sm absolute top-3 left-6">
+                  <div className="bg-red-500 w-fit px-2 text-white font-bold rounded-sm absolute top-4 left-6">
                     <p>sale</p>
                   </div>
 
@@ -308,17 +311,19 @@ export const ProductsItems = ({ agregarAlCarrito, agregarAFavoritos }) => {
                   </Link>
                 </Tilt>
                 <div>
-                  <div className="flex items-center mt-3 justify-between me-3 mx-6">
-                    <h6 className="text-cyan-500  font-bold max-sm:mr-16">
-                      {producto.data.name}
-                    </h6>
-                    <div className="bg-slate-900 text-white flex items-center max-sm:col-4 max-sm:absolute max-sm:ms-60">
-                      <div>
-                        <img className="w-5 h-5" src={estrella} alt="" />
-                      </div>{" "}
-                      4.9
+                <div className="flex items-start justify-start mt-3  mx-4  col-8 ">
+                      <h6 className="text-cyan-500  font-bold  ">
+                        {producto.data.name}
+                      </h6>
+                      <div className="bg-black text-white  flex items-center gap-1 col-2 absolute ms-[220px]">
+                        <div className="w-20 ">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="yellow" className="bi bi-star-fill" viewBox="0 0 16 16">
+  <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+</svg>
+                        </div>{" "}
+                       4.9
+                      </div>
                     </div>
-                  </div>
 
                   <div className="flex gap-5 my-2 mt-1 mx-4">
                     <h3 className="text-green-700 font-bold">

@@ -12,14 +12,12 @@ import { MdDelete } from "react-icons/md";
 
 import { useEffect, useState } from "react";
 import { useAuth } from "../auth/AuthProvider.jsx";
-import { IoMdArrowRoundBack } from "react-icons/io";
 import { CgProductHunt } from "react-icons/cg";
 import { BsChevronDown, BsChevronUp } from "react-icons/bs";
 import { Breadcrumbs } from "./RutasActual";
 import Alert from "./Alert.jsx";
 
 export function Cart() {
- 
 
   const db = getFirestore(app);
   const auth = getAuth();
@@ -62,7 +60,7 @@ export function Cart() {
       Carrito: [],
     });
     setCarrito([]);
-    handleShowAlert("haz vaciado la cesta exitosamente","error")
+    handleShowAlert(" cesta vaciada exitosamente","error")
 
     return emptyCart, carrito;
   };
@@ -73,8 +71,9 @@ export function Cart() {
     await updateDoc(userRef, {
       Carrito: carrito.filter((product) => product.id !== productId),
     });
+ 
     setCarrito(carrito.filter((product) => product.id !== productId));
-    handleShowAlert("¡Producto eliminado de la cesta exitosamente!","error")
+    handleShowAlert(`¡Producto eliminado de la cesta exitosamente!`,"error")
     return onDeleteProduct, carrito;
 
     
@@ -94,10 +93,8 @@ export function Cart() {
       )}
       <Breadcrumbs/>
       <div className="bg-teal-50  flex flex-col justify-center items-center  h-[100%] w-full">
-        <div className="text-center font-bold text-2xl flex  justify-center gap-20 mb-10 max-sm:justify-start items-center max-sm:gap-16 max-sm:mx-4">
-          <Link to="/">
-            <IoMdArrowRoundBack size={38} />
-          </Link>
+        <div className="text-center font-bold text-2xl flex  justify-center gap-20 mb-10 max-sm:justify-center items-center max-sm:gap-16 max-sm:mx-4">
+         
          
           <h1 className="text-2xl font-semibold ">Shopping Cart</h1>
 
@@ -123,13 +120,14 @@ export function Cart() {
                         </tr>
                     </thead>
                     <tbody>
-                    {carrito &&
+                    {carrito && 
                   carrito.map((product) => (
                         <tr key={product.id}>
                             <td className="py-2  max-sm:flex max-sm:flex-col  ">
                                 <div className="flex items-center  max-sm:flex max-sm:flex-col ">
                                     <img className="h-24 w-24 mr-4" src={product.data.imagen} alt="Product image"/>
                                     <span className="font-semibold max-sm:text-center">{product.data.name}</span>
+                                    
                                 </div>
                             </td>
                             <td className="py-4 max-sm:px-2">${product.data.precio}.000</td>
