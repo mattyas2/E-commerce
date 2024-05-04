@@ -281,7 +281,7 @@ export const ColeccionItems = ({ agregarAlCarrito, agregarAFavoritos }) => {
                       <p>sale</p>
                     </div>
 
-                    <Link to={`/ColeccionPage/${product.id}`}>
+                    <Link to={`/ProductsPage/${product.id}`}>
                       <img
                         className="w-full h-[300px]"
                         src={product.data.imagen}
