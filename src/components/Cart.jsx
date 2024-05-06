@@ -111,7 +111,7 @@ export function Cart() {
         <div className="md:w-[900px]  max-sm:flex max-sm:flex-col ">
             <div className="bg-teal-100 rounded-lg shadow-md max-sm:p-1 mb-4 p-4 max-sm:w-[102%]  ">
                 <table className="w-[100%]  ">
-                    <thead className="  ">
+                    <thead className=" max-sm:hidden ">
                         <tr className=" ">
                             <th className=" font-semibold">Product</th>
                             <th className=" font-semibold">Precio</th>
@@ -122,7 +122,9 @@ export function Cart() {
                     <tbody>
                     {carrito && 
                   carrito.map((product) => (
-                        <tr key={product.id}>
+                    <>
+                    
+                    <tr key={product.id} className="max-sm:hidden">
                             <td className="py-2  max-sm:flex max-sm:flex-col  ">
                                 <div className="flex items-center  max-sm:flex max-sm:flex-col ">
                                     <img className="h-24 w-24 mr-4" src={product.data.imagen} alt="Product image"/>
@@ -133,13 +135,8 @@ export function Cart() {
                             <td className="py-4 max-sm:px-2">${product.data.precio}.000</td>
                             <td className="py-4">
 
-                              <div className="md:hidden flex flex-col mx-4 justify-center items-center">
-                                <button className="cursor-pointer hover:text-cyan-300"  onClick={() => increaseQuantity(product.id)} ><BsChevronUp size={20} /> </button>
-                                <span>{product.cantidad}</span>
-                                <button className="cursor-pointer hover:text-cyan-300" onClick={() => decreaseQuantity(product.id)}><BsChevronDown size={20}/></button>
-                              </div>
 
-                                <div className="flex items-center  max-sm:hidden ">
+                                <div className="flex items-center">
                                     <button onClick={() => decreaseQuantity(product.id)} className="border rounded-md py-2 px-4  mr-2 hover:bg-cyan-400">-</button>
                                     <span className="text-center w-8">{product.cantidad}</span>
                                     <button  onClick={() => increaseQuantity(product.id)} className="border rounded-md py-2 px-4 ml-2  hover:bg-cyan-400">+</button>
@@ -147,6 +144,34 @@ export function Cart() {
                             </td>
                             <td onClick={() => onDeleteProduct(product.id)} className="py-4 hover:text-red-400  cursor-pointer"><MdDelete size={38}/></td>
                         </tr>
+
+
+                         <div key={product.id} className="md:hidden mb-4 border">
+                         <div className="    ">
+                             <div className="flex items-center  ">
+                                 <img className="h-24 w-24 mr-4" src={product.data.imagen} alt="Product image"/>
+                                 <span className="font-semibold max-sm:text-center">{product.data.name}</span>
+                                 
+                             </div>
+                         </div>
+                         <div className="flex justify-center items-center gap-3">
+                         <div className="flex items-center">
+                                    <button onClick={() => decreaseQuantity(product.id)} className="border rounded-md py-1 px-3  mr-1 bg-cyan-400">-</button>
+                                    <span className="text-center border border-black w-12 p-2">{product.cantidad}</span>
+                                    <button  onClick={() => increaseQuantity(product.id)} className="border rounded-md py-1 px-3 ml-1 bg-cyan-400">+</button>
+                                </div>
+                         <div className="py-4 ">${product.data.precio}.000</div>
+                         <div className="py-4">
+
+                        
+                         </div>
+                         <div onClick={() => onDeleteProduct(product.id)} className="py-4 hover:text-red-400  cursor-pointer"><MdDelete size={38}/></div>
+                         </div>
+                       
+                     </div>
+                    
+                    </>
+                       
                         ))}
                     </tbody>
                 </table>
