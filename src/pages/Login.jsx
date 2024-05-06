@@ -51,7 +51,7 @@ export const Login = () => {
   return (
     <>
       <Navbar />
-      <div className="bg-teal-50 h-screen max-sm:h-[153vh]">
+      <div className="bg-teal-50 h-screen max-sm:h-[163vh]">
         <h1 className="text-center text-3xl font-bold mb-6 p-4">
           Entrar / Salir
         </h1>
