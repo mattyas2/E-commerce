@@ -9,14 +9,14 @@ import { useAuth } from "../auth/AuthProvider";
 import { Navbar } from "./Navbar";
 
 import "firebase/auth";
-import { Button } from "@material-tailwind/react";
+
 
 export const Login = () => {
   const [user, setUser] = useState({
     email: "",
     password: "",
   });
-  const { login, loginWithGoogle, resetPassword, loginWithFacebook } =
+  const { login, loginWithGoogle, } =
     useAuth();
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -44,30 +44,14 @@ export const Login = () => {
       setError(error.message);
     }
   };
-  const handleFacebookSignin = async () => {
-    try {
-      await loginWithFacebook();
-      navigate("/");
-    } catch (error) {
-      setError(error.message);
-    }
-  };
+  
 
-  const handleResetPassword = async (e) => {
-    e.preventDefault();
-    if (!user.email) return setError("Write an email to reset password");
-    try {
-      await resetPassword(user.email);
-      setError("We sent you an email. Check your inbox");
-    } catch (error) {
-      setError(error.message);
-    }
-  };
+ 
 
   return (
     <>
       <Navbar />
-      <div className="bg-teal-50 h-screen">
+      <div className="bg-teal-50 h-screen max-sm:h-[143vh]">
         <h1 className="text-center text-3xl font-bold mb-6 p-4">
           Entrar / Salir
         </h1>
@@ -167,7 +151,7 @@ export const Login = () => {
                 más.
               </span>
               <br />
-              <button className="bg-cyan-400 p-2.5  hover:bg-cyan-500 mt-4 max-sm:w-full">
+              <button className="bg-cyan-400 p-2.5  hover:bg-cyan-500 mt-4 max-sm:w-full ">
                 <Link
                   className="text-decoration-none text-white font-bold "
                   to={"/Register"}

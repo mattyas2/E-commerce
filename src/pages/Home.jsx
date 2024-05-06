@@ -118,7 +118,7 @@ export const Home = () => {
 
   return (
     <>
-      <div className="bg-teal-50 ">
+      <div className="bg-teal-50">
         <Navbar />
         <div>
         { showAlerta && (
